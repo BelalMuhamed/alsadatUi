@@ -1,0 +1,84 @@
+
+<mat-sidenav-container class="layout-container" dir="rtl">
+  <mat-sidenav #drawer mode="side" [opened]="true" position="start" class="sidenav">
+
+    <div class="w-100 d-flex justify-content-center align-items-center">
+      <img class="logo" src="assets/imgs/logo.png" alt="Logo" />
+    </div>
+
+    <h3 class="mt-2 text-center">القائمة</h3>
+
+    <ul class="mt-3">
+
+      <li>
+        <a routerLink="dashboard" routerLinkActive="active">الصفحة الرئيسية</a>
+      </li>
+
+      <li>
+        <a routerLink="SalesInvoices" routerLinkActive="active">فواتير البيع</a>
+      </li>
+
+  <li>
+        <a routerLink="Categories" routerLinkActive="active">فئات المنتجات </a>
+      </li>
+      <li>
+        <a routerLink="Products" routerLinkActive="active">المنتجات  </a>
+      </li>
+
+
+<li>
+  <div class="dropdown-header" (click)="settingsOpened = !settingsOpened">
+    <span>الإعدادات</span>
+    <mat-icon>
+      {{ settingsOpened ? 'expand_less' : 'expand_more' }}
+    </mat-icon>
+  </div>
+    <ul *ngIf="settingsOpened" >
+  <li> <a routerLink="Copouns" routerLinkActive="active">الكوبونات</a></li>
+    <li><a routerLink="general-setting/bill-discounts" routerLinkActive="active">خصومات الفواتير</a></li>
+    <li><a routerLink="/settings/branches" routerLinkActive="active">الفروع</a></li>
+  </ul>
+
+</li>
+
+
+
+    </ul>
+
+  </mat-sidenav>
+
+  <!-- ✅ باقي الصفحة كما هو -->
+  <mat-sidenav-content>
+    <header class="topbar">
+      <div>
+        <button mat-icon-button (click)="drawer.toggle()" aria-label="Toggle menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle theme">
+          <mat-icon>{{ currentTheme === 'dark-mode' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+      </div>
+
+      <div>
+        <img class="logo" src="assets/imgs/logo.png" alt="Logo" />
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+
+      <footer class="page-footer text-center">
+        <p>Created by <strong>BM Team</strong> &copy; 2025</p>
+        <p>
+          <a href="mailto:info&#64;bmteam.com"> info&#64;bmteam.com 📧</a>
+          ☎️ <a href="tel:+201032500077">01032500077</a> /
+          <a href="tel:+20100 8319684">0100 8319684</a>
+        </p>
+      </footer>
+
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

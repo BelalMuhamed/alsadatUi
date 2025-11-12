@@ -1,0 +1,781 @@
+
+:root {
+  --topbar-height: 70px;
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #fff;
+  --topbar-bg: #0C0C0C;
+  --sidenav-bg: #0C0C0C;
+  --gold: #D4AF37;
+  --hover-bg: rgba(212, 175, 55, 0.15);
+  --active-bg: rgba(212, 175, 55, 0.25);
+    --input-bg: #1a1a1a;
+  --input-text: #ffffff;
+  --input-label: #cccccc;
+  --input-placeholder: #777;
+  --input-border: #555;
+}
+
+body.light-mode {
+  --bg-color: #ffffff;
+  --text-color: #000;
+  --topbar-bg: #f9f9f9;
+  --sidenav-bg: #f5f5f5;
+  --gold: #b8860b;
+  --hover-bg: rgba(184, 134, 11, 0.1);
+  --active-bg: rgba(184, 134, 11, 0.2);
+  --input-bg: #ffffff;
+  --input-text: #000000;
+  --input-label: #333;
+  --input-placeholder: #888;
+  --input-border: #999;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--topbar-height);
+  background-color: var(--topbar-bg);
+  color: var(--text-color);
+  padding: 0 16px;
+  z-index: 2000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  border-bottom: 2px solid var(--gold);
+  direction: rtl;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.logo {
+  width: 90px;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+ min-height: 100vh;
+ height: auto;
+  overflow: visible !important;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+
+
+.sidenav {
+  width: 250px;
+  padding: 16px;
+  background-color: var(--sidenav-bg);
+  border-left: 2px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  direction: rtl;
+}
+
+.sidenav h3 {
+  color: var(--gold);
+  text-align: center;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(212,175,55,0.3);
+  padding-bottom: 8px;
+}
+h2{
+    color: var(--gold);
+  text-align: center;
+  font-weight: 700;
+    border-bottom: 1px solid rgba(212,175,55,0.3);
+  padding-bottom: 8px;
+}
+.sidenav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidenav ul li a {
+  display: block;
+  color: var(--text-color);
+  padding: 12px 20px;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.sidenav ul li a:hover {
+  background-color: var(--hover-bg);
+  color: var(--gold);
+  padding-right: 25px;
+}
+
+.sidenav ul li a.active,
+a.router-link-active {
+  background-color: var(--active-bg);
+  color: var(--gold);
+  font-weight: bold;
+  border-right: 4px solid var(--gold);
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--topbar-height));
+  background: var(--bg-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 24px;
+}
+
+
+
+.mat-icon.text-white {
+  color: var(--gold) !important;
+}
+.page-footer {
+  text-align: center;
+  padding: 16px 8px;
+  border-top: 1px solid var(--gold);
+  font-size: 0.9rem;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.page-footer p {
+  margin: 4px 0;
+}
+
+.page-footer a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.page-footer a:hover {
+  text-decoration: underline;
+  color: var(--text-color);
+}
+
+.page-footer .contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.page-footer .contact-info a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* أيقونات */
+.page-footer .contact-info i {
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .page-footer .contact-info {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+/* ===== Table Container ===== */
+.table-container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* ===== Material Table ===== */
+table.mat-mdc-table {
+  background-color: transparent !important;
+  color: var(--text-color);
+  width: 100%;
+}
+
+/* ===== Header Styling ===== */
+.mat-mdc-header-row {
+  background-color: var(--sidenav-bg) !important;
+  color: var(--gold) !important;
+  font-weight: 600;
+  border-bottom: 2px solid var(--gold);
+}
+
+/* ===== Cell Styling ===== */
+.mat-mdc-row {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  transition: background-color 0.3s ease;
+}
+
+
+/* ===== Hover Effect ===== */
+.mat-mdc-row:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+/* ===== Paginator ===== */
+.mat-mdc-paginator {
+  background-color: var(--sidenav-bg);
+  color: var(--text-color);
+  border-top: 1px solid var(--gold);
+}
+
+/* ===== Icons inside table ===== */
+.mat-icon {
+  color: var(--gold);
+}
+/* 🔹 Paginator container */
+.mat-mdc-paginator {
+  background-color: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border-top: 1px solid var(--gold);
+  border-radius: 0 0 8px 8px;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  padding: 8px 16px;
+}
+
+/* 🔹 النصوص داخل الـ paginator */
+.mat-mdc-paginator-range-label,
+.mat-mdc-paginator-page-size-label {
+  color: var(--text-color) !important;
+}
+
+/* 🔹 الـ select box بتاع حجم الصفحة */
+.mat-mdc-select-value,
+.mat-mdc-select-arrow {
+  color: var(--gold) !important;
+}
+
+/* 🔹 الأيقونات (السهم يمين/شمال) */
+.mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  transition: color 0.3s ease;
+}
+.mat-mdc-paginator-icon:hover {
+  color: var(--text-color) !important;
+}
+
+/* 🔹 الأزرار */
+.mat-mdc-icon-button {
+  color: var(--gold) !important;
+}
+.mat-mdc-icon-button[disabled] {
+  opacity: 0.4;
+}
+
+/* 🔹 select dropdown عند الفتح */
+.mat-mdc-select-panel {
+  background-color: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold);
+}
+
+/* 🔹 خيارات القائمة */
+.mat-mdc-option {
+  color: var(--text-color) !important;
+}
+.mat-mdc-option:hover,
+.mat-mdc-option.mdc-list-item--selected {
+  background-color: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+.paginator-arabic {
+  direction: rtl;
+  text-align: right;
+  border-top: 1px solid gold;
+}
+
+::ng-deep .mat-mdc-paginator-range-label {
+  font-family: 'Cairo', sans-serif;
+}
+.filter-form {
+  padding-top: 5%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* الوضع الفاتح */
+:host-context(body.light-mode) .filter-form {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+/* الوضع الداكن */
+:host-context(body.dark-mode) .filter-form {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.filter-form mat-form-field {
+  width: 220px;
+}
+
+button[mat-raised-button], button[mat-stroked-button] {
+  height: 56px;
+}
+/* 🔹 تصميم الأزرار الموحدة */
+.action-btn {
+  width: 120px; /* نفس العرض */
+  height: 56px; /* نفس الارتفاع */
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid var(--gold) !important;
+  color: var(--gold) !important;
+  background-color: transparent !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 🔹 تأثير hover */
+.action-btn:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-color) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+/* 🔹 زر مرفوع (mat-raised-button) */
+button.mat-mdc-raised-button.action-btn {
+  background-color: var(--gold) !important;
+  color: var(--bg-color) !important;
+  border: none !important;
+}
+
+button.mat-mdc-raised-button.action-btn:hover {
+  background-color: var(--active-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* 🔹 زر محاط (mat-stroked-button) */
+button.mat-mdc-outlined-button.action-btn {
+  background-color: transparent !important;
+  color: var(--gold) !important;
+}
+
+button.mat-mdc-outlined-button.action-btn:hover {
+  background-color: var(--hover-bg) !important;
+}
+/* Center text in all Material table cells */
+.mat-mdc-header-cell {
+  text-align: center !important;
+  justify-content: center !important;      /* For flex layout */
+  align-items: center !important;
+}
+.mat-mdc-cell {
+  white-space: normal !important;
+  word-break: break-word;
+  text-align: center !important;
+  justify-content: center !important;      /* For flex layout */
+  align-items: center !important;
+    background-color: var(--bg-color) !important;
+  color: var(--text-color);
+  transition: background-color 0.3s ease;
+}
+/* ===== Add Coupon Button Styling ===== */
+.add-coupon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* icon color */
+.add-coupon-btn mat-icon {
+  font-size: 22px;
+  color: var(--gold);
+  margin: 0;
+  padding: 0;
+}
+
+/* Hover effect */
+.add-coupon-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+/* Light & Dark mode smooth transition */
+.add-coupon-btn,
+.add-coupon-btn mat-icon {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+.custom-input-theme .mat-form-field-outline {
+  color: var(--input-border) !important;
+}
+
+.custom-input-theme .mat-form-field-outline-thick {
+  color: var(--gold) !important; /* عند focus */
+}
+
+.custom-input-theme .mat-form-field-label {
+  color: var(--input-label) !important;
+}
+
+.custom-input-theme .mat-input-element {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+/* ✅ مخصص فقط لمكان الإدخال اللي عليه الكلاس */
+.custom-input-theme .mdc-notched-outline__leading,
+.custom-input-theme .mdc-notched-outline__trailing,
+.custom-input-theme .mdc-notched-outline__notch {
+  border-color: var(--input-border) !important;
+}
+
+/* ✅ عند الـ focus */
+.custom-input-theme.mdc-text-field--focused .mdc-notched-outline__leading,
+.custom-input-theme.mdc-text-field--focused .mdc-notched-outline__trailing,
+.custom-input-theme.mdc-text-field--focused .mdc-notched-outline__notch {
+  border-color: var(--gold) !important;
+}
+
+/* ✅ النص */
+.custom-input-theme .mat-mdc-input-element {
+  color: var(--input-text) !important;
+}
+
+/* ✅ خلفية */
+.custom-input-theme .mdc-text-field__input {
+  background-color: var(--input-bg) !important;
+  border-radius: 6px !important;
+}
+
+/* ✅ اللابل */
+.custom-input-theme .mdc-floating-label {
+  color: var(--input-label) !important;
+}
+
+/* ✅ placeholder */
+.custom-input-theme .mat-mdc-input-element::placeholder {
+  color: var(--input-placeholder) !important;
+}
+/* ✅ الحاوية الرئيسية للبند */
+.dropdown-container {
+  margin-top: 10px;
+}
+
+/* ✅ الهيدر اللي بيظهر قبل الفتح */
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: transparent;
+  color: var(--text-color);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.dropdown-header:hover {
+  background: var(--hover-bg);
+  color: var(--gold);
+}
+
+.dropdown-icon {
+  color: var(--gold);
+}
+
+
+
+
+
+
+.dropdown-menu li a {
+  display: block;
+  padding: 10px 25px;
+  color: var(--text-color);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+.dropdown-menu {
+  list-style: none;
+  margin: 0;
+  margin-right: 10px;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  border-right: 2px solid transparent;
+}
+
+.dropdown-menu.open {
+  max-height: 300px;
+  border-right: 2px solid var(--gold);
+}
+
+.dropdown-menu li a:hover {
+  background: var(--hover-bg);
+  color: var(--gold);
+}
+
+.dropdown-menu li a.active {
+  background: var(--active-bg);
+  color: var(--gold);
+  font-weight: bold;
+  border-right: 3px solid var(--gold);
+}
+.mat-sidenav, .layout-container {
+  overflow: visible !important;
+}
+/* ✅ اجبار اللون الأساسي للشريط */
+/* ✅ Slide Toggle bar (background) */
+::ng-deep .delete-toggle .mat-slide-toggle-bar {
+  background-color: var(--input-border) !important;
+  transition: background-color 0.3s ease;
+}
+
+/* ✅ Slide Toggle bar when checked (ON) */
+::ng-deep .delete-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: var(--gold) !important;
+}
+
+/* ✅ Toggle thumb (the circle) */
+::ng-deep .delete-toggle .mat-slide-toggle-thumb {
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--gold) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ✅ Toggle thumb when checked (ON) */
+::ng-deep .delete-toggle.mat-checked .mat-slide-toggle-thumb {
+  background-color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ✅ The label/text color */
+::ng-deep .delete-toggle .mat-slide-toggle-content {
+  color: var(--text-color) !important;
+}
+
+/* ✅ Focus & hover effects */
+::ng-deep .delete-toggle.mat-mdc-focused .mat-slide-toggle-thumb {
+  border-color: var(--gold) !important;
+}
+::ng-deep .delete-toggle:hover .mat-slide-toggle-bar {
+  background-color: var(--hover-bg) !important;
+}
+/* ✅ تحسين وضوح أزرار الـ Pagination في الوضعين */
+::ng-deep .mat-mdc-paginator-navigation-next,
+::ng-deep .mat-mdc-paginator-navigation-previous,
+::ng-deep .mat-mdc-paginator-navigation-first,
+::ng-deep .mat-mdc-paginator-navigation-last {
+  color: var(--gold) !important;           /* نفس اللون الذهبي */
+  opacity: 1 !important;                   /* إزالة الشفافية الافتراضية */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+::ng-deep .mat-mdc-paginator-navigation-next:hover,
+::ng-deep .mat-mdc-paginator-navigation-previous:hover,
+::ng-deep .mat-mdc-paginator-navigation-first:hover,
+::ng-deep .mat-mdc-paginator-navigation-last:hover {
+  color: var(--text-color) !important;     /* عند hover يتحول للون النص */
+  transform: scale(1.2);                   /* تأثير بسيط عند المرور */
+}
+
+/* ✅ الزر المعطل يكون باهت بوضوح */
+::ng-deep .mat-mdc-paginator-navigation-disabled {
+  color: var(--input-border) !important;
+  opacity: 0.5 !important;
+}
+/* 🎯 إجبار لون أيقونات الـ Pagination يكون واضح في كل الثيمات */
+::ng-deep .mat-mdc-paginator-navigation-button svg,
+::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: var(--gold) !important; /* لون الأيقونة نفسه */
+  opacity: 1 !important;
+  transition: fill 0.3s ease, transform 0.2s ease;
+}
+
+/* 🟡 عند hover */
+::ng-deep .mat-mdc-paginator-navigation-button:hover svg path {
+  fill: var(--text-color) !important; /* يتغير إلى لون النص */
+  transform: scale(1.1);
+}
+
+/* ⚫ للأزرار المعطلة */
+::ng-deep .mat-mdc-paginator-navigation-button[disabled] svg path {
+  fill: var(--input-border) !important; /* لون باهت */
+  opacity: 0.5 !important;
+}
+/* 🎯 التحكم الكامل في لون أسهم الـ paginator */
+::ng-deep .mat-mdc-paginator-navigation-button svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--gold) !important; /* اللون الذهبي الأساسي */
+  transition: fill 0.3s ease, transform 0.2s ease;
+}
+
+/* عند المرور بالماوس */
+::ng-deep .mat-mdc-paginator-navigation-button:hover svg {
+  fill: var(--text-color) !important; /* يتحول إلى لون النص */
+  transform: scale(1.15);
+}
+
+/* الزر المعطل */
+::ng-deep .mat-mdc-paginator-navigation-button[disabled] svg {
+  fill: var(--input-border) !important; /* لون باهت */
+  opacity: 0.4 !important;
+  transform: none !important;
+}
+
+/* في الوضع الغامق */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button svg {
+  fill: var(--gold) !important;
+}
+
+/* في الوضع الفاتح */
+body.light-mode ::ng-deep .mat-mdc-paginator-navigation-button svg {
+  fill: var(--gold) !important;
+}
+/* ✅ تحسين ظهور الأسهم في الوضع الغامق */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button svg {
+  fill: #FFD700 !important; /* ذهبي لامع وواضح */
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.8)); /* ظل خفيف مضيء */
+  transition: fill 0.3s ease, filter 0.3s ease;
+}
+
+/* عند المرور */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button:hover svg {
+  fill: #FFF !important; /* أبيض عند المرور */
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+}
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50%;
+}
+/* === تحسين التباين في الوضع الداكن === */
+body.dark-mode th,
+body.dark-mode td,
+body.dark-mode span,
+body.dark-mode h2,
+body.dark-mode label,
+body.dark-mode input,
+body.dark-mode .mat-mdc-input-element,
+body.dark-mode .mat-mdc-header-cell,
+body.dark-mode .mat-mdc-cell {
+  color: #ffffff !important; /* نص أبيض واضح */
+}
+
+body.dark-mode .mat-mdc-header-row {
+  background-color: #1a1a1a !important; /* خلفية أفتح قليلاً من الأسود */
+  color: #FFD700 !important; /* ذهبي لامع للعناوين */
+}
+
+body.dark-mode .table-container {
+  background-color: #181818 !important; /* لون مميز عن الخلفية */
+  border-color: #D4AF37 !important;
+}
+
+/* تحسين وضوح الأيقونات */
+body.dark-mode mat-icon {
+  color: #FFD700 !important;
+}
+
+/* تحسين لون السلايد توجل */
+body.dark-mode .mat-slide-toggle-thumb {
+  background-color: #FFD700 !important;
+}
+/* ✅ تخصيص لون أسهم الـ paginator */
+::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: var(--gold, #D4AF37) !important; /* اللون الذهبي */
+  opacity: 1 !important;
+  transition: fill 0.3s ease;
+}
+
+/* ✅ في الوضع الفاتح */
+body.light-mode ::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: #333 !important; /* رمادي غامق */
+}
+
+/* ✅ في الوضع الداكن */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button svg path {
+  fill: #FFD700 !important; /* ذهبي لامع */
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6)); /* توهج بسيط */
+}
+
+/* ✅ عند hover */
+body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button:hover svg path {
+  fill: #ffffff !important; /* أبيض عند المرور */
+}
+/* فاصل بين كل ريكورد وريكورد */
+.mat-mdc-row {
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+/* الوضع الفاتح */
+body.light-mode .mat-mdc-row::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background-color: rgba(0,0,0,0.1); /* خط فاتح */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* الوضع الداكن */
+body.dark-mode .mat-mdc-row::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background-color: rgba(255, 215, 55, 0.3); /* خط ذهبي خفيف */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}

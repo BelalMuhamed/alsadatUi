@@ -1,0 +1,87 @@
+
+
+.bg-Ebony
+{
+  background-color: #0C0C0C;
+}
+/* ✅ الوضع الفاتح */
+body.light-mode {
+  --bg-color: #ffffff;
+  --text-color: #000;
+  --sidenav-bg: #f9f9f9;
+  --sidenav-text: #000;
+  --topbar-bg: #ffffff;
+}
+
+/* 🌙 الوضع الداكن */
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #fff;
+  --sidenav-bg: #0C0C0C;
+  --sidenav-text: #fff;
+  --topbar-bg: #0C0C0C;
+}
+
+/* ✅ تطبيق المتغيرات */
+.topbar {
+  background-color: var(--topbar-bg);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+
+
+
+.sidenav {
+  background-color: var(--sidenav-bg);
+  color: var(--sidenav-text);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+
+
+a.router-link-active {
+  font-weight: 700;
+  color: #D4AF37;
+}
+
+
+
+
+
+
+.dropdown-header {
+  cursor: pointer;
+}
+
+
+/*ىثص*/
+mat-sidenav-container {
+  overflow: visible !important;
+}
+
+mat-sidenav {
+  overflow: visible !important;
+}
+
+mat-sidenav-content {
+  overflow: visible !important;
+}
+
+.dropdown-container {
+  position: relative;
+  overflow: visible !important;
+}
+
+
+.dropdown-menu.open {
+  max-height: 300px;
+}
+mat-sidenav-container,
+mat-sidenav-content,
+mat-sidenav {
+  overflow: visible !important;
+}
+mat-sidenav {
+  height: auto !important;
+}

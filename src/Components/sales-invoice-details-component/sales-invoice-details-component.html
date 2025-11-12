@@ -1,0 +1,123 @@
+@if(!isLoading && invoice)
+{
+<div class="invoice-container">
+  <mat-card class="invoice-header">
+    <div class="header-top">
+      <h2>فاتورة رقم #{{ this.invoiceId}}</h2>
+      <button mat-raised-button color="primary" (click)="printInvoice()" class="print-btn">
+        <mat-icon>print</mat-icon>
+        طباعة
+      </button>
+    </div>
+
+    <div class="invoice-info">
+      <div class="info-item"><strong>تاريخ الشراء:</strong> {{ invoice.createdAt | date:'shortDate' }}</div>
+      <div class="info-item"><strong>الموزع:</strong> {{ invoice.distributorName }}</div>
+      <div class="info-item"><strong>منشئ الفاتورة:</strong> {{ invoice.createdBy }}</div>
+      <div class="info-item"><strong>فاتورة مرتجع:</strong> {{ invoice.isReturn ? 'نعم' : 'لا' }}</div>
+     @if(invoice.relatedReturnInvoiceID)
+     {
+      <div class="info-item" >
+        <strong>رقم الفاتورة المرتجعة:</strong> {{ invoice.relatedReturnInvoiceID }}
+      </div>
+
+     }
+
+      <div class="info-item"><strong>الحالة:</strong> {{ getStatusText(invoice.salesInvoiceStatus) }}</div>
+    </div>
+
+    <div class="invoice-summary">
+      <div><strong>الإجمالي قبل الخصم:</strong> {{ invoice.totalBeforDiscounts | currency:'EGP':'symbol' }}</div>
+      <div><strong>الخصم الأول:</strong> {{ invoice.firstDiscount ?? 0 }}%</div>
+      <div><strong>الخصم الثاني:</strong> {{ invoice.secondDiscount ?? 0 }}%</div>
+      <div><strong>الخصم الثالث:</strong> {{ invoice.thirdDiscount ?? 0 }}%</div>
+      <div><strong>الإجمالي بعد الخصم:</strong> {{ invoice.totalAfterDiscounts | currency:'EGP':'symbol' }}</div>
+      <div><strong>المدفوع:</strong> {{ invoice.paid | currency:'EGP':'symbol' }}</div>
+      <div><strong>المتبقي:</strong> {{ invoice.residual | currency:'EGP':'symbol' }}</div>
+      <div><strong>عدد النقاط:</strong> {{ invoice.totalPoints }}</div>
+      <div><strong>عدد الكوبونات:</strong> {{ invoice.totalCopouns }}</div>
+    </div>
+  </mat-card>
+</div>
+<div class="table-container mat-elevation-z8">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+   @for (col of columns; track col.key) {
+  <ng-container [matColumnDef]="col.key">
+    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+    <td mat-cell *matCellDef="let element">
+   @switch (col.type) {
+  @case ('date') {
+    <span>{{ element[col.key] | date:'dd-MM-yyyy' }}</span>
+  }
+
+  @case ('currency') {
+    <span>{{ element[col.key] | currency:'EGP':'symbol' }}</span>
+  }
+
+  @case ('boolean') {
+    @if (element[col.key]) {
+      <mat-icon>check_circle</mat-icon>
+    } @else {
+      <mat-icon>cancel</mat-icon>
+    }
+  }
+
+  @case ('number') {
+    @if (col.key === 'salesInvoiceStatus') {
+      <span>{{ getStatusText(element[col.key]) }}</span>
+    } @else {
+      <span>{{ element[col.key] }}</span>
+    }
+  }
+
+  @case ('calculated') {
+    <!-- ✅ السعر × الكمية -->
+    <span>{{ element.sellingPrice * element.quantity | currency:'EGP':'symbol' }}</span>
+  }
+
+  @case ('discounted') {
+    <span>
+      {{
+        (element.sellingPrice * element.quantity)
+        - ((element.sellingPrice * element.quantity) * (element.discount / 100))
+          | currency:'EGP':'symbol'
+      }}
+    </span>
+  }
+
+  @case ('actions') {
+    <div class="action-buttons">
+      <button mat-icon-button color="primary">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button mat-icon-button color="accent">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+  }
+
+  @default {
+    <span>{{ element[col.key] }}</span>
+  }
+}
+
+    </td>
+  </ng-container>
+}
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+  </table>
+</div>
+}
+
+<!-- لو لسه مفيش بيانات -->
+ @if(isLoading)
+ {
+<div  class="text-center p-4">
+  <p>جاري تحميل الفاتورة...</p>
+</div>
+ }
+

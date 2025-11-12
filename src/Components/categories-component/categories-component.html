@@ -1,0 +1,115 @@
+<div class="w-100 d-flex justify-content-center align-items-center">
+  <h2 class="w-25 text-center">فئات المنتجات </h2>
+</div>
+<hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
+@if (!isLoaded) {
+    <p  class="text-center" style="color: var(--gold);">Loading...</p>
+}
+@else  {
+ <div class="d-flex justify-content-between align-items-center gap-3 my-3">
+
+  <!-- زرار إضافة كوبون -->
+  <button class="add-coupon-btn" (click)="openAddCouponPopup()">
+    <mat-icon>add</mat-icon>
+    إضافة فئه جديدة
+  </button>
+  <div class="d-flex justify-content-between  w-30">
+<mat-form-field appearance="outline" class="w-30 w-50 custom-input-theme">
+  <mat-label class="rtl">اسم الفئه  </mat-label>
+  <input matInput type="text" placeholder="الاسم" [(ngModel)]="SearchName" required />
+</mat-form-field>
+
+
+
+
+  <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+  (click)="Search()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >search</mat-icon>
+
+   ابحث
+  </button>
+
+</div>
+
+</div>
+
+
+  <div class="table-container mat-elevation-z8">
+ <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+   @for (col of columns; track col.key) {
+  <ng-container [matColumnDef]="col.key">
+    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
+    <td mat-cell *matCellDef="let element">
+      @switch (col.type) {
+
+
+
+
+  @case ('boolean') {
+  <mat-slide-toggle
+      [checked]="!element[col.key]"
+      (change)="ToggleCategoryStatus(element, $event.checked)"
+      class="delete-toggle"
+  >
+  </mat-slide-toggle>
+}
+
+    @case ('actions') {
+    <div class="action-buttons">
+
+<!-- داخل الجدول -->
+<button mat-icon-button color="primary" class="border-0 bg-transparent" (click)="openEditCategoryPopup(element)">
+  <mat-icon>edit</mat-icon>
+</button>
+
+
+    </div>
+  }
+  @case ('copounPaiedType') {
+    @if (element[col.key] === 0) {
+        <span>كاش</span>
+    }
+    @else if (element[col.key] === 1) {
+        <span>تجميع</span>
+    }
+    @else if (element[col.key] === 2) {
+        <span>كاش وهدايا</span>
+    }
+}
+
+        @default {
+
+            <span>{{ element[col.key] ?? '-'}}</span>
+
+        }
+      }
+    </td>
+  </ng-container>
+}
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+  </table>
+   <div dir="rtl" class="paginator-arabic">
+  <mat-paginator
+    [length]="totalCount"
+    [pageSize]="Filteration.pageSize"
+    [pageIndex]="(Filteration.page ?? 1) - 1"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+
+</div>
+<ng-template #loading>
+    <div class="flex justify-center p-4">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+
+}

@@ -1,0 +1,40 @@
+<h2 class="popup-title py-3">
+  {{ isEditMode ? 'تعديل الفئة' : 'إضافة  منتج' }}
+</h2>
+
+<form [formGroup]="form" class="popup-form p-5">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>اسم المنتج</mat-label>
+    <input matInput formControlName="name" />
+    <mat-error *ngIf="form.get('name')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>سعر البيع </mat-label>
+    <input matInput formControlName="sellingPrice" />
+    <mat-error *ngIf="form.get('sellingPrice')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>عدد النقاط مقابل القطعة  </mat-label>
+    <input matInput formControlName="pointPerUnit" />
+    <mat-error *ngIf="form.get('pointPerUnit')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+  <mat-label>اختر الفئة</mat-label>
+  <mat-select formControlName="categoryId">
+    <mat-option *ngFor="let cat of categories" [value]="cat.id">
+      {{ cat.name }}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="form.get('categoryId')?.hasError('required')">
+    حقل مطلوب
+  </mat-error>
+</mat-form-field>
+
+</form>
+
+<div class="popup-actions">
+  <button mat-dialog-close class="popup-btn-cancel" (click)="close()">إلغاء</button>
+  <button class="popup-btn-save" [disabled]="form.invalid" (click)="  save()" >
+    حفظ
+  </button>
+</div>
