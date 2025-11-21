@@ -328,7 +328,10 @@ table.mat-mdc-table {
   border-radius: 8px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-
+.filters-form
+{
+    display: flex;
+}
 /* الوضع الفاتح */
 :host-context(body.light-mode) .filter-form {
   background-color: #f8f9fa;
@@ -422,6 +425,7 @@ button.mat-mdc-outlined-button.action-btn:hover {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+
 }
 
 /* icon color */
@@ -778,4 +782,38 @@ body.dark-mode .mat-mdc-row::after {
   bottom: 0;
   left: 0;
   width: 100%;
+}
+.my-swal-popup {
+  background-color: var(--sidenav-bg) !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 16px !important;
+  color: var(--gold) !important;
+}
+
+.my-swal-title {
+  color: var(--gold) !important;
+}
+
+.my-swal-text {
+  color: var(--gold) !important;
+}
+
+/* زر OK */
+.my-swal-btn {
+  background-color: var(--gold) !important;
+  color: black !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+}
+
+.my-swal-btn:hover {
+  background-color: var(--active-bg) !important;
+  color: var(--gold) !important;
+}
+
+.swal2-popup .swal2-html-container {
+  color: var(--gold) !important;
+}
+.swal2-popup .swal2-title {
+  color: var(--gold) !important;
 }
