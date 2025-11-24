@@ -10,6 +10,7 @@ import { CategoriesComponent } from '../Components/categories-component/categori
 import { ProductComponent } from '../Components/product/product.component';
 import { GovernrateComponent } from '../Components/governrate/governrate.component';
 import { CityComponent } from '../Components/city/city.component';
+import { DisAndMerchantComponent } from '../Components/dis-and-merchant/dis-and-merchant.component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -26,6 +27,7 @@ export const routes: Routes = [
       { path: 'general-setting/bill-discounts', component: BillDiscountComponent, canActivate: [authGuard]},
       { path: 'Categories', component: CategoriesComponent, canActivate: [authGuard]},
       { path: 'Products', component: ProductComponent, canActivate: [authGuard]},
+      { path: 'DistributorsAndMerchants', component: DisAndMerchantComponent, canActivate: [authGuard]},
       { path: 'general-setting/Governrates', component: GovernrateComponent, canActivate: [authGuard]},
       { path: 'general-setting/cities', component: CityComponent, canActivate: [authGuard]}
 

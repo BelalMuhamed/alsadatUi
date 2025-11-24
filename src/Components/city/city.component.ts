@@ -59,7 +59,7 @@ private fb= inject(FormBuilder);
        dataSource = new MatTableDataSource<ICityDto>([]);
        totalCount = 0;
         @ViewChild(MatPaginator) paginator!: MatPaginator;
-       isLoading = false;
+       isLoading = true;
   cityFilters:ICityFilteration={
   page:1,
   pageSize:10,
