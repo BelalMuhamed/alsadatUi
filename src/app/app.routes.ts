@@ -10,6 +10,8 @@ import { CategoriesComponent } from '../Components/categories-component/categori
 import { ProductComponent } from '../Components/product/product.component';
 import { GovernrateComponent } from '../Components/governrate/governrate.component';
 import { CityComponent } from '../Components/city/city.component';
+import { HrAttendanceComponent } from '../Components/hr-attendance-component/hr-attendance-component';
+import { HrAttendanceRecordComponent } from '../Components/hr-attendance-record-component/hr-attendance-record-component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -27,7 +29,9 @@ export const routes: Routes = [
       { path: 'Categories', component: CategoriesComponent, canActivate: [authGuard]},
       { path: 'Products', component: ProductComponent, canActivate: [authGuard]},
       { path: 'general-setting/Governrates', component: GovernrateComponent, canActivate: [authGuard]},
-      { path: 'general-setting/cities', component: CityComponent, canActivate: [authGuard]}
+      { path: 'general-setting/cities', component: CityComponent, canActivate: [authGuard]},
+      { path: 'hr/attendance', component: HrAttendanceComponent, canActivate: [authGuard]},
+      { path: 'hr/attendance-record', component: HrAttendanceRecordComponent, canActivate: [authGuard]},
 
     ]
   },

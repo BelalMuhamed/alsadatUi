@@ -41,6 +41,17 @@
   </ul>
 
 </li>
+<li>
+  <div class="dropdown-header" (click)="hrOpened = !hrOpened">
+    <span>HR</span>
+    <mat-icon>
+      {{ hrOpened ? 'expand_less' : 'expand_more' }}
+    </mat-icon>
+  </div>
+      <ul *ngIf="hrOpened" >
+    <li><a routerLink='hr/attendance' routerLinkActive="active">الحضور والانصراف</a></li>
+  </ul>
+</li>
 
 
 

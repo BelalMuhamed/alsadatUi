@@ -1,3 +1,32 @@
+/* دعم الدارك مود لل Angular Material Datepicker */
+/* Calendar base in dark mode: keep dark background and light text */
+body.dark-mode .mat-datepicker-content,
+body.dark-mode .mat-calendar,
+body.dark-mode .mat-calendar-table,
+body.dark-mode .mat-calendar-body-cell-content,
+body.dark-mode .mat-calendar-body-label {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+/* Selected / active day: gold background, rectangular like light mode */
+body.dark-mode .mat-calendar-body-selected,
+body.dark-mode .mat-calendar-body-active {
+  background: var(--gold) !important;
+  color: #222 !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .mat-calendar-body-cell-content {
+  color: #fff !important;
+}
+
+body.dark-mode .mat-calendar-arrow {
+  color: #fff !important;
+}
+
+
 
 :root {
   --topbar-height: 70px;
@@ -817,3 +846,55 @@ body.dark-mode .mat-mdc-row::after {
 .swal2-popup .swal2-title {
   color: var(--gold) !important;
 }
+
+/* ==========================
+   Extra robust paginator fixes
+   Targets multiple render strategies: <mat-icon>, SVG path, stroke, font icons
+   This block is intentionally very specific and uses !important to override
+   any library theme rules that may hide the arrows in dark mode.
+   ========================== */
+
+/* General mat-icon inside paginator */
+body.dark-mode .mat-mdc-paginator .mat-icon,
+body.dark-mode .mat-mdc-paginator .mat-icon-button .mat-icon {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+  stroke: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+/* SVG icons and paths (covers MDC and inline svgs) */
+body.dark-mode .mat-mdc-paginator svg,
+body.dark-mode .mat-mdc-paginator svg path,
+body.dark-mode .mat-mdc-paginator svg g {
+  fill: var(--gold) !important;
+  stroke: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+/* Buttons that wrap the navigation icons */
+body.dark-mode .mat-mdc-paginator .mat-mdc-icon-button,
+body.dark-mode .mat-mdc-paginator .mat-button,
+body.dark-mode .mat-mdc-paginator .mat-icon-button {
+  color: var(--gold) !important;
+  background-color: transparent !important;
+}
+
+/* Also ensure the disabled state remains readable */
+body.dark-mode .mat-mdc-paginator .mat-mdc-icon-button[disabled],
+body.dark-mode .mat-mdc-paginator .mat-icon-button[disabled] {
+  color: var(--input-border) !important;
+  opacity: 0.55 !important;
+}
+
+/* Fallback: target paginator anywhere (no body class) to ensure visibility */
+.mat-mdc-paginator .mat-icon,
+.mat-mdc-paginator svg,
+.mat-mdc-paginator svg path,
+.mat-mdc-paginator .mat-mdc-icon-button {
+  color: var(--gold) !important;
+  fill: var(--gold) !important;
+  stroke: var(--gold) !important;
+  opacity: 1 !important;
+}
+
