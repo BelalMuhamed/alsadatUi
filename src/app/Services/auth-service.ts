@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { AuthResponse, loginDto, RefreshTokenDto } from '../models/IAuthModels';
+import { RoleDTO, CreateRoleRequestDTO } from '../models/IAuthModels';
 import { tap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Result } from '../models/ApiReponse';
@@ -41,5 +42,42 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
      localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
+  }
+
+  // Roles API
+  getAllRoles(): Observable<Result<RoleDTO[]>> {
+    return this.http.get<Result<RoleDTO[]>>(`${this.apiUrl}Auth/roles`);
+  }
+
+  getInactiveRoles(): Observable<Result<RoleDTO[]>> {
+    return this.http.get<Result<RoleDTO[]>>(`${this.apiUrl}Auth/roles/inactive`);
+  }
+
+  getSoftDeletedRoles(): Observable<Result<RoleDTO[]>> {
+    return this.http.get<Result<RoleDTO[]>>(`${this.apiUrl}Auth/roles/deleted`);
+  }
+
+  getRoleById(id: string): Observable<Result<RoleDTO>> {
+    return this.http.get<Result<RoleDTO>>(`${this.apiUrl}Auth/roles/${id}`);
+  }
+
+  createRole(dto: CreateRoleRequestDTO): Observable<Result<string>> {
+    return this.http.post<Result<string>>(`${this.apiUrl}Auth/roles`, dto);
+  }
+
+  updateRole(id: string, dto: CreateRoleRequestDTO): Observable<Result<string>> {
+    return this.http.put<Result<string>>(`${this.apiUrl}Auth/roles/${id}`, dto);
+  }
+
+  softDeleteRole(id: string): Observable<Result<string>> {
+    return this.http.delete<Result<string>>(`${this.apiUrl}Auth/roles/${id}`);
+  }
+
+  restoreRole(id: string): Observable<Result<string>> {
+    return this.http.put<Result<string>>(`${this.apiUrl}Auth/roles/restore/${id}`, {} as any);
+  }
+
+  hardDeleteRole(id: string): Observable<Result<string>> {
+    return this.http.delete<Result<string>>(`${this.apiUrl}Auth/roles/hard/${id}`);
   }
 }

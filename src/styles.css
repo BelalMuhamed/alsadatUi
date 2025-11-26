@@ -506,6 +506,23 @@ button.mat-mdc-outlined-button.action-btn:hover {
   border-color: var(--input-border) !important;
 }
 
+/* Dark-mode styling for custom select panels (overlay) */
+body.dark-mode .custom-select-panel {
+  background: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold) !important;
+}
+body.dark-mode .custom-select-panel .mat-mdc-list .mat-mdc-list-item {
+  color: var(--text-color) !important;
+}
+body.dark-mode .custom-select-panel .mat-mdc-list .mat-mdc-list-item:hover {
+  background: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* Also ensure select panel uses readable colors in light mode */
+body.light-mode .custom-select-panel { background: var(--sidenav-bg); color: var(--text-color); }
+
 /* ✅ عند الـ focus */
 .custom-input-theme.mdc-text-field--focused .mdc-notched-outline__leading,
 .custom-input-theme.mdc-text-field--focused .mdc-notched-outline__trailing,
@@ -897,4 +914,90 @@ body.dark-mode .mat-mdc-paginator .mat-icon-button[disabled] {
   stroke: var(--gold) !important;
   opacity: 1 !important;
 }
+
+/* ==========================
+   Dialog + select global dark-mode fixes
+   Ensure mat-dialog and overlayed select panels are readable in dark mode
+   ========================== */
+body.dark-mode .mat-dialog-container {
+  background: #1e1e1e !important;
+  color: #e8e8e8 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-mode .mat-dialog-container .mat-form-field-infix,
+body.dark-mode .mat-dialog-container .mat-input-element,
+body.dark-mode .mat-dialog-container .mat-select-trigger,
+body.dark-mode .mat-dialog-container .mat-select-value-text {
+  color: #e8e8e8 !important;
+}
+
+/* Select panel (overlay) */
+body.dark-mode .mat-select-panel,
+body.dark-mode .mat-select-panel .mat-mdc-list {
+  background: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold) !important;
+}
+
+body.dark-mode .mat-option {
+  color: var(--text-color) !important;
+  background: transparent !important;
+}
+
+body.dark-mode .mat-option.mat-selected,
+body.dark-mode .mat-option.mat-active {
+  background: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* Improve visibility of stroked buttons inside dialogs */
+body.dark-mode .mat-dialog-container button.mat-stroked-button {
+  color: #e8e8e8 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* MDC-based dialog/select fixes: cover new class names used by Material MDC */
+body.dark-mode .mat-mdc-dialog-container {
+  background: #1e1e1e !important;
+  color: #e8e8e8 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-form-field-infix,
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-input-element,
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-select-trigger,
+body.dark-mode .mat-mdc-dialog-container .mat-mdc-select-value-text {
+  color: #e8e8e8 !important;
+}
+
+/* Select panel used by MDC */
+body.dark-mode .mat-mdc-select-panel,
+body.dark-mode .mat-mdc-select-panel .mat-mdc-list {
+  background: var(--sidenav-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--gold) !important;
+}
+
+body.dark-mode .mat-mdc-option,
+body.dark-mode .mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--text-color) !important;
+  background: transparent !important;
+}
+
+body.dark-mode .mat-mdc-option.mdc-list-item--selected,
+body.dark-mode .mat-mdc-option.mdc-list-item--activated {
+  background: var(--hover-bg) !important;
+  color: var(--gold) !important;
+}
+
+/* Ensure stroked buttons inside MDC dialogs remain readable */
+body.dark-mode .mat-mdc-dialog-container button.mat-stroked-button,
+body.dark-mode .mat-mdc-dialog-container .mat-stroked-button {
+  color: #e8e8e8 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
 
