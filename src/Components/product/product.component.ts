@@ -198,5 +198,16 @@ applyFilters() {
   console.log(this.filters);
   this.GetAllProducts();
 }
-
+ReAsign()
+{
+  this.filters={
+    categoryName:null,
+    isDeleted:null,
+    name:null,
+    page:1,
+    pageSize:10
+  }
+this.initForm();
+    this.GetAllProducts();
+}
 }

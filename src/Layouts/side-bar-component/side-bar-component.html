@@ -6,14 +6,16 @@
       <img class="logo" src="assets/imgs/logo.png" alt="Logo" />
     </div>
 
-    <h3 class="mt-2 text-center">القائمة</h3>
+    <h3 class="mt-2 text-center mx-5 ">القائمة الرئيسية    </h3>
 
     <ul class="mt-3">
 
       <li>
         <a routerLink="dashboard" routerLinkActive="active">الصفحة الرئيسية</a>
       </li>
-
+   <li>
+        <a routerLink="DistributorsAndMerchants" routerLinkActive="active">الموزعين والتجار  </a>
+      </li>
       <li>
         <a routerLink="SalesInvoices" routerLinkActive="active">فواتير البيع</a>
       </li>
@@ -49,10 +51,7 @@
     </mat-icon>
   </div>
       <ul *ngIf="hrOpened" >
-        <li><a routerLink='hr/attendance' routerLinkActive="active">الحضور والانصراف</a></li>
-        <li><a routerLink='hr/roles' routerLinkActive="active">الأدوار</a></li>
-        <li><a routerLink='hr/employees' routerLinkActive="active">إدارة الموظفين</a></li>
-        <li><a routerLink='hr/employees/add' routerLinkActive="active">إضافة موظف</a></li>
+    <li><a routerLink='hr/attendance' routerLinkActive="active">الحضور والانصراف</a></li>
   </ul>
 </li>
 

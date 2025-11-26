@@ -1,18 +1,23 @@
 
-<div class="w-100 d-flex justify-content-between align-items-center mb-3">
+<div class="w-100 d-flex justify-content-center align-items-center">
   <h2 class="w-25 text-center">تسجيل الحضور والانصراف</h2>
-  <button mat-stroked-button color="primary" class="action-btn mx-2" (click)="fileInput.click()">رفع ملف تسجيلات (Excel)</button>
-  <input #fileInput type="file" accept=".xls,.xlsx,.pdf" style="display:none" (change)="onFileSelected($event)" />
-  <button mat-stroked-button color="warn" class="action-btn mx-2" (click)="goBack()">رجوع لصفحة العرض</button>
 </div>
 
-<div class="filter-form" dir="rtl">
-  <mat-form-field appearance="outline" class="custom-input-theme">
+
+  <div class="w-100 me-auto  d-flex justify-content-end">
+  <button mat-stroked-button color="primary" class="action-btn mx-2" (click)="fileInput.click()">   <mat-icon>upload</mat-icon>
+إدراج ملف  (Excel)</button>
+  <input #fileInput type="file" accept=".xls,.xlsx,.pdf" style="display:none" (change)="onFileSelected($event)" />
+
+
+  </div>
+<div class="w-100 d-flex justify-content-center" dir="rtl">
+  <mat-form-field appearance="outline" class="custom-input-theme ms-2">
     <mat-label>كود الموظف</mat-label>
     <input matInput [(ngModel)]="employeeCode" name="employeeCode" placeholder="أدخل كود الموظف" />
   </mat-form-field>
 
-  <mat-form-field appearance="outline" class="custom-input-theme">
+  <mat-form-field appearance="outline" class="custom-input-theme ms-2">
     <mat-label>تاريخ</mat-label>
     <input matInput [matDatepicker]="recordDatePicker" [(ngModel)]="selectedDateObj" name="selectedDateObj" placeholder="اختر تاريخ" />
     <mat-datepicker-toggle matSuffix [for]="recordDatePicker"></mat-datepicker-toggle>
@@ -28,14 +33,17 @@
   </mat-form-field>
 </div>
 
-<div class="container d-flex justify-content-center align-items-center">
-  <button mat-raised-button color="primary" (click)="onManualRecord()" [disabled]="isProcessing" class="action-btn mx-3">
+<div class=" container   d-flex justify-content-center align-items-center ">
+
+<div>
+  <button mat-raised-button color="primary" (click)="onManualRecord()" [disabled]="isProcessing" class="action-btn">
     <mat-icon>{{ selectedType === 'checkin' ? 'login' : 'logout' }}</mat-icon>
     تسجيل
   </button>
   <button mat-stroked-button (click)="onReset()" class="action-btn mx-3" [disabled]="isProcessing">
     إعادة تعيين
   </button>
+</div>
 </div>
 
 <div *ngIf="isProcessing" class="text-center mt-3">

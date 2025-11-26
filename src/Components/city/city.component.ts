@@ -44,8 +44,7 @@ import { AddEditCityPopupComponent } from '../../app/Popups/add-edit-city-popup/
 export class CityComponent {
     cityForm!: FormGroup;
 
- private GovernrateService = inject(GovernrateService);
-  private GovernrateSubscription = new Subscription();
+
   private CityService = inject(CityServiceService);
   private CitySubscription = new Subscription();
     private dialog =inject(MatDialog);
@@ -59,7 +58,7 @@ private fb= inject(FormBuilder);
        dataSource = new MatTableDataSource<ICityDto>([]);
        totalCount = 0;
         @ViewChild(MatPaginator) paginator!: MatPaginator;
-       isLoading = false;
+       isLoading = true;
   cityFilters:ICityFilteration={
   page:1,
   pageSize:10,

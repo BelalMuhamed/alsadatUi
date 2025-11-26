@@ -5,7 +5,10 @@
   align-items: center;
   margin-bottom: 0.75rem;
 }
-
+.w60
+{
+  width: 63%;
+}
 /* ensure mat-form-field matches city's look by relying on global .custom-input-theme */
 :host { display: block; }
 
