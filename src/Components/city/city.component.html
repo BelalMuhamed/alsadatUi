@@ -8,10 +8,7 @@
 @else  {
  <div class="d-flex justify-content-between align-items-center gap-3 my-3">
 
-  <button class="add-coupon-btn" (click)="openAddPopup()">
-  <mat-icon>add</mat-icon>
-    إضافة مدينة
-  </button>
+
  <form
   class="filters-form d-flex justify-content-center gap-3 flex-nowrap"
   [formGroup]="cityForm"
@@ -46,7 +43,10 @@
   </button>
 </form>
 
-
+  <button class="add-coupon-btn" (click)="openAddPopup()">
+  <mat-icon>add</mat-icon>
+    إضافة مدينة
+  </button>
 </div>
 
 

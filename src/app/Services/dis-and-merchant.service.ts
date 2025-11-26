@@ -24,6 +24,9 @@ export class DisAndMerchantService {
       params = params.set('fullName', filter.fullName);
     }
 
+     if (filter.isDeleted !== null && filter.isDeleted !== undefined) {
+      params = params.set('isDeleted', filter.isDeleted);
+    }
     if (filter.phoneNumber !== null && filter.phoneNumber !== undefined) {
       params = params.set('phoneNumber', filter.phoneNumber);
     }
@@ -47,5 +50,11 @@ export class DisAndMerchantService {
   EditDisOrMerchant(req:DistributorsAndMerchantsDto):Observable<Result<any>>
   {
  return this.http.put<Result<any>>(`${this.apiUrl}DistAndMerch/edit/${req.userId}`, req);
+  }
+
+  AddDisOrMerchant(dto:DistributorsAndMerchantsDto):Observable<Result<any>>
+  {
+ return this.http.post<Result<any>>(`${this.apiUrl}DistAndMerch/add`, dto);
+
   }
 }

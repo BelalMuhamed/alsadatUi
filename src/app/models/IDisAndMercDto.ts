@@ -24,6 +24,7 @@ export interface DistributorsAndMerchantsFilters {
   fullName?: string | null;
   cityName?: string | null;
   type?: number | null;
+  isDeleted:boolean|null;
   page: number;
   pageSize: number;
 }

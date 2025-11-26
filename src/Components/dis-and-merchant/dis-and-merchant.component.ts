@@ -1,20 +1,24 @@
+import { DisAndMerchantService } from './../../app/Services/dis-and-merchant.service';
 import { DistributorsAndMerchantsFilters, DistributorsAndMerchantsDto } from './../../app/models/IDisAndMercDto';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, inject, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinner, MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCellDef, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatRowDef, MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { DisAndMerchantService } from '../../app/Services/dis-and-merchant.service';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ColumnDef } from '../../Layouts/generic-table-component/generic-table-component';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
+import { MatOption } from "@angular/material/core";
+import { MatSelectModule } from '@angular/material/select';
+import { RouterLink } from "@angular/router";
+import { AddEditMerchDisPopupComponent } from '../../app/Popups/add-edit-merch-dis-popup/add-edit-merch-dis-popup.component';
 
 @Component({
   selector: 'app-dis-and-merchant',
@@ -28,17 +32,21 @@ import { DatePipe } from '@angular/common';
     MatIcon,
     MatHeaderRowDef,
     MatRowDef,
+    MatSelectModule,
     MatSlideToggleModule, MatFormField, MatLabel, FormsModule, MatTableModule,
     MatSlideToggleModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatDialogModule, HttpClientModule, MatPaginator,    DatePipe],
+    MatDialogModule, HttpClientModule, MatPaginator, DatePipe, ReactiveFormsModule, MatOption],
   templateUrl: './dis-and-merchant.component.html',
   styleUrl: './dis-and-merchant.component.css'
 })
 export class DisAndMerchantComponent {
+
+   Searchform !: FormGroup;
+  private fb = inject(FormBuilder);
   private _DisAndMerchantService = inject(DisAndMerchantService);
   private _DisAndMerchantSubscription = new Subscription();
   filters:DistributorsAndMerchantsFilters={
@@ -47,7 +55,8 @@ export class DisAndMerchantComponent {
     cityName:null,
     fullName:null,
     phoneNumber:null,
-    type:null
+    type:null,
+    isDeleted:null
   }
  columns: ColumnDef[] = [
   { key: 'fullName', label: 'الاسم بالكامل', type: 'text' },
@@ -81,6 +90,7 @@ export class DisAndMerchantComponent {
        isLoading = true;
     ngOnInit(): void {
       this.GetAllDisAdnMerchants();
+      this.InitSearchForm();
     }
     ngOnDestroy():void{
       this._DisAndMerchantSubscription?.unsubscribe();
@@ -135,5 +145,120 @@ export class DisAndMerchantComponent {
     }
       })
     }
+    InitSearchForm()
+    {
+       this.Searchform = this.fb.group({
+      phoneNumber: [''],
+      fullName: [''],
+      cityName: [''],
+      type: [''],
+      isDeleted: [''],
+    });
+    }
+    onSearch() {
+  if (this.Searchform.valid) {
+    const formValues = this.Searchform.value;
+
+    this.filters = {
+      ...this.filters,
+      fullName: formValues.fullName || null,
+      phoneNumber: formValues.phoneNumber || null,
+      cityName: formValues.cityName || null,
+      type: formValues.type || null,
+      isDeleted: formValues.isDeleted ?? null
+    };
+
+    this.GetAllDisAdnMerchants();
+  }
+}
+ReAsign()
+{
+   this.filters = {
+      ...this.filters,
+      fullName:  null,
+      phoneNumber:  null,
+      cityName: null,
+      type:  null,
+      isDeleted: null
+    };
+this.InitSearchForm();
+    this.GetAllDisAdnMerchants();
+}
+
+          openAddPopup() {
+  const dialogRef = this.dialog.open(AddEditMerchDisPopupComponent, {
+    width: '450px',
+    data: null
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this._DisAndMerchantService.AddDisOrMerchant(result).subscribe({
+        next:(res)=>{
+        Swal.fire({
+          icon: "success",
+          title: "تمت الإضافة بنجاح",
+          })
+                   this.GetAllDisAdnMerchants();
+
+        },
+        error:(err)=>{
+ Swal.fire({
+    icon: "error",
+    title: "خطأ",
+    text: err?.error?.message ?? "هناك مشكلة في الخادم",
+  });
+            this.GetAllDisAdnMerchants();
+
+
+
+}
+
+      });
+
+    }
+  });
+}
+    private dialog =inject(MatDialog);
+
+openEditPopup(row: DistributorsAndMerchantsDto) {
+  console.log(row);
+
+  const dialogRef = this.dialog.open(AddEditMerchDisPopupComponent, {
+    width: '450px',
+    data: row
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this._DisAndMerchantService.EditDisOrMerchant(result).subscribe({
+         next:(res)=>{
+Swal.fire({
+  icon: "success",
+  title: "تم التعديل بنجاح",
+  html: "<p class='my-swal-text'>تم حفظ البيانات.</p>",
+  customClass: {
+    popup: 'my-swal-popup',
+    title: 'my-swal-title',
+    confirmButton: 'my-swal-btn',
+  }
+});
+
+
+          this.GetAllDisAdnMerchants();
+        },
+        error:(err)=>{
+ Swal.fire({
+    icon: "error",
+    title: "خطأ",
+    text: err?.error?.message ?? "هناك مشكلة في الخادم",
+  });
+          this.GetAllDisAdnMerchants();
+
+}
+      });
+    }
+  });
+}
 
 }

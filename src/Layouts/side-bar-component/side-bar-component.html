@@ -6,7 +6,7 @@
       <img class="logo" src="assets/imgs/logo.png" alt="Logo" />
     </div>
 
-    <h3 class="mt-2 text-center">القائمة</h3>
+    <h3 class="mt-2 text-center mx-5 ">القائمة الرئيسية    </h3>
 
     <ul class="mt-3">
 
@@ -42,6 +42,19 @@
     <li><a routerLink='general-setting/cities' routerLinkActive="active">المدن</a></li>
   </ul>
 
+</li>
+<li>
+  <div class="dropdown-header" (click)="hrOpened = !hrOpened">
+    <span>HR</span>
+    <mat-icon>
+      {{ hrOpened ? 'expand_less' : 'expand_more' }}
+    </mat-icon>
+  </div>
+      <ul *ngIf="hrOpened" >
+    <li><a routerLink='hr/attendance' routerLinkActive="active">عرض الحضور والانصراف </a></li>
+    <li><a routerLink='hr/attendance-record' routerLinkActive="active"> تسجيل الحضور والانصراف</a></li>
+
+  </ul>
 </li>
 
 

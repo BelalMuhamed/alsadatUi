@@ -6,18 +6,40 @@
     <p  class="text-center" style="color: var(--gold);">Loading...</p>
 }
 @else  {
+  <div class="w-100 me-auto  d-flex justify-content-end">
+       <button class="add-coupon-btn  " (click)="openAddPopup()">
+    <mat-icon>add</mat-icon>
+    إضافة تاجر/موزع جديد
+  </button>
+  </div>
+
  <div class="d-flex justify-content-between align-items-center gap-3 my-3">
 
-  <!-- زرار إضافة كوبون -->
-  <button class="add-coupon-btn" >
-    <mat-icon>add</mat-icon>
-    إضافة فئه جديدة
-  </button>
-  <div class="d-flex justify-content-between  w-30">
-<mat-form-field appearance="outline" class="w-30 w-50 custom-input-theme">
-  <mat-label class="rtl">اسم الفئه  </mat-label>
-  <input matInput type="text" placeholder="الاسم" required />
+
+  <div class="d-flex justify-content-between  w-100 ">
+
+<form [formGroup]="Searchform" class="popup-form d-flex flex-wrap gap-3 container d-flex justify-content-center align-items-center">
+  <mat-form-field class="flex-grow-1" appearance="outline"class=" custom-input-theme">
+    <mat-label>الاسم </mat-label>
+    <input matInput formControlName="fullName">
+  </mat-form-field>
+ <mat-form-field class="flex-grow-1" appearance="outline"class=" custom-input-theme">
+    <mat-label>رقم الهاتف </mat-label>
+    <input matInput formControlName="phoneNumber">
+  </mat-form-field>
+  <mat-form-field class="flex-grow-1" appearance="outline"class=" custom-input-theme">
+    <mat-label>المدينة  </mat-label>
+    <input matInput formControlName="cityName">
+  </mat-form-field>
+  <mat-form-field appearance="outline" >
+  <mat-label>النوع</mat-label>
+
+  <mat-select formControlName="type">
+    <mat-option [value]="1">تاجر</mat-option>
+    <mat-option [value]="0">موزع</mat-option>
+  </mat-select>
 </mat-form-field>
+  <mat-slide-toggle formControlName="isDeleted">عرض الموزعين/التجار المحظورين</mat-slide-toggle>
 
 
 
@@ -25,12 +47,24 @@
   <button
     mat-raised-button
     class="add-coupon-btn px-3  m-0"
-
+(click)="onSearch()"
   >
    <mat-icon aria-hidden="false" aria-label="Search icon" >search</mat-icon>
 
    ابحث
   </button>
+
+
+   <button
+    mat-raised-button
+    class="add-coupon-btn px-3  m-0"
+(click)="ReAsign()"
+  >
+   <mat-icon aria-hidden="false" aria-label="Search icon" >refresh </mat-icon>
+
+   إعادة تعيين
+  </button>
+</form>
 
 </div>
 
@@ -72,7 +106,7 @@
     <div class="action-buttons">
 
 <!-- داخل الجدول -->
-<button mat-icon-button color="primary" class="border-0 bg-transparent" >
+<button mat-icon-button color="primary" class="border-0 bg-transparent"(click)="openEditPopup(element)" >
   <mat-icon>edit</mat-icon>
 </button>
 

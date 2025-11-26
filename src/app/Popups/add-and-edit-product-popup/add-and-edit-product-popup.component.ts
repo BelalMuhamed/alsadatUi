@@ -46,6 +46,7 @@ constructor(
     ngOnInit(): void {
       this.initForm();
       this.GetCategories();
+
   }
 
   ngOnDestroy(): void {
@@ -133,6 +134,8 @@ constructor(
 //   }
 //   }
 save() {
+      console.log(this.data);
+
   if (!this.form.valid) {
     Swal.fire({
       icon: 'error',

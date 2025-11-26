@@ -17,6 +17,7 @@ export class SideBarComponent {
 
    isOpen = false;
   settingsOpened = false;
+  hrOpened = false;
 
 toggleSettings() {
   this.settingsOpened = !this.settingsOpened;

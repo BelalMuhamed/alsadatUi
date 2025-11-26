@@ -44,8 +44,7 @@ import { AddEditCityPopupComponent } from '../../app/Popups/add-edit-city-popup/
 export class CityComponent {
     cityForm!: FormGroup;
 
- private GovernrateService = inject(GovernrateService);
-  private GovernrateSubscription = new Subscription();
+
   private CityService = inject(CityServiceService);
   private CitySubscription = new Subscription();
     private dialog =inject(MatDialog);

@@ -1,8 +1,8 @@
-<h2 class="popup-title py-3">
+<h2 class="popup-title py-5">
   {{ isEditMode ? 'تعديل الفئة' : 'إضافة  منتج' }}
 </h2>
 
-<form [formGroup]="form" class="popup-form p-5">
+<form [formGroup]="form" class="popup-form p-2">
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>اسم المنتج</mat-label>
     <input matInput formControlName="name" />
