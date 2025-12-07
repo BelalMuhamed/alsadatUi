@@ -64,6 +64,8 @@ export class DisAndMerchantComponent {
   { key: 'type', label: 'النوع (موزع/تاجر)', type: 'DisOrMecrhant' },
 
   { key: 'pointsBalance', label: 'رصيد النقاط', type: 'number' },
+ 
+
   { key: 'cashBalance', label: 'الرصيد النقدي', type: 'currency' },
   { key: 'indebtedness', label: 'المديونية', type: 'currency' },
 

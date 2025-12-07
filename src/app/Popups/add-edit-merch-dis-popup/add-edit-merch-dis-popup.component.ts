@@ -109,7 +109,7 @@ this.CitySubscription?.unsubscribe();
     ],
     address: [
       this.data?.address || '',
-      [Validators.required, Validators.minLength(5)]
+      [Validators.required, Validators.minLength(3)]
     ],
     gender: [
       this.data?.gender ?? null,
@@ -129,6 +129,16 @@ this.CitySubscription?.unsubscribe();
         Validators.required,
         Validators.pattern(/^01[0125][0-9]{8}$/)
       ]
+    ],
+     firstSpecialDiscount: [
+      this.data?.firstSpecialDiscount || ''
+    ],
+     secondSpecialDiscount: [
+      this.data?.secondSpecialDiscount || ''
+
+    ],
+     thirdSpecialDiscount: [
+      this.data?.thirdSpecialDiscount || ''
     ],
   });
 
@@ -155,9 +165,14 @@ this.CitySubscription?.unsubscribe();
     createdAt: !this.isEditMode ? new Date().toISOString():null,
     createdBy: !this.isEditMode ?localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail'): null,
     updatedAt: this.isEditMode ? new Date().toISOString():null,
-    updatedBy:!this.isEditMode ?localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail'): null,
+    updatedBy:this.isEditMode ?localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail'): null,
     cityId: formValue.cityId ?? null,
     phoneNumber:formValue.phoneNumber ?? null,
+    firstSpecialDiscount:formValue.firstSpecialDiscount?? null,
+    secondSpecialDiscount:formValue.secondSpecialDiscount?? null,
+    thirdSpecialDiscount:formValue.thirdSpecialDiscount??null
+
+
 
   };
 

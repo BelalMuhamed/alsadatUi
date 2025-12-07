@@ -10,13 +10,23 @@
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>سعر البيع </mat-label>
-    <input matInput formControlName="sellingPrice" />
+    <input matInput formControlName="sellingPrice" type="number"/>
     <mat-error *ngIf="form.get('sellingPrice')?.hasError('required')">حقل مطلوب</mat-error>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>عدد النقاط مقابل القطعة  </mat-label>
     <input matInput formControlName="pointPerUnit" />
     <mat-error *ngIf="form.get('pointPerUnit')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+   <mat-form-field appearance="outline" class="full-width">
+    <mat-label>أقل كمية ممكنه </mat-label>
+    <input matInput formControlName="theSmallestPossibleQuantity" type="number" />
+    <mat-error *ngIf="form.get('theSmallestPossibleQuantity')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
+   <mat-form-field appearance="outline" class="full-width">
+    <mat-label>أعلي كمية ممكنه </mat-label>
+    <input matInput formControlName="theHighestPossibleQuantity" type="number" />
+    <mat-error *ngIf="form.get('theHighestPossibleQuantity')?.hasError('required')">حقل مطلوب</mat-error>
   </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
   <mat-label>اختر الفئة</mat-label>
