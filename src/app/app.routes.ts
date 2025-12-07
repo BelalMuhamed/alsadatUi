@@ -38,6 +38,10 @@ export const routes: Routes = [
       { path: 'general-setting/cities', component: CityComponent, canActivate: [authGuard]},
       { path: 'hr/attendance', component: HrAttendanceComponent, canActivate: [authGuard]},
       { path: 'hr/attendance-record', component: HrAttendanceRecordComponent, canActivate: [authGuard]},
+      { path: 'hr/employees', component: EmployeesListComponent, canActivate: [authGuard]},
+      { path: 'hr/employee-salary/:empCode', component: EmployeeSalaryComponent, canActivate: [authGuard]},
+      { path: 'hr/roles', component: RolesComponent, canActivate: [authGuard]},
+      { path: 'hr/employees/add', component: EmployeeAddComponent, canActivate: [authGuard]},
 
     ]
   },

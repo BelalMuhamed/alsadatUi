@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../app/Services/auth-service';
 import { loginDto } from '../../app/models/IAuthModels';
@@ -7,13 +7,13 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-auth-layout',
-  standalone:true,
-  imports: [ ReactiveFormsModule,HttpClientModule ],
+  standalone: true,
+  imports: [ReactiveFormsModule, HttpClientModule],
   templateUrl: './auth-layout.html',
   styleUrl: './auth-layout.css'
 })
-export class AuthLayout {
-loginForm: FormGroup;
+export class AuthLayout implements OnInit {
+  loginForm: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
 
@@ -22,6 +22,13 @@ loginForm: FormGroup;
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+  }
+
+  ngOnInit(): void {
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('light-mode');
+      document.body.classList.add('dark-mode');
+    }
   }
 
   login() {
@@ -39,10 +46,10 @@ loginForm: FormGroup;
       next: res => {
         console.log('Login success:', res);
 
-        localStorage.setItem('refreshToken', res.data?.refreshToken??"");
-        localStorage.setItem('accessToken',  res.data?.accessToken??"");
-        localStorage.setItem('userName',res.data?.userName??"");
-        localStorage.setItem('userEmail',res.data?.userMail??"");
+        localStorage.setItem('refreshToken', res.data?.refreshToken ?? "");
+        localStorage.setItem('accessToken', res.data?.accessToken ?? "");
+        localStorage.setItem('userName', res.data?.userName ?? "");
+        localStorage.setItem('userEmail', res.data?.userMail ?? "");
         this.router.navigate(['/SalesInvoices']);
         this.isLoading = false;
       },

@@ -7,27 +7,27 @@ import { Subscription } from 'rxjs';
 import { CityServiceService } from '../../Services/city-service.service';
 import { ICityDto, ICityFilteration } from '../../models/Icity';
 import Swal from 'sweetalert2';
-import { MatFormField, MatFormFieldModule, MatLabel } from "@angular/material/form-field";
-import { MatSelect, MatOption, MatSelectModule } from "@angular/material/select";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @Component({
   selector: 'app-add-edit-merch-dis-popup',
   standalone: true,
-  imports: [MatFormField, MatLabel,MatFormField, MatLabel,
-           CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatButtonModule,NgxMatSelectSearchModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule
+  ],
   templateUrl: './add-edit-merch-dis-popup.component.html',
-  styleUrl: './add-edit-merch-dis-popup.component.css'
+  styleUrls: ['./add-edit-merch-dis-popup.component.css']
 })
 export class AddEditMerchDisPopupComponent {
   citySearchCtrl = new FormControl('');
