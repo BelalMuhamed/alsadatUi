@@ -71,14 +71,17 @@
       @switch (col.type) {
 
 
-@case ('date') {
-  <span>{{ element[col.key] | date:'dd-MM-yyyy' }}</span>
-}
+
 
 
         @case ('currency') {
           <span>{{ element[col.key] | currency:'EGP':'symbol' }}</span>
         }
+        @case('date') {
+  <span>
+    {{ element[col.key] | date:'fullDate' }} - {{ element[col.key] | date:'shortTime' }}
+  </span>
+}
 
   @case ('boolean') {
   <mat-slide-toggle

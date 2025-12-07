@@ -26,7 +26,7 @@
 
 /* Full width for long fields */
 .full-width {
-  grid-column: span 2;
+width: 30%;
 }
 
 /* 🔥 Form Fields */

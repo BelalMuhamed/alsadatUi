@@ -9,7 +9,7 @@
   <div class="w-100 me-auto  d-flex justify-content-end">
        <button class="add-coupon-btn  " (click)="openAddPopup()">
     <mat-icon>add</mat-icon>
-    إضافة تاجر/موزع جديد
+    إضافة تاجر/موزع/وكيل جديد
   </button>
   </div>
 
@@ -37,9 +37,11 @@
   <mat-select formControlName="type">
     <mat-option [value]="1">تاجر</mat-option>
     <mat-option [value]="0">موزع</mat-option>
+    <mat-option [value]="2">وكيل</mat-option>
+
   </mat-select>
 </mat-form-field>
-  <mat-slide-toggle formControlName="isDeleted">عرض الموزعين/التجار المحظورين</mat-slide-toggle>
+  <mat-slide-toggle formControlName="isDeleted">عرض الموزعين/التجار/الوكلاء المحظورين</mat-slide-toggle>
 
 
 
@@ -99,9 +101,15 @@
 @case('DisOrMecrhant')
 {
   <span>
-            {{ element[col.key] === 0 ? 'موزع' : 'تاجر' }}
-          </span>
+    {{
+      element[col.key] === 0 ? 'موزع' :
+      element[col.key] === 1 ? 'تاجر' :
+      element[col.key] === 2 ? 'وكيل' :
+      ''
+    }}
+  </span>
 }
+
     @case ('actions') {
     <div class="action-buttons">
 

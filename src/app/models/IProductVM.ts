@@ -12,6 +12,9 @@ export interface ProductDto {
   deleteAt?: string | null;
   categoryId: number|null;
   categoryName: string|null;
+  theSmallestPossibleQuantity:number|null;
+  theHighestPossibleQuantity:number|null;
+
 }
 export interface ProductFilterationDto {
   name: string | null;

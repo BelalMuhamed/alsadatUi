@@ -13,6 +13,8 @@ import { CityComponent } from '../Components/city/city.component';
 import { DisAndMerchantComponent } from '../Components/dis-and-merchant/dis-and-merchant.component';
 import { HrAttendanceComponent } from '../Components/hr-attendance-component/hr-attendance-component';
 import { HrAttendanceRecordComponent } from '../Components/hr-attendance-record-component/hr-attendance-record-component';
+import { TransactionsComponent } from '../Components/transactions/transactions.component';
+import { StoresComponent } from '../Components/stores/stores.component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -34,6 +36,8 @@ export const routes: Routes = [
       { path: 'general-setting/cities', component: CityComponent, canActivate: [authGuard]},
       { path: 'hr/attendance', component: HrAttendanceComponent, canActivate: [authGuard]},
       { path: 'hr/attendance-record', component: HrAttendanceRecordComponent, canActivate: [authGuard]},
+      { path: 'transactions/all', component: TransactionsComponent, canActivate: [authGuard]},
+      { path: 'stores/all', component: StoresComponent, canActivate: [authGuard]},
 
 
 

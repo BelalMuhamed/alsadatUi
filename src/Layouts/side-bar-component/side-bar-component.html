@@ -14,7 +14,7 @@
         <a routerLink="dashboard" routerLinkActive="active">الصفحة الرئيسية</a>
       </li>
    <li>
-        <a routerLink="DistributorsAndMerchants" routerLinkActive="active">الموزعين والتجار  </a>
+        <a routerLink="DistributorsAndMerchants" routerLinkActive="active">الموزعين والتجار والوكلاء  </a>
       </li>
       <li>
         <a routerLink="SalesInvoices" routerLinkActive="active">فواتير البيع</a>
@@ -40,6 +40,19 @@
     <li><a routerLink="general-setting/bill-discounts" routerLinkActive="active">خصومات الفواتير</a></li>
     <li><a routerLink="general-setting/Governrates" routerLinkActive="active">المحافظات</a></li>
     <li><a routerLink='general-setting/cities' routerLinkActive="active">المدن</a></li>
+  </ul>
+
+</li>
+<li>
+  <div class="dropdown-header" (click)="StocksOpened = !StocksOpened">
+  <a routerLink="stores/all" routerLinkActive="active">  المخازن </a>
+    <mat-icon>
+      {{ settingsOpened ? 'expand_less' : 'expand_more' }}
+    </mat-icon>
+  </div>
+    <ul *ngIf="StocksOpened" >
+  <li> <a routerLink="transactions/all" routerLinkActive="active">سجل حركة المخازن </a></li>
+
   </ul>
 
 </li>

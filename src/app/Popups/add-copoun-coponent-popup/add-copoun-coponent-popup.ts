@@ -44,9 +44,20 @@ form!: FormGroup;
 
 ngOnInit(): void {
 
+   // 1️⃣ انشئ فورم مبدئي فاضي
+  this.form = this.fb.group({
+    copounDesc: ['', Validators.required],
+    copounPaiedType: [0, Validators.required],
+    pointsToCollectCopoun: [0, Validators.required],
+    stars: [0, Validators.required],
+    paiedCash: [0, Validators.required],
+  });
+
+  // 2️⃣ لو Edit → اعمل load
   if (this.data?.mode === "edit") {
     this.initEditForm();
-  } else {
+  }
+  else {
     this.GetCopounPointsToCollect();
   }
 }
@@ -54,7 +65,7 @@ initEditForm() {
   const c = this.data.item as CopounRespDto;
 
   this.form = this.fb.group({
-    copounDesc: [{ value: c.copounDesc, disabled: true }, Validators.required],
+    copounDesc: [ c.copounDesc, Validators.required],
     copounPaiedType: [c.copounPaiedType, Validators.required],
     pointsToCollectCopoun: [c.pointsToCollectCopoun, Validators.required],
     stars: [c.stars, Validators.required],

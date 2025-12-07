@@ -58,7 +58,9 @@ constructor(
         name: [this.data?.name || '', Validators.required],
          sellingPrice: [this.data?.sellingPrice || '', Validators.required],
         pointPerUnit:[this.data?.pointPerUnit || '', Validators.required],
-        categoryId:[this.data?.categoryId || '', Validators.required]
+        categoryId:[this.data?.categoryId || '', Validators.required],
+        theHighestPossibleQuantity:[this.data?.theHighestPossibleQuantity||'',Validators.required],
+        theSmallestPossibleQuantity:[this.data?.theSmallestPossibleQuantity||'',Validators.required]
       });
 
       this.isEditMode = !!this.data;
@@ -162,7 +164,9 @@ save() {
       updateAt: new Date().toISOString(),
       isDeleted: this.data!.isDeleted,
       deleteBy: this.data!.deleteBy,
-      deleteAt: this.data!.deleteAt
+      deleteAt: this.data!.deleteAt,
+      theHighestPossibleQuantity:Number(this.form.get('theHighestPossibleQuantity')?.value ?? 0),
+      theSmallestPossibleQuantity:Number(this.form.get('theSmallestPossibleQuantity')?.value ?? 0),
     };
 
     this.ProductSubscription.add(
@@ -191,7 +195,11 @@ save() {
       updateAt: null,
       isDeleted: false,
       deleteBy: null,
-      deleteAt: null
+      deleteAt: null,
+      theHighestPossibleQuantity:Number(this.form.get('theHighestPossibleQuantity')?.value ?? 0),
+      theSmallestPossibleQuantity:Number(this.form.get('theSmallestPossibleQuantity')?.value ?? 0),
+
+
     };
 
     this.ProductSubscription.add(

@@ -17,12 +17,15 @@ export class SideBarComponent {
 
    isOpen = false;
   settingsOpened = false;
+  StocksOpened=false;
   hrOpened = false;
 
 toggleSettings() {
   this.settingsOpened = !this.settingsOpened;
 }
-
+toggleStocks() {
+  this.StocksOpened = !this.StocksOpened;
+}
 
   currentTheme: 'light-mode' | 'dark-mode' = 'dark-mode';
 

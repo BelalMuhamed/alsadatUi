@@ -18,6 +18,9 @@ export interface DistributorsAndMerchantsDto {
   PointsBalance?: number | null;
   cashBalance?: number | null;
   indebtedness?: number | null;
+  firstSpecialDiscount?:number|null;
+  secondSpecialDiscount?:number|null;
+  thirdSpecialDiscount?:number|null;
 }
 export interface DistributorsAndMerchantsFilters {
   phoneNumber?: string | null;

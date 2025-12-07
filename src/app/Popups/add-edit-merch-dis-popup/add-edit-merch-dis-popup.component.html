@@ -17,8 +17,8 @@
     <mat-label>  العنوان</mat-label>
     <input matInput formControlName="address" />
     <mat-error *ngIf="AddEditform.get('address')?.hasError('required')">حقل مطلوب</mat-error>
-    <mat-error *ngIf="AddEditform.get('fullName')?.hasError('minlength')">
-  يجب ألا يقل الاسم عن 3 حرفًا
+    <mat-error *ngIf="AddEditform.get('address')?.hasError('minlength')">
+  يجب ألا يقل العنوان عن 3 حرفًا
 </mat-error>
 
   </mat-form-field>
@@ -37,6 +37,8 @@
   <mat-select formControlName="type">
    <mat-option [value]="0">موزع</mat-option>
         <mat-option [value]="1">تاجر</mat-option>
+        <mat-option [value]="2">وكيل</mat-option>
+
   </mat-select>
   <mat-error *ngIf="AddEditform.get('type')?.hasError('required')">
     حقل مطلوب
@@ -51,6 +53,7 @@
   يجب إدخال رقم موبايل مصري صحيح (مثال: 010 أو 011 أو 012 أو 015)
 </mat-error>
   </mat-form-field>
+
 <mat-form-field appearance="outline" class="full-width">
   <mat-label>اختر المدينة</mat-label>
   <mat-select formControlName="cityId">
@@ -75,10 +78,19 @@
     حقل مطلوب
   </mat-error>
 </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>  خصم أول</mat-label>
+    <input matInput formControlName="firstSpecialDiscount"type="number" />
+  </mat-form-field>
 
-
-
-
+<mat-form-field appearance="outline" class="full-width">
+    <mat-label>  خصم ثاني</mat-label>
+    <input matInput formControlName="secondSpecialDiscount"type="number" />
+  </mat-form-field>
+<mat-form-field appearance="outline" class="full-width">
+    <mat-label>  خصم ثالث</mat-label>
+    <input matInput formControlName="thirdSpecialDiscount"type="number" />
+  </mat-form-field>
 </form>
 
 </div>
