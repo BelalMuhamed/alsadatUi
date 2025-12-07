@@ -1,0 +1,103 @@
+.filter-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.action-btn {
+  min-width: 120px;
+}
+
+.table-container {
+  overflow-x: auto;
+  padding: 8px;
+}
+
+.paginator-arabic {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+h2 {
+  color: var(--gold);
+}
+
+/* Dark mode tweaks */
+:host-context(body.dark-mode) .table-container {
+  background: #121212;
+  color: #e8e8e8;
+  border-radius: 6px;
+}
+
+:host-context(body.dark-mode) table.mat-mdc-table {
+  background: transparent;
+  color: #e8e8e8;
+}
+
+:host-context(body.dark-mode) .mat-mdc-header-cell {
+  color: var(--gold);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell {
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator {
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .action-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+}
+
+/* Light mode polish */
+:host-context(body.light-mode) .table-container {
+  background: #fff;
+  color: #222;
+  border-radius: 6px;
+}
+
+:host-context(body.light-mode) .mat-mdc-header-cell {
+  color: var(--gold);
+}
+
+/* Paginator icons visibility */
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1;
+}
+
+:host-context(body.dark-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-icon-button,
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-paginator-icon {
+  color: var(--gold) !important;
+  opacity: 1;
+}
+
+:host-context(body.light-mode) .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--gold) !important;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Center text in table cells */
+.mat-mdc-header-cell {
+  text-align: center;
+  padding: 12px 8px;
+}
+
+.mat-mdc-cell {
+  text-align: center;
+  padding: 12px 8px;
+}

@@ -15,6 +15,10 @@ import { HrAttendanceComponent } from '../Components/hr-attendance-component/hr-
 import { HrAttendanceRecordComponent } from '../Components/hr-attendance-record-component/hr-attendance-record-component';
 import { TransactionsComponent } from '../Components/transactions/transactions.component';
 import { StoresComponent } from '../Components/stores/stores.component';
+import { EmployeesListComponent } from '../Components/employees-list-component/employees-list-component';
+import { RolesComponent } from '../Components/roles-component/roles-component';
+import { EmployeeAddComponent } from '../Components/employee-add-component/employee-add-component';
+import { EmployeeSalaryComponent } from '../Components/employee-salary-component/employee-salary-component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -38,8 +42,6 @@ export const routes: Routes = [
       { path: 'hr/attendance-record', component: HrAttendanceRecordComponent, canActivate: [authGuard]},
       { path: 'transactions/all', component: TransactionsComponent, canActivate: [authGuard]},
       { path: 'stores/all', component: StoresComponent, canActivate: [authGuard]},
-
-
 
     ]
   },

@@ -1,0 +1,10 @@
+.salary-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+.header-section { margin-bottom: 20px; }
+.action-buttons { display: flex; gap: 10px; }
+.action-btn { min-width: 100px; }
+
+:host-context(body.dark-mode) mat-card { background: #1e1e1e; color: #e8e8e8; }
+:host-context(body.light-mode) mat-card { background: #fff; }
+
+table { width: 100%; }
+.empty-state { padding: 40px 0; }
