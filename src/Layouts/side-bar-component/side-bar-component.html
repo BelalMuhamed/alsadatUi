@@ -14,7 +14,7 @@
         <a routerLink="dashboard" routerLinkActive="active">الصفحة الرئيسية</a>
       </li>
    <li>
-        <a routerLink="DistributorsAndMerchants" routerLinkActive="active">الموزعين والتجار والوكلاء  </a>
+        <a routerLink="DistributorsAndMerchants" routerLinkActive="active">الموزعين والتجار  </a>
       </li>
       <li>
         <a routerLink="SalesInvoices" routerLinkActive="active">فواتير البيع</a>
@@ -56,6 +56,9 @@
   </ul>
 
 </li>
+
+
+
 <li>
   <div class="dropdown-header" (click)="hrOpened = !hrOpened">
     <span>HR</span>
@@ -66,9 +69,12 @@
       <ul *ngIf="hrOpened" >
         <li><a routerLink='hr/attendance' routerLinkActive="active">الحضور والانصراف</a></li>
         <li><a routerLink='hr/attendance-record' routerLinkActive="active">تسجيل الحضور والانصراف</a></li>
+        <li><a routerLink='hr/quick-attendance' routerLinkActive="active">التسجيل السريع</a></li>
         <li><a routerLink='hr/roles' routerLinkActive="active">الأدوار</a></li>
         <li><a routerLink='hr/employees' routerLinkActive="active">إدارة الموظفين</a></li>
-        <li><a routerLink='hr/employees/add' routerLinkActive="active">إضافة موظف</a></li>
+        <li><a routerLink='hr/salaries' routerLinkActive="active">المرتبات</a></li>
+        <li><a routerLink='hr/departments' routerLinkActive="active">الأقسام</a></li>
+        <li><a routerLink='hr/public-holidays' routerLinkActive="active">الإجازات الثانوية</a></li>
   </ul>
 </li>
 

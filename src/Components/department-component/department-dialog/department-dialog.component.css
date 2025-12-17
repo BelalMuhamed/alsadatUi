@@ -36,6 +36,3 @@ mat-card-actions { display: flex; justify-content: center; gap: 12px; padding: 1
 
 /* Utility Classes */
 .mt-2 { margin-top: 0.5rem; }
-.w-100 { width: 100%; }
-.d-flex { display: flex; }
-.justify-content-center { justify-content: center; }

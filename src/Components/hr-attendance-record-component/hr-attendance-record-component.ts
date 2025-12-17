@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,7 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { EmployeeAttendanceService } from '../../app/Services/employee-attendance-service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
@@ -16,11 +18,17 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-hr-attendance-record',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatTableModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatTableModule, MatPaginatorModule],
   templateUrl: './hr-attendance-record-component.html',
   styleUrls: ['./hr-attendance-record-component.css']
 })
 export class HrAttendanceRecordComponent {
+  // paginator for today's records (client-side paging)
+  dataSource = new MatTableDataSource<any>([]);
+  displayedColumns = ['employeeCode','employeeName','attendanceDate','checkInTime','checkOutTime','attendanceStatus','actions'];
+  pageSizeOptions = [5,10,20];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   employeeCode: string | null = null;
   selectedDateObj: Date | null = new Date();
   isProcessing = false;
@@ -61,6 +69,9 @@ export class HrAttendanceRecordComponent {
         } else {
           this.todayRecords = [];
         }
+        // populate table datasource and hook paginator
+        this.dataSource.data = this.todayRecords;
+        try { this.dataSource.paginator = this.paginator; } catch { }
         this.isLoadingToday = false;
       },
       error: () => {

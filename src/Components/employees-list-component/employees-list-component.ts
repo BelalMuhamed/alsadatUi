@@ -247,4 +247,8 @@ export class EmployeesListComponent implements OnInit {
   formatSalary(salary: number): string {
     return salary ? salary.toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' }) : '-';
   }
+
+  addNewEmployee(): void {
+    this.router.navigate(['/hr/employees/add']);
+  }
 }

@@ -15,7 +15,7 @@
     <mat-card-content>
       <div *ngIf="isLoading" class="text-center">جاري التحميل...</div>
 
-      <table mat-table [dataSource]="roles" class="mat-elevation-z1" dir="rtl" *ngIf="!isLoading">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z1" dir="rtl" *ngIf="!isLoading">
         <!-- Role Name -->
         <ng-container matColumnDef="roleName">
           <th mat-header-cell *matHeaderCellDef>اسم الدور</th>
@@ -55,14 +55,17 @@
         </td>
       </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['roleName','createdAt','status','actions']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['roleName','createdAt','status','actions'];"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
+    </mat-card-content>
+  </mat-card>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator *ngIf="roles && roles.length" [length]="roles.length" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSizeOptions[1]" [showFirstLastButtons]="true" aria-label="جدول الأدوار"></mat-paginator>
+  </div>
 
       <div *ngIf="!isLoading && (!roles || roles.length === 0)" class="empty-state text-center">
         لا توجد أدوار متاحة
       </div>
-
-    </mat-card-content>
-  </mat-card>
 </div>

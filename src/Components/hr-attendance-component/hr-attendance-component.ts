@@ -181,21 +181,16 @@ export class HrAttendanceComponent {
 
   getAttendance() {
     this.isLoading = true;
-    // Debug: log outgoing filters so we can verify query params
     try { console.log('[HR] getAttendance - sending filters', { ...this.filters }); } catch (e) {}
     this.attendanceService.getByFilter(this.filters).subscribe({
       next: (res: any) => {
-        // Debug: log raw server response to help troubleshoot pagination mismatch
         try { console.log('[HR] getAttendance - server response', res); } catch (e) {}
-        // Normalize many possible server response shapes (camelCase, PascalCase,
-        // wrapped 'data' with items, plain array, or PagedList with Items)
         const items = (res && (res.items || res.Items)) || (res && res.data && Array.isArray(res.data) ? res.data : (res && res.data && (res.data.items || res.data.Items))) || null;
 
         if (Array.isArray(items)) {
           this.dataSource.data = items;
           this.totalCount = (res && (res.totalCount || res.TotalCount)) || (res && res.data && (res.data.totalCount || res.data.TotalCount)) || items.length || 0;
         } else if (Array.isArray(res)) {
-          // server returned a bare array
           this.dataSource.data = res;
           this.totalCount = res.length || 0;
         } else {
@@ -203,13 +198,10 @@ export class HrAttendanceComponent {
           this.totalCount = 0;
         }
 
-        // Sync pagination info from server (support multiple property names)
         const serverPage = (res && (res.page || res.Page || res.currentPage || res.CurrentPage || res.pageNumber || res.PageNumber));
         const serverPageSize = (res && (res.pageSize || res.PageSize)) || (res && res.data && (res.data.pageSize || res.data.PageSize));
         if (serverPage != null) this.filters.page = Number(serverPage);
         if (serverPageSize != null) this.filters.pageSize = Number(serverPageSize);
-
-        // Ensure paginator UI reflects the current server page/size
         setTimeout(() => {
           try {
             if (this.paginator) {
@@ -218,7 +210,6 @@ export class HrAttendanceComponent {
               this.paginator.pageSize = this.filters.pageSize || this.paginator.pageSize;
             }
           } catch (e) {
-            // ignore errors in UI sync
           }
         }, 0);
 
@@ -238,11 +229,9 @@ export class HrAttendanceComponent {
   }
 
   onFilter() {
-    // تنظيف كود الموظف من أي مسافات أو رموز غير ظاهرة
     if (this.filters.employeeCode) {
       this.filters.employeeCode = this.filters.employeeCode.trim();
     }
-    // إذا تم اختيار تاريخ من الـ DatePicker، نحوله لصيغة yyyy-MM-dd
     if (this.selectedDateObj) {
       const d = this.selectedDateObj;
       const yyyy = d.getFullYear();

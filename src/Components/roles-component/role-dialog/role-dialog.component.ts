@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../app/Services/auth-service';
 import { CreateRoleRequestDTO, RoleDTO } from '../../../app/models/IAuthModels';
 
 @Component({
   selector: 'app-role-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatIconModule],
   templateUrl: './role-dialog.component.html',
   styleUrls: ['./role-dialog.component.css']
 })

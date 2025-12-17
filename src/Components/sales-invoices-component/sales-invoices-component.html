@@ -103,13 +103,15 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
   </table>
 </div>
-  <div dir="rtl" class="paginator-arabic">
+  <div dir="rtl" class="paginator-container">
   <mat-paginator
     [length]="totalCount"
     [pageSize]="filters.pageSize"
     [pageIndex]="filters.page - 1"
     [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+    aria-label="جدول فواتير المبيعات">
   </mat-paginator>
 </div>
 

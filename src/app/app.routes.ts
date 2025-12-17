@@ -19,6 +19,10 @@ import { EmployeesListComponent } from '../Components/employees-list-component/e
 import { RolesComponent } from '../Components/roles-component/roles-component';
 import { EmployeeAddComponent } from '../Components/employee-add-component/employee-add-component';
 import { EmployeeSalaryComponent } from '../Components/employee-salary-component/employee-salary-component';
+import { SalarySearchComponent } from '../Components/salary-search-component/salary-search-component';
+import { QuickAttendanceComponent } from '../Components/quick-attendance-component/quick-attendance-component';
+import { DepartmentComponent } from '../Components/department-component/department-component';
+import { PublicHolidayComponent } from '../Components/public-holiday-component/public-holiday-component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -46,6 +50,10 @@ export const routes: Routes = [
       { path: 'hr/employee-salary/:empCode', component: EmployeeSalaryComponent, canActivate: [authGuard]},
       { path: 'hr/roles', component: RolesComponent, canActivate: [authGuard]},
       { path: 'hr/employees/add', component: EmployeeAddComponent, canActivate: [authGuard]},
+      { path: 'hr/salaries', component: SalarySearchComponent, canActivate: [authGuard]},
+      { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard]},
+      { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard]},
+      { path: 'hr/public-holidays', component: PublicHolidayComponent, canActivate: [authGuard]},
 
     ]
   },

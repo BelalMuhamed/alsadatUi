@@ -300,3 +300,5 @@ h2 {
 .text-center {
 	text-align: center;
 }
+
+.custom-select-panel .mat-mdc-list { max-height: 280px; overflow: auto; }

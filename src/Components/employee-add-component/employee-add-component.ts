@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
@@ -15,6 +16,8 @@ import { EmployeeService } from '../../app/Services/employee.service';
 import { CityServiceService } from '../../app/Services/city-service.service';
 import { AuthService } from '../../app/Services/auth-service';
 import { ICityDto } from '../../app/models/Icity';
+import { DepartmentService } from '../../app/Services/department.service';
+import { Department } from '../../app/models/IDepartment';
 import Swal from 'sweetalert2';
 import { EmployeeService as EmpService } from '../../app/Services/employee.service';
 import { catchError, of } from 'rxjs';
@@ -30,6 +33,7 @@ import { catchError, of } from 'rxjs';
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
+    MatAutocompleteModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatCardModule
@@ -42,6 +46,7 @@ export class EmployeeAddComponent {
   private cityService = inject(CityServiceService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private departmentService = inject(DepartmentService);
 
   // Reuse the interface instead of re-declaring every field here.
   // Minimal defaults are set in the constructor so template bindings work.
@@ -49,12 +54,22 @@ export class EmployeeAddComponent {
 
   cities: ICityDto[] = [];
   filteredCities: ICityDto[] = [];
+  departments: Department[] = [];
+  filteredDepartments: Department[] = [];
+  cityFilter: string = '';
+  deptFilter: string = '';
+  roleFilter: string = '';
   isSaving = false;
+  @ViewChild('deptAuto', { read: MatAutocompleteTrigger }) deptTrigger!: MatAutocompleteTrigger;
+  @ViewChild('cityAuto', { read: MatAutocompleteTrigger }) cityTrigger!: MatAutocompleteTrigger;
   showPassword = false;
   roles: string[] = [];
+  filteredRoles: string[] = [];
+  rolesRaw: any[] = [];
 
   constructor() {
     this.loadCities();
+    this.loadDepartments();
     // Ensure a few minimal defaults at runtime so template bindings work
     this.model.birthDate = this.model.birthDate ?? new Date();
     this.model.hireDate = this.model.hireDate ?? new Date();
@@ -74,11 +89,72 @@ export class EmployeeAddComponent {
     ).subscribe({
       next: (res: any) => {
         const list = (res?.isSuccess ? res.data : res) || [];
-        this.roles = Array.isArray(list) ? list.filter((x: any) => !x.isDeleted).map((x: any) => x.roleName) : ['Employee', 'Admin'];
+        const items = Array.isArray(list) ? list.filter((x: any) => !x.isDeleted) : [];
+        this.rolesRaw = items;
+        this.roles = items.map((x: any) => x.roleName);
+        this.filteredRoles = [...this.roles];
       },
       error: () => { this.roles = ['Employee', 'Admin']; }
     });
   }
+
+  onDepartmentSelected(deptName: string | null) {
+    if (!deptName) return;
+    const name = deptName as string;
+    this.model.departmentName = name;
+    const found = this.departments.find(d => (d.name ?? '').toLowerCase() === name.toLowerCase());
+    if (found) this.model.departmentID = (found as any).id ?? undefined;
+  }
+
+  openDeptPanel() {
+    try { this.deptTrigger.openPanel(); } catch { }
+  }
+
+  openCityPanel() {
+    try { this.cityTrigger.openPanel(); } catch { }
+  }
+
+  onRoleSelected(roleName: string | null) {
+    // roleName might be a string (role name) or an object (role DTO) depending on option value
+    if (!roleName) { this.model.roleName = ''; this.model.roleId = undefined; return; }
+    if (typeof roleName === 'string') {
+      this.model.roleName = roleName;
+      const found = this.rolesRaw.find(r => r.roleName === roleName || r.role === roleName);
+      if (found) this.model.roleId = found.roleID ?? found.roleId ?? undefined;
+    } else if (typeof roleName === 'object') {
+      const obj: any = roleName as any;
+      this.model.roleName = obj.roleName ?? obj.role ?? '';
+      this.model.roleId = obj.roleID ?? obj.roleId ?? undefined;
+    }
+  }
+
+  onCitySelected(cityName: string | null) {
+    if (!cityName) { this.model.cityID = undefined; this.model.cityName = '' ; return; }
+    const name = cityName as string;
+    const c = this.cities.find(x => (x.cityName ?? '').toLowerCase() === name.toLowerCase());
+    if (c) { this.model.cityID = c.id ?? undefined; this.model.cityName = c.cityName ?? ''; }
+  }
+
+  loadDepartments() {
+    this.departmentService.getAll(1,1000).subscribe({ next: (res: any) => {
+      const list = res?.items ?? res?.data ?? [];
+      this.departments = Array.isArray(list) ? list.filter((d: any) => !d.isDeleted) : [];
+      this.filteredDepartments = [...this.departments];
+    }, error: (e) => { console.warn('Failed to load departments', e); this.departments = []; this.filteredDepartments = []; } });
+  }
+
+  filterDepartments(q: string) {
+    const s = (q || '').trim().toLowerCase();
+    if (!s) { this.filteredDepartments = [...this.departments]; return; }
+    this.filteredDepartments = this.departments.filter(d => (d.name || '').toLowerCase().includes(s));
+  }
+
+  filterRoles(q: string) {
+    const s = (q || '').trim().toLowerCase();
+    if (!s) { this.filteredRoles = [...this.roles]; return; }
+    this.filteredRoles = this.roles.filter(r => (r || '').toLowerCase().includes(s));
+  }
+
 
   loadCities() {
     this.cityService.getAllCities({ page: 1, pageSize: 1000, cityName: null, governrateName: null }).subscribe({
@@ -109,6 +185,10 @@ export class EmployeeAddComponent {
   }
 
   cancel() {
+    this.router.navigate(['/hr/employees']);
+  }
+
+  goBack() {
     this.router.navigate(['/hr/employees']);
   }
 

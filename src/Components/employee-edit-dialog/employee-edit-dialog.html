@@ -33,28 +33,29 @@
 
 				<mat-form-field appearance="outline" class="custom-input-theme">
 					<mat-label>المدينة</mat-label>
-					<mat-select name="cityID" [(ngModel)]="model.cityID" [panelClass]="'custom-select-panel'">
-						<mat-option>
-							<div style="padding: 8px 12px;">
-								<mat-form-field appearance="fill" style="width:100%">
-									<input matInput placeholder="ابحث عن المدينة" [(ngModel)]="cityFilter" (ngModelChange)="filterCities($event)" />
-								</mat-form-field>
-							</div>
-						</mat-option>
-						<mat-option *ngFor="let c of filteredCities" [value]="c.id">{{ c.cityName }}</mat-option>
-					</mat-select>
+					<input matInput name="cityName" [(ngModel)]="model.cityName" [matAutocomplete]="cityAuto" autocomplete="off" (input)="filterCities($any($event.target).value || '')" />
+					<button mat-icon-button matSuffix type="button" aria-label="فتح قائمة المدن" (click)="openCityPanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+					<mat-autocomplete #cityAuto="matAutocomplete" (optionSelected)="onCitySelected($event.option.value)">
+						<mat-option *ngFor="let c of filteredCities" [value]="c.cityName">{{ c.cityName }}</mat-option>
+					</mat-autocomplete>
 				</mat-form-field>
 
 				<mat-form-field appearance="outline" class="custom-input-theme">
 					<mat-label>القسم</mat-label>
-					<input matInput name="departmentName" [(ngModel)]="model.departmentName" />
+					<input matInput name="departmentName" [(ngModel)]="model.departmentName" [matAutocomplete]="deptAuto" autocomplete="off" (input)="filterDepartments($any($event.target).value || '')" />
+					<button mat-icon-button matSuffix type="button" aria-label="فتح قائمة الأقسام" (click)="openDeptPanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+					<mat-autocomplete #deptAuto="matAutocomplete" (optionSelected)="onDepartmentSelected($event.option.value)">
+						<mat-option *ngFor="let d of filteredDepartments" [value]="d.name">{{ d.name }}</mat-option>
+					</mat-autocomplete>
 				</mat-form-field>
 
 				<mat-form-field appearance="outline" class="custom-input-theme">
 					<mat-label>الدور</mat-label>
-					<mat-select name="roleName" [(ngModel)]="model.roleName">
-						<mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
-					</mat-select>
+					<input matInput name="roleName" [(ngModel)]="model.roleName" [matAutocomplete]="roleAuto" autocomplete="off" (input)="filterRoles($any($event.target).value || '')" />
+					<button mat-icon-button matSuffix type="button" aria-label="فتح قائمة الادوار" (click)="openRolePanel()"><mat-icon>arrow_drop_down</mat-icon></button>
+					<mat-autocomplete #roleAuto="matAutocomplete" (optionSelected)="onRoleSelected($event.option.value)">
+						<mat-option *ngFor="let r of filteredRoles" [value]="r">{{ r }}</mat-option>
+					</mat-autocomplete>
 				</mat-form-field>
 
 				<mat-form-field appearance="outline" class="custom-input-theme">

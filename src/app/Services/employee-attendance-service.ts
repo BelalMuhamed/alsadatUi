@@ -66,22 +66,25 @@ export class EmployeeAttendanceService {
     return this.http.get<ApiResponse<EmployeeAttendanceDto[]>>(`${this.apiUrl}EmployeeAttendance/GetTodayRecord`, { params });
   }
 
-  checkIn(body: { employeeCode: string; date: string; inputTime: string }): Observable<Result<string>> {
-    // Backend expects EmpAttendanceHelper with Date and InputTime. We name keys to match expected query body names.
+  checkIn(body: { employeeCode?:string; date: string; inputTime: string }): Observable<Result<string>> {
+    // Original: uses employeeCode (for HR attendance record page)
     const payload: any = {
       employeeCode: body.employeeCode,
       date: body.date,
       inputTime: body.inputTime
     };
+    
     return this.http.post<Result<string>>(`${this.apiUrl}EmployeeAttendance/CheckIn`, payload);
   }
 
-  checkOut(body: { employeeCode: string; date: string; inputTime: string }): Observable<Result<string>> {
+  checkOut(body: { employeeCode?:string; date: string; inputTime: string }): Observable<Result<string>> {
+    // Original: uses employeeCode (for HR attendance record page)
     const payload: any = {
       employeeCode: body.employeeCode,
       date: body.date,
       inputTime: body.inputTime
     };
+    
     return this.http.post<Result<string>>(`${this.apiUrl}EmployeeAttendance/CheckOut`, payload);
   }
 
@@ -92,6 +95,45 @@ export class EmployeeAttendanceService {
     fd.append('file', file, file.name);
     return this.http.post<Result<ExcelImportResultDto>>(`${this.apiUrl}EmployeeAttendance/ImportFromExcel`, fd);
   }
+    // NEW: Check-in by employeeId (for Quick Attendance page)
+    checkInByEmployeeId(body: { employeeId: string; date: string; inputTime: string }): Observable<Result<string>> {
+      const payload: any = {
+        employeeId: body.employeeId,
+        date: body.date,
+        inputTime: body.inputTime
+      };
+      return this.http.post<Result<string>>(`${this.apiUrl}EmployeeAttendance/CheckIn`, payload);
+    }
+
+    // NEW: Check-out by employeeId (for Quick Attendance page)
+    checkOutByEmployeeId(body: { employeeId: string; date: string; inputTime: string }): Observable<Result<string>> {
+      const payload: any = {
+        employeeId: body.employeeId,
+        date: body.date,
+        inputTime: body.inputTime
+      };
+      return this.http.post<Result<string>>(`${this.apiUrl}EmployeeAttendance/CheckOut`, payload);
+    }
+
+    // NEW: Check-in by employeeEmail (for Quick Attendance page using userEmail in localStorage)
+    checkInByEmployeeEmail(body: { employeeEmail: string; date: string; inputTime: string }): Observable<Result<string>> {
+      const payload: any = {
+        employeeEmail: body.employeeEmail,
+        date: body.date,
+        inputTime: body.inputTime
+      };
+      return this.http.post<Result<string>>(`${this.apiUrl}EmployeeAttendance/CheckIn`, payload);
+    }
+
+    // NEW: Check-out by employeeEmail (for Quick Attendance page using userEmail in localStorage)
+    checkOutByEmployeeEmail(body: { employeeEmail: string; date: string; inputTime: string }): Observable<Result<string>> {
+      const payload: any = {
+        employeeEmail: body.employeeEmail,
+        date: body.date,
+        inputTime: body.inputTime
+      };
+      return this.http.post<Result<string>>(`${this.apiUrl}EmployeeAttendance/CheckOut`, payload);
+    }
 
   // Change attendance status for a record (PUT + query param)
   // Send full DTO in body and status as query param to match backend signature
