@@ -80,13 +80,15 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
   </table>
-  <div dir="rtl" class="paginator-arabic">
+  <div dir="rtl" class="paginator-container">
    <mat-paginator
     [length]="totalCount"
     [pageSize]="filters.pageSize"
     [pageIndex]="(filters.page ?? 1) - 1"
     [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)">
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+    aria-label="جدول المحافظات">
   </mat-paginator>
 </div>
 

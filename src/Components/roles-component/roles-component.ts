@@ -1,7 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,19 +22,27 @@ import { MatCard, MatCardContent } from "@angular/material/card";
 @Component({
   selector: 'app-roles-component',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatCard, MatCardContent, MatSlideToggleModule, MatTooltipModule],
+  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, MatButtonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatCard, MatCardContent, MatSlideToggleModule, MatTooltipModule],
   templateUrl: './roles-component.html',
   styleUrls: ['./roles-component.css']
 })
-export class RolesComponent implements OnInit {
+export class RolesComponent implements OnInit, AfterViewInit {
   private authService = inject(AuthService);
   private dialog = inject(MatDialog);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   roles: RoleDTO[] = [];
+  dataSource = new MatTableDataSource<RoleDTO>([]);
+  displayedColumns = ['roleName','createdAt','status','actions'];
+  pageSizeOptions = [5,10,25,50];
   isLoading = false;
 
   ngOnInit(): void {
     this.loadRoles();
+  }
+
+  ngAfterViewInit(): void {
+    try { this.dataSource.paginator = this.paginator; } catch { /* ignore during server-side rendering */ }
   }
 
   toggleRoleStatus(role: RoleDTO): void {
@@ -50,6 +60,7 @@ export class RolesComponent implements OnInit {
       next: (res: any) => {
         if (res?.isSuccess) {
           this.roles = res.data ?? [];
+          this.dataSource.data = this.roles;
         } else {
           Swal.fire('خطأ', res?.message ?? 'فشل تحميل الأدوار', 'error');
         }

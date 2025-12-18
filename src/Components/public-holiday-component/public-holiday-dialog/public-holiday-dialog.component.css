@@ -16,7 +16,7 @@
 
 mat-card { width: 100%; }
 mat-card-actions { display: flex; justify-content: center; gap: 12px; padding: 16px; }
-.content-scroll { max-height: 62vh; overflow: auto; padding-right: 8px; }
+.content-scroll { max-height: 62vh; overflow: auto; padding-right: 8px;  }
 
 /* Dark Mode */
 :host-context(body.dark-mode) mat-card { background: #1e1e1e; color: #e8e8e8; }
@@ -36,6 +36,3 @@ mat-card-actions { display: flex; justify-content: center; gap: 12px; padding: 1
 
 /* Utility Classes */
 .mt-2 { margin-top: 0.5rem; }
-.w-100 { width: 100%; }
-.d-flex { display: flex; }
-.justify-content-center { justify-content: center; }

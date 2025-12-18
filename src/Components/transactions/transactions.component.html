@@ -122,13 +122,15 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
   </table>
-   <div dir="rtl" class="paginator-arabic">
+   <div dir="rtl" class="paginator-container">
   <mat-paginator
     [length]="totalCount"
     [pageSize]="transactionFilters.pageSize"
     [pageIndex]="transactionFilters.page- 1"
     [pageSizeOptions]="[5, 10, 20,30,50,70,100]"
-    (page)="onPageChange($event)">
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+    aria-label="جدول المعاملات">
   </mat-paginator>
 </div>
 
