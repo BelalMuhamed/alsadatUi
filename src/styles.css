@@ -1,6 +1,6 @@
 دعم
   الدارك
-  مود
+  .dark-theme
   لل
   Angular
   Material
@@ -14,6 +14,16 @@ body.dark-mode .mat-calendar-body-label {
   background: #222 !important;
   color: #fff !important;
 }
+.dark-theme,
+.dark-theme * {
+    color: var(--text-color) !important;
+}
+.dark-theme .Indicators span,
+.dark-theme .Indicators label,
+.dark-theme .Indicators div {
+    color: var(--text-color) !important;
+}
+
 
 /* Selected / active day: gold background, rectangular like light mode */
 body.dark-mode .mat-calendar-body-selected,
@@ -34,6 +44,15 @@ body.dark-mode .mat-calendar-arrow {
 
 :root {
   --topbar-height: 70px;
+   --color-low: #f8d7da;       /* أحمر فاتح */
+  --color-high: #d1ecf1;      /* أزرق فاتح */
+  --color-safe: #d4edda;      /* أخضر فاتح */
+  --color-deleted: red;   /* رمادي فاتح */
+
+  --text-low: #721c24;
+  --text-high: #0c5460;
+  --text-safe: #155724;
+  --text-deleted: white;
 }
 
 body.dark-mode {
@@ -49,8 +68,20 @@ body.dark-mode {
   --input-label: #cccccc;
   --input-placeholder: #777;
   --input-border: #555;
-}
+   --color-low: #5c1d21;
+  --color-high: #15424b;
+  --color-safe: #1d4d2c;
+  --color-deleted: red;
 
+  --text-low: #ffb3b8;
+  --text-high: #a6e7f0;
+  --text-safe: #b7f5cb;
+  --text-deleted: white;
+}
+.deleted-row
+{
+  background-color: red;
+}
 body.light-mode {
   --bg-color: #ffffff;
   --text-color: #000;
@@ -233,6 +264,15 @@ a.router-link-active {
   }
 }
 /* ===== Table Container ===== */
+/* .table-container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.4s ease, color 0.4s ease;
+} */
 .table-container {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -241,6 +281,11 @@ a.router-link-active {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   transition: background-color 0.4s ease, color 0.4s ease;
+
+  /* scroll addition */
+  overflow-x: auto;       /* تمكين التمرير الأفقي */
+  overflow-y: hidden;     /* منع التمرير العمودي إن لزم */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling على الموبايل */
 }
 
 /* ===== Material Table ===== */
@@ -248,6 +293,7 @@ table.mat-mdc-table {
   background-color: transparent !important;
   color: var(--text-color);
   width: 100%;
+  min-width: 80%;
 }
 
 /* ===== Header Styling ===== */
@@ -426,12 +472,13 @@ button.mat-mdc-outlined-button.action-btn:hover {
 /* Center text in all Material table cells */
 .mat-mdc-header-cell {
   text-align: center !important;
-  justify-content: center !important; /* For flex layout */
   align-items: center !important;
+   white-space: nowrap !important;     /* prevent wrapping */
+  word-break: normal !important;
 }
 .mat-mdc-cell {
-  white-space: normal !important;
-  word-break: break-word;
+ white-space: nowrap !important;     /* prevent wrapping */
+  word-break: normal !important;      /* don't break words */
   text-align: center !important;
   justify-content: center !important; /* For flex layout */
   align-items: center !important;

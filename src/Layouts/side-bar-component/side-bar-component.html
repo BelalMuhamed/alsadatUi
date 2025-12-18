@@ -45,14 +45,17 @@
 </li>
 <li>
   <div class="dropdown-header" (click)="StocksOpened = !StocksOpened">
-  <a routerLink="stores/all" routerLinkActive="active">  المخازن </a>
+     <span>المخازن</span>
+
     <mat-icon>
       {{ settingsOpened ? 'expand_less' : 'expand_more' }}
     </mat-icon>
   </div>
     <ul *ngIf="StocksOpened" >
-  <li> <a routerLink="transactions/all" routerLinkActive="active">سجل حركة المخازن </a></li>
+  <li> <a routerLink="stores/all" routerLinkActive="active">  عرض المخازن </a></li>
 
+  <li> <a routerLink="transactions/all" routerLinkActive="active">سجل حركة المخازن </a></li>
+  <li> <a routerLink="stocks" routerLinkActive="active">   المخزون </a></li>
   </ul>
 
 </li>
@@ -67,8 +70,9 @@
         <li><a routerLink='hr/attendance' routerLinkActive="active">الحضور والانصراف</a></li>
         <li><a routerLink='hr/attendance-record' routerLinkActive="active">تسجيل الحضور والانصراف</a></li>
         <li><a routerLink='hr/roles' routerLinkActive="active">الأدوار</a></li>
-        <li><a routerLink='hr/employees' routerLinkActive="active">إدارة الموظفين</a></li>
         <li><a routerLink='hr/employees/add' routerLinkActive="active">إضافة موظف</a></li>
+
+        <li><a routerLink='hr/employees' routerLinkActive="active">إدارة الموظفين</a></li>
   </ul>
 </li>
 

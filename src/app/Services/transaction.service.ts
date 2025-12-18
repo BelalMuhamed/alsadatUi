@@ -44,4 +44,14 @@ if (filters.createdAt) {
  getTransactionProducts(transactionId: number): Observable<StoreTransactionProductsDto[]> {
     return this.http.get<StoreTransactionProductsDto[]>(`${this.apiUrl}Transaction/${transactionId}/products`);
   }
+  addNewTransaction(
+  transaction: StoreTransactionDto
+): Observable<{ message: string }> {
+
+  return this.http.post<{ message: string }>(
+    `${this.apiUrl}Transaction`,
+    transaction
+  );
+}
+
 }
