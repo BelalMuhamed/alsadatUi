@@ -188,7 +188,8 @@ GetStores()
 const filter: StoreFilteration = {
   storeName: null,
   page: null,
-  pageSize: null
+  pageSize: null,
+  isDeleted:null
 };
   this._StoreSubscription.add(this._StoreService.getAllStores(filter).subscribe({
     next:(res)=>{

@@ -19,10 +19,12 @@ import { EmployeesListComponent } from '../Components/employees-list-component/e
 import { RolesComponent } from '../Components/roles-component/roles-component';
 import { EmployeeAddComponent } from '../Components/employee-add-component/employee-add-component';
 import { EmployeeSalaryComponent } from '../Components/employee-salary-component/employee-salary-component';
+import { StockComponent } from '../Components/stock/stock.component';
 import { SalarySearchComponent } from '../Components/salary-search-component/salary-search-component';
 import { QuickAttendanceComponent } from '../Components/quick-attendance-component/quick-attendance-component';
 import { DepartmentComponent } from '../Components/department-component/department-component';
 import { PublicHolidayComponent } from '../Components/public-holiday-component/public-holiday-component';
+import { TreeAccountsComponent } from '../Components/tree-accounts/tree-accounts.component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -46,6 +48,7 @@ export const routes: Routes = [
       { path: 'hr/attendance-record', component: HrAttendanceRecordComponent, canActivate: [authGuard]},
       { path: 'transactions/all', component: TransactionsComponent, canActivate: [authGuard]},
       { path: 'stores/all', component: StoresComponent, canActivate: [authGuard]},
+      { path: 'stocks', component: StockComponent, canActivate: [authGuard]},
       { path: 'hr/employees', component: EmployeesListComponent, canActivate: [authGuard]},
       { path: 'hr/employee-salary/:empCode', component: EmployeeSalaryComponent, canActivate: [authGuard]},
       { path: 'hr/roles', component: RolesComponent, canActivate: [authGuard]},
@@ -54,6 +57,7 @@ export const routes: Routes = [
       { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard]},
       { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard]},
       { path: 'hr/public-holidays', component: PublicHolidayComponent, canActivate: [authGuard]},
+       { path: 'tree', component: TreeAccountsComponent, canActivate: [authGuard]},
 
     ]
   },
