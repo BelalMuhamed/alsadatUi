@@ -24,6 +24,7 @@ import { SalarySearchComponent } from '../Components/salary-search-component/sal
 import { QuickAttendanceComponent } from '../Components/quick-attendance-component/quick-attendance-component';
 import { DepartmentComponent } from '../Components/department-component/department-component';
 import { PublicHolidayComponent } from '../Components/public-holiday-component/public-holiday-component';
+import { TreeAccountsComponent } from '../Components/tree-accounts/tree-accounts.component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -56,6 +57,7 @@ export const routes: Routes = [
       { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard]},
       { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard]},
       { path: 'hr/public-holidays', component: PublicHolidayComponent, canActivate: [authGuard]},
+       { path: 'tree', component: TreeAccountsComponent, canActivate: [authGuard]},
 
     ]
   },
