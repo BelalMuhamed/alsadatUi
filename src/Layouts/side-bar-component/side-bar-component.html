@@ -1,6 +1,6 @@
 
 <mat-sidenav-container class="layout-container" dir="rtl">
-  <mat-sidenav #drawer mode="side" [opened]="true" position="start" class="sidenav">
+  <mat-sidenav #drawer mode="side" [opened]="true" position="start" [fixedInViewport]="true" fixedTopGap="0" class="sidenav fixed-sidenav" (openedChange)="onOpenedChange($event)" [class.closed]="!isOpen">
 
     <div class="w-100 d-flex justify-content-center align-items-center">
       <img class="logo" src="assets/imgs/logo.png" alt="Logo" />
@@ -88,11 +88,11 @@
   <mat-sidenav-content>
     <header class="topbar">
       <div>
-        <button mat-icon-button (click)="drawer.toggle()" aria-label="Toggle menu">
+        <button mat-icon-button class="menu-toggle" (click)="drawer.toggle()" aria-label="Toggle menu">
           <mat-icon>menu</mat-icon>
         </button>
 
-        <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle theme">
+        <button mat-icon-button class="theme-toggle" (click)="toggleTheme()" aria-label="Toggle theme">
           <mat-icon>{{ currentTheme === 'dark-mode' ? 'light_mode' : 'dark_mode' }}</mat-icon>
         </button>
       </div>
