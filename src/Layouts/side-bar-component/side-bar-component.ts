@@ -14,8 +14,8 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   styleUrl: './side-bar-component.css'
 })
 export class SideBarComponent {
-
-   isOpen = false;
+  
+  isOpen = true;
   settingsOpened = false;
   StocksOpened=false;
   hrOpened = false;
@@ -33,6 +33,10 @@ toggleStocks() {
 
   toggle() {
     this.isOpen = !this.isOpen;
+  }
+
+  onOpenedChange(opened: boolean) {
+    this.isOpen = opened;
   }
 
   ngOnInit(): void {
