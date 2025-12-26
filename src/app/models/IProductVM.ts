@@ -20,6 +20,11 @@ export interface ProductFilterationDto {
   name: string | null;
   isDeleted: boolean | null;
   categoryName: string | null;
-  pageSize: number;
-  page: number;
+  pageSize: number|null;
+  page: number|null;
+}
+export interface ProductWithSupplierDto
+{
+   productId: number|null;
+    productName: string|null
 }

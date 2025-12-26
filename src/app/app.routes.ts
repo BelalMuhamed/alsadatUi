@@ -1,3 +1,4 @@
+import { AddEditSupplierComponent } from './../Components/add-edit-supplier/add-edit-supplier.component';
 import { Routes } from '@angular/router';
 import { AuthLayout } from '../Layouts/auth-layout/auth-layout';
 import { SideBarComponent } from '../Layouts/side-bar-component/side-bar-component';
@@ -25,6 +26,7 @@ import { QuickAttendanceComponent } from '../Components/quick-attendance-compone
 import { DepartmentComponent } from '../Components/department-component/department-component';
 import { PublicHolidayComponent } from '../Components/public-holiday-component/public-holiday-component';
 import { TreeAccountsComponent } from '../Components/tree-accounts/tree-accounts.component';
+import { SupplierComponent } from '../Components/supplier/supplier.component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -48,6 +50,29 @@ export const routes: Routes = [
       { path: 'hr/attendance-record', component: HrAttendanceRecordComponent, canActivate: [authGuard]},
       { path: 'transactions/all', component: TransactionsComponent, canActivate: [authGuard]},
       { path: 'stores/all', component: StoresComponent, canActivate: [authGuard]},
+      {
+  path: 'supplier/all',
+  loadComponent: () =>
+    import('../Components/supplier/supplier.component')
+      .then(c => c.SupplierComponent),
+  canActivate: [authGuard]
+},
+{
+  path: 'supplier/add',
+  loadComponent: () =>
+    import('../Components/add-edit-supplier/add-edit-supplier.component')
+      .then(c => c.AddEditSupplierComponent),
+  canActivate: [authGuard]
+},
+{
+  path: 'supplier/edit/:id',
+  loadComponent: () =>
+    import('../Components/add-edit-supplier/add-edit-supplier.component')
+      .then(m => m.AddEditSupplierComponent),
+  canActivate: [authGuard]
+}
+,
+
       { path: 'stocks', component: StockComponent, canActivate: [authGuard]},
       { path: 'hr/employees', component: EmployeesListComponent, canActivate: [authGuard]},
       { path: 'hr/employee-salary/:empCode', component: EmployeeSalaryComponent, canActivate: [authGuard]},

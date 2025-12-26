@@ -122,9 +122,9 @@
    <div dir="rtl" class="paginator-container">
   <mat-paginator
     [length]="totalCount"
-    [pageSize]="filters.pageSize"
-    [pageIndex]="filters.page - 1"
-    [pageSizeOptions]="[5, 10, 20,30,50,100]"
+      [pageSize]="filters.pageSize"
+    [pageIndex]="(filters.page ?? 1) - 1"
+    [pageSizeOptions]="[5, 10, 20,50,70,100]"
     [showFirstLastButtons]="true"
     (page)="onPageChange($event)"
     aria-label="جدول المنتجات">

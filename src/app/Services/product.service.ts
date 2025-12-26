@@ -13,8 +13,8 @@ export class ProductService {
  constructor(private http: HttpClient) {}
  getAllProducts(filters: ProductFilterationDto): Observable<ApiResponse<ProductDto[]>> {
     let params = new HttpParams()
-      .set('pageSize', filters.pageSize)
-      .set('page', filters.page);
+      if (filters.pageSize != null) params = params.set('pageSize', filters.pageSize.toString());
+  if (filters.page != null) params = params.set('page', filters.page.toString());
 
     if (filters.name) params = params.set('name', filters.name);
     if (filters.categoryName) params = params.set('categoryName', filters.categoryName);
