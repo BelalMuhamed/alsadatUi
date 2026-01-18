@@ -1,0 +1,42 @@
+<div class="salary-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="page-title">أرصدة الإجازات الخاصة بي</h2>
+    </div>
+  </div>
+
+  <div class="filters mb-3">
+    <div class="filter-form d-flex gap-2 align-items-center" dir="rtl">
+      <div style="width:260px;">
+        <mat-form-field appearance="outline" class="custom-input-theme" style="width:100%;">
+          <mat-label>السنة</mat-label>
+          <input #yearInput matInput [value]="year" (input)="onYearInput(yearInput.value)" [matAutocomplete]="yearAuto" />
+          <mat-autocomplete #yearAuto="matAutocomplete" (optionSelected)="onYearSelected($event.option.value)">
+            <mat-option *ngFor="let y of years" [value]="y">{{y}}</mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+    </div>
+    <div class="w-100 d-flex justify-content-center mt-2">
+      <button mat-raised-button color="primary" (click)="load()" class="action-btn">تحميل</button>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="!summary || (summary.balances.length === 0)" class="empty-state  " role="alert" dir="rtl">لا توجد بيانات لعرضها</div>
+
+      <div *ngIf="summary && summary.balances.length > 0">
+        <table class="mat-elevation-z1" dir="rtl">
+          <thead>
+            <tr><th>النوع</th><th>المتبقي</th><th>المستخدم</th><th>معلق</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let b of summary.balances"><td>{{b.leaveTypeName}}</td><td>{{b.remaining}}</td><td>{{b.used}}</td><td>{{b.pending}}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

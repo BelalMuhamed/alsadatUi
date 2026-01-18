@@ -1,0 +1,12 @@
+<div class="page">
+  <h3>الطلبات المعلقة</h3>
+  <table mat-table [dataSource]="items" class="mat-elevation-z2">
+    <ng-container matColumnDef="employeeName"><th mat-header-cell *matHeaderCellDef>الموظف</th><td mat-cell *matCellDef="let e">{{e.employeeName}}</td></ng-container>
+    <ng-container matColumnDef="leaveTypeName"><th mat-header-cell *matHeaderCellDef>النوع</th><td mat-cell *matCellDef="let e">{{e.leaveTypeName}}</td></ng-container>
+    <ng-container matColumnDef="fromDate"><th mat-header-cell *matHeaderCellDef>من</th><td mat-cell *matCellDef="let e">{{e.fromDate | date}}</td></ng-container>
+    <ng-container matColumnDef="toDate"><th mat-header-cell *matHeaderCellDef>إلى</th><td mat-cell *matCellDef="let e">{{e.toDate | date}}</td></ng-container>
+    <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>إجراءات</th><td mat-cell *matCellDef="let e"><button mat-icon-button color="primary" (click)="approve(e)"><mat-icon>check</mat-icon></button><button mat-icon-button color="warn" (click)="reject(e)"><mat-icon>close</mat-icon></button></td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="['employeeName','leaveTypeName','fromDate','toDate','actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['employeeName','leaveTypeName','fromDate','toDate','actions']"></tr>
+  </table>
+</div>

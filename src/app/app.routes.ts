@@ -25,6 +25,16 @@ import { SalarySearchComponent } from '../Components/salary-search-component/sal
 import { QuickAttendanceComponent } from '../Components/quick-attendance-component/quick-attendance-component';
 import { DepartmentComponent } from '../Components/department-component/department-component';
 import { PublicHolidayComponent } from '../Components/public-holiday-component/public-holiday-component';
+import { EmployeeLoanComponent } from '../Components/employee-loan-component/employee-loan-component';
+
+import { LeaveRequestsComponent } from '../Components/leave/leave-requests-component/leave-requests-component';
+import { CreateLeaveRequestComponent } from '../Components/leave/create-leave-request/create-leave-request';
+import { PendingLeaveRequestsComponent } from '../Components/leave/pending-leave-requests/pending-leave-requests';
+import { LeaveBalanceComponent } from '../Components/leave/leave-balance/leave-balance-component';
+import { LeaveTypesComponent } from '../Components/leave/leave-types/leave-types.component';
+import { HrCreateLeaveComponent } from '../Components/leave/hr-create-leave/hr-create-leave.component';
+import { AllLeaveRequestsComponent } from '../Components/leave/all-leave-requests/all-leave-requests';
+
 import { TreeAccountsComponent } from '../Components/tree-accounts/tree-accounts.component';
 import { SupplierComponent } from '../Components/supplier/supplier.component';
 
@@ -81,6 +91,22 @@ export const routes: Routes = [
       { path: 'hr/salaries', component: SalarySearchComponent, canActivate: [authGuard]},
       { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard]},
       { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard]},
+      { path: 'hr/employee-loans', component: EmployeeLoanComponent, canActivate: [authGuard]},
+      { path: 'hr/my-leave-requests', component: LeaveRequestsComponent, canActivate: [authGuard] },
+      { path: 'hr/leave-request/create', component: CreateLeaveRequestComponent, canActivate: [authGuard] },
+      { path: 'hr/leave-request/create-hr', component: HrCreateLeaveComponent, canActivate: [authGuard] },
+      { path: 'hr/pending-leave-requests', component: PendingLeaveRequestsComponent, canActivate: [authGuard] },
+      { path: 'hr/leave-balance', component: LeaveBalanceComponent, canActivate: [authGuard] },
+      { path: 'hr/leave-wallets', loadComponent: () => import('../Components/leave/leave-wallets/leave-wallets.component').then(m => m.LeaveWalletsComponent), canActivate: [authGuard] },
+      { path: 'hr/leave-types', component: LeaveTypesComponent, canActivate: [authGuard] },
+      { path: 'hr/all-leave-requests', component: AllLeaveRequestsComponent, canActivate: [authGuard] },
+            
+      {
+        path: 'hr/employee-loan-summary',
+        loadComponent: () => import('../Components/employee-loan-component/employee-summary-page/employee-summary-page.component')
+          .then(m => m.EmployeeSummaryPageComponent),
+        canActivate: [authGuard]
+      },
       { path: 'hr/public-holidays', component: PublicHolidayComponent, canActivate: [authGuard]},
        { path: 'tree', component: TreeAccountsComponent, canActivate: [authGuard]},
 

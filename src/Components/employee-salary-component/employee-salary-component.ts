@@ -85,7 +85,6 @@ export class EmployeeSalaryComponent implements OnInit {
     }
 
     this.isLoading = true;
-    console.log('[Employee Salary] Fetching for', this.employeeCode, this.selectedMonth, this.selectedYear);
 
     this.employeeService.getEmployeeSalary(
       this.employeeCode,
@@ -93,7 +92,6 @@ export class EmployeeSalaryComponent implements OnInit {
       this.selectedYear
     ).subscribe({
       next: (res: any) => {
-        console.debug('[Employee Salary] Response', res);
         
         if (res?.isSuccess && res?.data) {
           this.salaryData = res.data;
@@ -105,7 +103,6 @@ export class EmployeeSalaryComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('[Employee Salary] Error', err);
         Swal.fire('خطأ', err?.error?.message ?? 'حدث خطأ في جلب البيانات', 'error');
       }
     });

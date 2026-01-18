@@ -1,0 +1,114 @@
+<div class="salary-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="page-title">قروض الموظفين</h2>
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="openAdd()" class="action-btn mx-3">
+          <mat-icon>add</mat-icon>
+          إضافة قرض
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="filters mb-3">
+    <div class="filter-form w-100 d-flex gap-2 align-items-center" dir="rtl">
+      <mat-form-field appearance="outline" class="flex-grow-1 custom-input-theme">
+        <mat-label>بحث عام</mat-label>
+        <input matInput [(ngModel)]="filters.q" placeholder="اسم أو كود الموظف أو رقم القرض" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme">
+        <mat-label>الحالة</mat-label>
+        <mat-select [(ngModel)]="filters.status">
+          <mat-option value="">الكل</mat-option>
+          <mat-option value="0">قيد المراجعة</mat-option>
+          <mat-option value="1">موافق</mat-option>
+          <mat-option value="2">مسدد</mat-option>
+          <mat-option value="3">مرفوض</mat-option>
+          <mat-option value="4">متأخر</mat-option>
+          <mat-option value="5">متعثر</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme">
+        <mat-label>من تاريخ</mat-label>
+        <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filters.fromDate" />
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="custom-input-theme">
+        <mat-label>إلى تاريخ</mat-label>
+        <input matInput [matDatepicker]="toPicker" [(ngModel)]="filters.toDate" />
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="w-100 d-flex justify-content-center ">
+      <button mat-raised-button color="primary" class="action-btn mx-3" (click)="applyFilters()"
+      > بحث </button>
+      <button mat-stroked-button class="action-btn " (click)="clearFilters()"
+      > إعادة تعيين</button>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading" class="text-center">جاري التحميل...</div>
+
+      <table mat-table [dataSource]="loans" class="mat-elevation-z1" dir="rtl" *ngIf="!isLoading">
+
+        <ng-container matColumnDef="loanNumber">
+          <th mat-header-cell *matHeaderCellDef>رقم القرض</th>
+          <td mat-cell *matCellDef="let l">{{ l.loanNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="employeeName">
+          <th mat-header-cell *matHeaderCellDef>الموظف</th>
+          <td mat-cell *matCellDef="let l">{{ l.employeeName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="loanAmount">
+          <th mat-header-cell *matHeaderCellDef>قيمة القرض</th>
+          <td mat-cell *matCellDef="let l">{{ l.loanAmount | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="remaining">
+          <th mat-header-cell *matHeaderCellDef>المتبقي</th>
+          <td mat-cell *matCellDef="let l">{{ l.remainingAmount | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="installment">
+          <th mat-header-cell *matHeaderCellDef>قيمة القسط</th>
+          <td mat-cell *matCellDef="let l">{{ l.installmentAmount | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>الحالة</th>
+          <td mat-cell *matCellDef="let l">{{ getStatusText(l) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>إجراءات</th>
+          <td mat-cell *matCellDef="let l">
+            <button mat-icon-button color="primary" *ngIf="getStatusCode(l) !== 1 && getStatusCode(l) !== 2 && getStatusCode(l) !== 3" (click)="openEdit(l)" title="تعديل"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button color="accent" (click)="openPayments(l)" title="مدفوعات" *ngIf="getStatusCode(l) === 1"><mat-icon>payments</mat-icon></button>
+            <button mat-icon-button color="primary" *ngIf="getStatusCode(l) === 0" (click)="approveLoan(l)" title="موافقة"><mat-icon>check</mat-icon></button>
+            <button mat-icon-button color="warn" *ngIf="getStatusCode(l) === 0" (click)="rejectLoan(l)" title="رفض"><mat-icon>close</mat-icon></button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['loanNumber','employeeName','loanAmount','remaining','installment','status','actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['loanNumber','employeeName','loanAmount','remaining','installment','status','actions'];"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <div dir="rtl" class="paginator-container">
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[5,10,25,50]" (page)="onPageChange($event)" [showFirstLastButtons]="true"></mat-paginator>
+  </div>
+
+  <div *ngIf="!isLoading && (!loans || loans.length === 0)" class="empty-state text-center">لا توجد قروض متاحة</div>
+</div>

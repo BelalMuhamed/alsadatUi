@@ -146,7 +146,6 @@ export class SalesInvoicesComponent {
     this.filters.dates=[startDate,endDate];
   }
   this.filters.page = 1;
-  console.log(this.filters);
 
   this.loadInvoices();
 }

@@ -85,11 +85,10 @@ export class EmployeesListComponent implements OnInit {
 
   getEmployees(): void {
     this.isLoading = true;
-    console.log('[Employees] Fetching with filters', this.filters);
 
     this.employeeService.getEmployeesByFilter(this.paginationParams, this.filters).subscribe({
       next: (res: any) => {
-        console.debug('[Employees] Server response', res);
+        // server response received (debug logging removed)
 
         // Normalize response
         let items: EmployeeDTo[] = [];
@@ -115,7 +114,7 @@ export class EmployeesListComponent implements OnInit {
         serverPage = Number(res?.currentPage ?? res?.CurrentPage ?? res?.pageNumber ?? res?.PageNumber ?? this.paginationParams.pageNumber) || this.paginationParams.pageNumber || 1;
         serverPageSize = Number(res?.pageSize ?? res?.PageSize ?? this.paginationParams.pageSize) || this.paginationParams.pageSize || 10;
 
-        console.debug('[Employees] Parsed items count', items?.length ?? 0, 'totalCount', totalCount);
+        // parsed items count available
 
         // Update table
         this.dataSource = new MatTableDataSource<EmployeeDTo>(items || []);
@@ -135,7 +134,6 @@ export class EmployeesListComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('[Employees] Error fetching data', err);
         Swal.fire('خطأ', err?.error?.message ?? 'حدث خطأ في تحميل البيانات', 'error');
       }
     });

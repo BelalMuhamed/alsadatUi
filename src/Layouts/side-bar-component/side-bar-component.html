@@ -1,4 +1,3 @@
-
 <mat-sidenav-container class="layout-container" dir="rtl">
   <mat-sidenav #drawer mode="side" [opened]="true" position="start" [fixedInViewport]="true" fixedTopGap="0" class="sidenav fixed-sidenav" (openedChange)="onOpenedChange($event)" [class.closed]="!isOpen">
 
@@ -80,12 +79,31 @@
         <li><a routerLink='hr/quick-attendance' routerLinkActive="active">التسجيل السريع</a></li>
         <li><a routerLink='hr/roles' routerLinkActive="active">الأدوار</a></li>
         <li><a routerLink='hr/employees/add' routerLinkActive="active">إضافة موظف</a></li>
-
         <li><a routerLink='hr/employees' routerLinkActive="active">إدارة الموظفين</a></li>
         <li><a routerLink='hr/salaries' routerLinkActive="active">المرتبات</a></li>
         <li><a routerLink='hr/departments' routerLinkActive="active">الأقسام</a></li>
-        <li><a routerLink='hr/public-holidays' routerLinkActive="active">الإجازات الثانوية</a></li>
-  </ul>
+        <li><a routerLink='hr/employee-loans' routerLinkActive="active">قروض الموظفين</a></li>
+        <li><a routerLink='hr/employee-loan-summary' routerLinkActive="active">تفاصيل قروض الموظف</a></li>
+       <li> 
+          <div class="dropdown-header" (click)="leaveOpen = !leaveOpen">
+          <span>الاجازات</span>
+          <mat-icon>
+            {{ leaveOpen ? 'expand_less' : 'expand_more' }}
+          </mat-icon>
+          </div>
+          <ul *ngIf="leaveOpen" >  
+            <li><a routerLink='hr/public-holidays' routerLinkActive="active">الإجازات الثانوية</a></li>
+            <li><a routerLink="hr/leave-types" routerLinkActive="active">أنواع الإجازات</a></li>
+            <li><a routerLink="hr/all-leave-requests" routerLinkActive="active">طلبات الإجازات</a></li>
+            <li><a routerLink="hr/my-leave-requests" routerLinkActive="active">طلبات الإجازة الخاصة بي</a></li>
+             <li><a routerLink='hr/leave-request/create-hr' routerLinkActive="active">إنشاء طلب إجازة (HR)</a></li>
+            <li><a routerLink="hr/pending-leave-requests" routerLinkActive="active">الطلبات المعلقة</a></li>
+            <li><a routerLink="hr/leave-wallets" routerLinkActive="active">محفظة الإجازات</a></li>
+            <li><a routerLink="hr/leave-balance" routerLinkActive="active">أرصدة الإجازات</a></li>
+          </ul>
+        </li>
+      </ul>
+
 </li>
 
 

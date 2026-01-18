@@ -98,10 +98,9 @@ export class ProductComponent {
     GetAllProducts()
     {
       this.ProductSubscription.add(this.ProductService.getAllProducts(this.filters).subscribe({
-        next:(res)=>{
-          console.log(res);
+          next:(res)=>{
 
-           this.isLoaded=true;
+            this.isLoaded=true;
          this.dataSource.data = res.data;
             this.totalCount = res.totalCount;
 
@@ -120,7 +119,7 @@ export class ProductComponent {
       }))
     }
      ToggleCategoryStatus(dto: ProductDto, checked: boolean) {
-    console.log(dto);
+    // dto prepared (logging removed)
 
       dto.isDeleted = !checked;
       dto.deleteAt=new Date().toISOString();
@@ -180,8 +179,7 @@ export class ProductComponent {
           this.categories=res.data;
         }
         ,error:(err)=>{
-          console.log(err);
-
+          // error handled silently
         }
       }))
     }
@@ -197,7 +195,7 @@ applyFilters() {
     categoryName: formValues.categoryName
   };
 
-  console.log(this.filters);
+  // filters updated (logging removed)
   this.GetAllProducts();
 }
 ReAsign()

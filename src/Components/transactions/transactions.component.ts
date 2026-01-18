@@ -117,7 +117,7 @@ viewTransactionProducts(transaction: StoreTransactionDto) {
       });
     },
     error: (err) => {
-      console.error(err);
+      // error handled silently
       this.loadingProducts = false;
     }
   });}
@@ -134,11 +134,11 @@ viewTransactionProducts(transaction: StoreTransactionDto) {
         {
           this._TransactionSubscription.add(this._TransactionService.getAllTransaction(this.transactionFilters).subscribe({
             next:(res)=>{
-      this.dataSource.data = res.data;
-                this.totalCount=res.totalCount;
-                this.isLoading = false;
+              this.dataSource.data = res.data;
+                        this.totalCount=res.totalCount;
+                        this.isLoading = false;
 
-            },
+                    },
             error:(err)=>{
                 this.isLoading = false;
 
@@ -194,7 +194,6 @@ const filter: StoreFilteration = {
   this._StoreSubscription.add(this._StoreService.getAllStores(filter).subscribe({
     next:(res)=>{
 this.Stores=res.data;
-console.log(this.Stores);
 
     },error:(err)=>{
 

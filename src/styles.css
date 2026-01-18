@@ -53,6 +53,19 @@ body.dark-mode .mat-calendar-arrow {
   --text-high: #0c5460;
   --text-safe: #155724;
   --text-deleted: white;
+
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --primary: #1565c0;
+  --primary-contrast: #ffffff;
+  --accent: #d81b60;
+  --danger: #d32f2f;
+  --border: #e5e7eb;
+  --card-shadow: 0 1px 3px rgba(16,24,40,0.06);
+  --radius: 8px;
+  --table-row-hover: rgba(21,101,192,0.06);
 }
 
 body.dark-mode {
@@ -823,6 +836,83 @@ body.dark-mode .custom-select-panel .mat-mdc-list .mat-mdc-list-item:hover {
 :host-context(body.dark-mode) .mat-mdc-autocomplete-panel .mat-mdc-option:hover {
   background: var(--hover-bg) !important;
   color: var(--gold) !important;
+}
+
+/* Overlay-level fixes: panels live under body > .cdk-overlay-container so :host-context won't reach them.
+   Use body.dark-mode selectors to force dark theme on overlay panels (autocomplete, select, dialog). */
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel,
+body.dark-mode .cdk-overlay-container .mat-mdc-autocomplete-panel,
+body.dark-mode .cdk-overlay-container .mat-select-panel,
+body.dark-mode .cdk-overlay-container .mat-mdc-select-panel {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-option,
+body.dark-mode .cdk-overlay-container .mat-mdc-option {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-option:hover,
+body.dark-mode .cdk-overlay-container .mat-mdc-option:hover,
+body.dark-mode .cdk-overlay-container .mat-option.mat-active,
+body.dark-mode .cdk-overlay-container .mat-mdc-option.mdc-list-item--selected {
+  background: rgba(212,175,55,0.14) !important;
+  color: #fff !important;
+}
+
+/* Dialog containers opened from overlay (payments dialog) */
+body.dark-mode .cdk-overlay-container .mat-dialog-container {
+  background: transparent !important; /* keep dialog component styles, but ensure body behind is dark */
+  color: #e8e8e8 !important;
+}
+
+/* Prevent overlay panes from showing default white backgrounds in dark mode */
+body.dark-mode .cdk-overlay-pane {
+  background: transparent !important;
+}
+
+/* Remove extra padding in dialog container so the dialog card fully controls background */
+body.dark-mode .mat-dialog-container {
+  padding: 0 !important;
+}
+
+/* Ensure dialog card content (payments, loan dialogs) use dark surfaces inside overlay */
+body.dark-mode .cdk-overlay-container .mat-card,
+body.dark-mode .cdk-overlay-container .payments-card,
+body.dark-mode .cdk-overlay-container .loan-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+/* Form field inputs inside overlays */
+body.dark-mode .cdk-overlay-container .mat-form-field .mat-input-element,
+body.dark-mode .cdk-overlay-container .mat-form-field .mat-mdc-input-element,
+body.dark-mode .cdk-overlay-container input.mat-input-element,
+body.dark-mode .cdk-overlay-container input.mat-mdc-input-element {
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-form-field-appearance-outline .mat-form-field-outline,
+body.dark-mode .cdk-overlay-container .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Scrollbars for overlay panels */
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-select-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-mdc-autocomplete-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-mdc-select-panel::-webkit-scrollbar {
+  width: 10px;
+}
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel::-webkit-scrollbar-thumb,
+body.dark-mode .cdk-overlay-container .mat-select-panel::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
 }
 
 /* Also ensure select panel uses readable colors in light mode */

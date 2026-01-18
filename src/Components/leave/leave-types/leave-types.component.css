@@ -1,0 +1,25 @@
+.page { padding: 16px; }
+.toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+mat-card { padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--card-shadow); }
+
+/* Title color and alignment to match other HR pages */
+.toolbar h3 { color: var(--gold); font-weight:700; margin:0; }
+
+/* Dark / Light mode for mat-card similar to public-holiday styles */
+:host-context(body.dark-mode) mat-card { background: #1e1e1e; color: #e8e8e8; }
+:host-context(body.light-mode) mat-card { background: #fff; color: #333; }
+
+/* table header/body styles similar to public-holiday */
+table thead th { color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); padding: 12px; text-align:center; }
+table tbody td { padding: 12px; border-bottom: 1px dashed var(--border); text-align:center; }
+table tbody tr:hover { background: var(--table-row-hover); }
+
+/* re-use app paginator container styles to match loans page */
+.paginator-container { display:flex; justify-content:center; margin-top:12px; padding:8px; }
+
+table { width:100%; margin-bottom:12px; }
+mat-paginator { margin-top:8px; }
+
+/* dialog actions button spacing */
+.dialog-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px }
+.action-btn { min-width:120px; height:36px; border-radius:8px }

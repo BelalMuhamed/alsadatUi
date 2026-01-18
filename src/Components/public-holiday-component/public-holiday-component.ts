@@ -75,7 +75,7 @@ export class PublicHolidayComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error(err);
+        // error handled silently
         Swal.fire('خطأ', err?.error?.message ?? 'حدث خطأ', 'error');
       }
     });

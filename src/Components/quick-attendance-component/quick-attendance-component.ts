@@ -107,7 +107,7 @@ export class QuickAttendanceComponent implements OnInit {
       inputTime: this.currentTime
     };
 
-    console.log('[Quick Attendance] Submitting (email):', { ...payload, type: this.attendanceType });
+    // quick attendance payload prepared (logging removed)
 
     const request = this.attendanceType === 'checkIn'
       ? this.attendanceService.checkInByEmployeeEmail({ employeeEmail: email, date: this.currentDate, inputTime: this.currentTime })
@@ -140,7 +140,6 @@ export class QuickAttendanceComponent implements OnInit {
       },
       error: (err) => {
         this.isSubmitting = false;
-        console.error('[Quick Attendance] Error:', err);
 
         let errorMessage = 'حدث خطأ أثناء التسجيل';
         if (err?.error?.message) {

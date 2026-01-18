@@ -32,13 +32,12 @@ abs(value: number): number {
     this.treeAccountsService.getTreeAccounts().subscribe({
       next: (data) => {
         this.accounts = data
-        console.log(data);
 
         this.flatAccounts = this.flattenTree(data)
         this.loading = false
       },
       error: (error) => {
-        console.error("Error loading accounts:", error)
+        // error handled silently
         this.loading = false
       },
     })
@@ -97,22 +96,22 @@ abs(value: number): number {
   }
 
   onAdd(account?: TreeAccountDto): void {
-    console.log("Add account", account)
+    // add account invoked
     // Implement add logic or open dialog
   }
 
   onEdit(account: TreeAccountDto): void {
-    console.log("Edit account", account)
+    // edit account invoked
     // Implement edit logic or open dialog
   }
 
   onDelete(account: TreeAccountDto): void {
-    console.log("Delete account", account)
+    // delete account invoked
     // Implement delete logic with confirmation
   }
 
   onView(account: TreeAccountDto): void {
-    console.log("View account details", account)
+    // view account details invoked
     // Implement view details
   }
 

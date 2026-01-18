@@ -1,0 +1,9 @@
+.page { padding: 16px; }
+.hr-leave-card { max-width: 900px; margin: 0 auto; }
+.grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.dates { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
+.full-width { width: 100%; }
+
+/* Dark mode alignment with other dialogs/pages */
+:host-context(body.dark-mode) .hr-leave-card { background: #1e1e1e; color: #e8e8e8; border: 1px solid rgba(255,255,255,0.04); }
+:host-context(body.dark-mode) .mat-form-field-infix { color: #e8e8e8; }

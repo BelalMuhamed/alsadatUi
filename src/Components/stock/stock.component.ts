@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon';
-
 import { HttpClientModule } from '@angular/common/http';
 import { Component, inject, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
@@ -90,7 +88,6 @@ getQuantity(element: StockDto, productName: string): number {
     this._StockSubscription.add(
       this._StockService.getAllStocks(this.filters).subscribe({
         next: (res) => {
-          console.log(res);
           if (res?.data?.length > 0) {
             this.dataSource.data = res.data;
 
@@ -110,7 +107,6 @@ getQuantity(element: StockDto, productName: string): number {
         },
         error: (err) => {
           this.isLoading = false;
-          console.error(err);
         }
       })
     );
@@ -148,8 +144,7 @@ const filter: StoreFilteration = {
 };
   this._StoreSubscription.add(this._StoreService.getAllStores(filter).subscribe({
     next:(res)=>{
-this.Stores=res.data;
-console.log(this.Stores);
+  this.Stores=res.data;
 
     },error:(err)=>{
 

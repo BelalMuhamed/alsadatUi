@@ -104,7 +104,6 @@ export class DisAndMerchantComponent {
   this.dataSource.data = res.data;
             this.totalCount=res.totalCount;
             this.isLoading = false;
-            console.log(res.data);
 
         },
         error:(err)=>{
@@ -124,24 +123,20 @@ export class DisAndMerchantComponent {
       this.GetAllDisAdnMerchants();
     }
     ToggleCategoryStatus(dto: DistributorsAndMerchantsDto, checked: boolean) {
-    console.log(dto);
-
       dto.isDelted = !checked;
       dto.deletedAt=new Date().toISOString();
       dto.deletedBy=localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail')
       this._DisAndMerchantService.EditDisOrMerchant(dto).subscribe({
           next: (res) => {
 
-            console.log(res);
-
-      Swal.fire({
+      
+          Swal.fire({
         icon: res.isSuccess ? 'success' : 'error',
         title: res.message ?? res.data,
       });
        this.GetAllDisAdnMerchants();
     },
     error: (err) => {
-      console.error(err);
       Swal.fire('Error', 'Something went wrong', 'error');
        this.GetAllDisAdnMerchants();
     }
@@ -224,7 +219,6 @@ this.InitSearchForm();
     private dialog =inject(MatDialog);
 
 openEditPopup(row: DistributorsAndMerchantsDto) {
-  console.log(row);
 
   const dialogRef = this.dialog.open(AddEditMerchDisPopupComponent, {
     width: '450px',

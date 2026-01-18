@@ -1,0 +1,12 @@
+.salary-container { padding: 18px; max-width: 1100px; margin: 0 auto; min-height: calc(100vh - 80px); }
+.header-section { margin-bottom: 12px; }
+.page-title { color: var(--gold); text-align: left; font-weight: 700; }
+.filters .filter-form { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.custom-input-theme { min-width: 140px; }
+mat-card { padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--card-shadow); }
+:host-context(body.dark-mode) mat-card { background: #1e1e1e; color: #e8e8e8; }
+:host-context(body.light-mode) mat-card { background: #fff; }
+table { width:100%; border-collapse:separate; border-spacing:0; }
+thead th { color: var(--muted); font-weight:600; text-align:right; border-bottom:1px solid var(--border); padding:12px; }
+tbody td { padding:12px; border-bottom:1px dashed var(--border); }
+.empty-state { color: var(--muted); padding: 18px 0; }
