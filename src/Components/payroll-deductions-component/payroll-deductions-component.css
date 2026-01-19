@@ -1,0 +1,7 @@
+.salary-container { padding: 12px; }
+.header-section { margin-bottom: 6px; }
+.page-title { margin:0; }
+.filters { margin-bottom:12px; }
+.action-btn { min-width:120px; }
+.paginator-container { margin-top:12px; display:flex; justify-content:center; }
+table { width:100%; }

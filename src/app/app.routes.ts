@@ -34,6 +34,8 @@ import { LeaveBalanceComponent } from '../Components/leave/leave-balance/leave-b
 import { LeaveTypesComponent } from '../Components/leave/leave-types/leave-types.component';
 import { HrCreateLeaveComponent } from '../Components/leave/hr-create-leave/hr-create-leave.component';
 import { AllLeaveRequestsComponent } from '../Components/leave/all-leave-requests/all-leave-requests';
+import { PayrollDeductionsComponent } from '../Components/payroll-deductions-component/payroll-deductions-component';
+import { EmployeeDeductionsSummaryComponent } from '../Components/payroll-deductions-summary/employee-deductions-summary.component';
 
 import { TreeAccountsComponent } from '../Components/tree-accounts/tree-accounts.component';
 import { SupplierComponent } from '../Components/supplier/supplier.component';
@@ -100,6 +102,8 @@ export const routes: Routes = [
       { path: 'hr/leave-wallets', loadComponent: () => import('../Components/leave/leave-wallets/leave-wallets.component').then(m => m.LeaveWalletsComponent), canActivate: [authGuard] },
       { path: 'hr/leave-types', component: LeaveTypesComponent, canActivate: [authGuard] },
       { path: 'hr/all-leave-requests', component: AllLeaveRequestsComponent, canActivate: [authGuard] },
+      { path: 'hr/payroll-deductions', component: PayrollDeductionsComponent, canActivate: [authGuard] },
+      { path: 'hr/employee-deductions', component: EmployeeDeductionsSummaryComponent, canActivate: [authGuard] },
             
       {
         path: 'hr/employee-loan-summary',

@@ -1,0 +1,33 @@
+<div class="salary-container">
+  <div class="header-section">
+    <h2 class="page-title">تفاصيل خصومات الموظف</h2>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading">جاري التحميل...</div>
+
+      <div *ngIf="!isLoading">
+        <div class="summary-row mb-3">
+          <strong>الموظف:</strong> {{empCode}}
+          <span style="margin-left:16px"><strong>عدد الخصومات:</strong> {{totals?.totalRecords ?? totals?.TotalRecords ?? items.length}}</span>
+          <span style="margin-left:16px"><strong>مجموع الساعات:</strong> {{totals?.totalDeductionHours ?? '-'}}</span>
+          <span style="margin-left:16px"><strong>مجموع المبلغ:</strong> {{totals?.totalMoneyAmount ?? totals?.TotalMoneyAmount ?? '-'}}</span>
+        </div>
+
+        <table mat-table [dataSource]="items" class="mat-elevation-z1" dir="rtl">
+          <ng-container matColumnDef="date"><th mat-header-cell *matHeaderCellDef>التاريخ</th><td mat-cell *matCellDef="let e">{{e.deductionDate | date}}</td></ng-container>
+          <ng-container matColumnDef="hours"><th mat-header-cell *matHeaderCellDef>ساعات</th><td mat-cell *matCellDef="let e">{{e.deductionAmount}}</td></ng-container>
+          <ng-container matColumnDef="money"><th mat-header-cell *matHeaderCellDef>المبلغ</th><td mat-cell *matCellDef="let e">{{e.monayAmount}}</td></ng-container>
+          <ng-container matColumnDef="reason"><th mat-header-cell *matHeaderCellDef>السبب</th><td mat-cell *matCellDef="let e">{{e.deductionReason}}</td></ng-container>
+          <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>إجراءات</th><td mat-cell *matCellDef="let e">
+            <button mat-icon-button *ngIf="e.isDeleted" (click)="restore(e)"><mat-icon>restore</mat-icon></button>
+          </td></ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['date','hours','money','reason','actions']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['date','hours','money','reason','actions'];"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
