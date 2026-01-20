@@ -1,0 +1,578 @@
+<div class="payroll-container">
+  <div class="header-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>إدارة الرواتب والمرتبات</h2>
+      <div class="action-buttons">
+        <button mat-stroked-button color="primary" (click)="printPayroll()" class="action-btn mx-2">
+          <mat-icon>print</mat-icon>
+          طباعة
+        </button>
+        <button mat-stroked-button color="accent" (click)="goBack()" class="action-btn mx-2">
+          <mat-icon>arrow_back</mat-icon>
+          رجوع
+        </button>
+      </div>
+    </div>
+
+    <div class="summary-cards" dir="rtl" *ngIf="summary">
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">إجمالي الموظفين</span>
+          <span class="value primary">{{ summary.totalEmployees }}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">الرواتب المنشأة</span>
+          <span class="value info">{{ summary.generatedCount }}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">المسجلة محاسبياً</span>
+          <span class="value warning">{{ summary.postedCount }}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">المدفوعة</span>
+          <span class="value success">{{ summary.paidCount }}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">إجمالي الرواتب</span>
+          <span class="value primary">{{ formatCurrency(summary.totalNetSalary) }}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">الخصومات</span>
+          <span class="value danger">{{ formatCurrency(summary.totalDeductions) }}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">الإضافي</span>
+          <span class="value success">{{ formatCurrency(summary.totalOvertime) }}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card">
+        <div class="summary-item">
+          <span class="label">إجمالي الأساسي</span>
+          <span class="value primary">{{ formatCurrency(summary.totalBasicSalary) }}</span>
+        </div>
+      </mat-card>
+    </div>
+
+    <hr style="border-color: var(--gold); opacity: 0.5; margin: 20px 0;">
+
+  </div>
+
+  <div *ngIf="isLoading" class="text-center loading-state">
+    <span style="color: var(--gold);">جاري التحميل...</span>
+  </div>
+
+  <div *ngIf="!isLoading" class="payroll-content">
+    <!-- Tabs Navigation -->
+    <mat-tab-group dir="rtl" class="payroll-tabs">
+
+      <!-- Tab 1: Generate Single Payroll -->
+      <mat-tab label="إنشاء كشف راتب">
+        <ng-template mat-tab-label>
+          <mat-icon>person_add</mat-icon>
+          <span class="tab-label">إنشاء كشف راتب فردي</span>
+        </ng-template>
+
+        <mat-card class="generate-card">
+          <mat-card-header>
+            <mat-card-title>إنشاء كشف راتب فردي</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="generate-form" dir="rtl">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>الموظف (البحث بالاسم أو الكود)</mat-label>
+                <input matInput [(ngModel)]="generateEmployeeFilter" (ngModelChange)="onEmployeeFilterChange($event)" [matAutocomplete]="auto" placeholder="ابحث بالاسم أو الكود" />
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
+                  <mat-option *ngIf="employeesLoading" disabled>
+                    <div class="d-flex align-items-center justify-content-center">
+                      <mat-spinner diameter="18" class="me-2"></mat-spinner>
+                      جاري التحميل...
+                    </div>
+                  </mat-option>
+
+                  <mat-option *ngFor="let e of filteredEmployees" [value]="e">
+                    <div class="d-flex justify-content-between w-100 employee-option">
+                      <div class="employee-name">{{ e.fullName || e.name || 'بدون اسم' }}</div>
+                      <div class="employee-code text-muted">{{ e.employeeCode || e.code }}</div>
+                    </div>
+                  </mat-option>
+
+                  <mat-option *ngIf="!employeesLoading && filteredEmployees.length === 0 && generateEmployeeFilter" disabled>
+                    لا توجد نتائج لـ "{{ generateEmployeeFilter }}"
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>الشهر</mat-label>
+                <mat-select [(ngModel)]="generateMonth">
+                  <mat-option *ngFor="let month of months" [value]="month.id">
+                    {{ month.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>السنة</mat-label>
+                <mat-select [(ngModel)]="generateYear">
+                  <mat-option *ngFor="let year of years" [value]="year">
+                    {{ year }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <button mat-raised-button color="primary" (click)="generateSinglePayroll()" class="full-width action-btn">
+                <mat-icon>add</mat-icon>
+                إنشاء الكشف
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 2: Bulk Payroll Generation -->
+      <mat-tab label="إنشاء جماعي">
+        <ng-template mat-tab-label>
+          <mat-icon>people</mat-icon>
+          <span class="tab-label">إنشاء رواتب جماعي</span>
+        </ng-template>
+
+        <mat-card class="bulk-card">
+          <mat-card-header>
+            <mat-card-title>إنشاء رواتب جماعي</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="bulk-form" dir="rtl">
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>الشهر</mat-label>
+                  <mat-select [(ngModel)]="bulkMonth">
+                    <mat-option *ngFor="let month of months" [value]="month.id">
+                      {{ month.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>السنة</mat-label>
+                  <mat-select [(ngModel)]="bulkYear">
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>طريقة الدفع</mat-label>
+                  <mat-select [(ngModel)]="bulkPaymentMethod">
+                    <mat-option *ngFor="let method of paymentMethods" [value]="method.value">
+                      {{ method.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-slide-toggle [(ngModel)]="bulkIncludeActiveOnly" class="toggle-item">
+                  الموظفين النشطين فقط
+                </mat-slide-toggle>
+
+                <mat-slide-toggle [(ngModel)]="bulkAutoPost" class="toggle-item">
+                  تسجيل تلقائي في المحاسبة
+                </mat-slide-toggle>
+              </div>
+
+              <button mat-raised-button color="primary" (click)="generateBulkPayroll()" class="full-width action-btn">
+                <mat-icon>done_all</mat-icon>
+                إنشاء الرواتب الجماعية
+              </button>
+            </div>
+
+            <!-- Bulk Result -->
+            <div *ngIf="bulkResult" class="bulk-result" dir="rtl">
+              <mat-card class="result-summary">
+                <mat-card-header>
+                  <mat-card-title>نتائج العملية الجماعية</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="result-grid">
+                    <div class="result-item">
+                      <span class="label">إجمالي الموظفين</span>
+                      <span class="value">{{ bulkResult.totalEmployees }}</span>
+                    </div>
+                    <div class="result-item">
+                      <span class="label">نجح</span>
+                      <span class="value success">{{ bulkResult.processedSuccessfully }}</span>
+                    </div>
+                    <div class="result-item">
+                      <span class="label">فشل</span>
+                      <span class="value danger">{{ bulkResult.failed }}</span>
+                    </div>
+                    <div class="result-item">
+                      <span class="label">إجمالي الرواتب</span>
+                      <span class="value primary">{{ formatCurrency(bulkResult.totalNetSalary) }}</span>
+                    </div>
+                  </div>
+
+                  <mat-expansion-panel *ngIf="bulkResult.details.length > 0" class="details-panel">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>تفاصيل العملية ({{ bulkResult.details.length }} عنصر)</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    
+                    <div class="details-table" dir="rtl">
+                      <div class="table-row header-row">
+                        <div class="table-cell">كود الموظف</div>
+                        <div class="table-cell">الاسم</div>
+                        <div class="table-cell">القسم</div>
+                        <div class="table-cell">الراتب الأساسي</div>
+                        <div class="table-cell">الحالة</div>
+                      </div>
+                      <div class="table-row" *ngFor="let detail of bulkResult.details">
+                        <div class="table-cell">{{ detail.employeeCode }}</div>
+                        <div class="table-cell">{{ detail.employeeName }}</div>
+                        <div class="table-cell">{{ detail.department }}</div>
+                        <div class="table-cell primary">{{ formatCurrency(detail.basicSalary) }}</div>
+                        <div class="table-cell">
+                          <span [ngClass]="detail.status === 'Success' ? 'badge success' : 'badge danger'">
+                            {{ detail.status === 'Success' ? 'نجح' : 'فشل' }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 3: Payroll List & Filter -->
+      <mat-tab label="قائمة الرواتب">
+        <ng-template mat-tab-label>
+          <mat-icon>list</mat-icon>
+          <span class="tab-label">قائمة الرواتب</span>
+        </ng-template>
+
+        <mat-card class="filter-card">
+          <mat-card-header>
+            <mat-card-title>تصفية البيانات</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="filter-form" dir="rtl">
+              <div class="filter-row">
+                <mat-form-field appearance="outline" class="filter-field">
+                  <mat-label>الشهر</mat-label>
+                  <mat-select [(ngModel)]="filterMonth">
+                    <mat-option [value]="null">الكل</mat-option>
+                    <mat-option *ngFor="let month of months" [value]="month.id">
+                      {{ month.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-field">
+                  <mat-label>السنة</mat-label>
+                  <mat-select [(ngModel)]="filterYear">
+                    <mat-option [value]="null">الكل</mat-option>
+                    <mat-option *ngFor="let year of years" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-field">
+                  <mat-label>الحالة</mat-label>
+                  <mat-select [(ngModel)]="filterStatus">
+                    <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+                      {{ status.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-field">
+                  <mat-label>الحد الأدنى للراتب</mat-label>
+                  <input matInput type="number" [(ngModel)]="filterMinSalary" placeholder="0">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-field">
+                  <mat-label>الحد الأقصى للراتب</mat-label>
+                  <input matInput type="number" [(ngModel)]="filterMaxSalary" placeholder="∞">
+                </mat-form-field>
+              </div>
+
+              <div class="filter-actions">
+                <button mat-raised-button color="primary" (click)="loadPayrolls()" class="action-btn">
+                  <mat-icon>search</mat-icon>
+                  بحث
+                </button>
+                <button mat-stroked-button (click)="resetFilters()" class="action-btn">
+                  <mat-icon>clear</mat-icon>
+                  إعادة تعيين
+                </button>
+                <button mat-stroked-button color="accent" (click)="exportToExcel()" class="action-btn">
+                  <mat-icon>download</mat-icon>
+                  تصدير Excel
+                </button>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Payroll List -->
+        <mat-card class="list-card" *ngIf="paginatedPayrolls.length > 0">
+          <mat-card-header>
+            <mat-card-title>
+              قائمة الرواتب
+              <span class="list-count">({{ allPayrolls.length }} كشف)</span>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="selection-actions" dir="rtl">
+              <mat-checkbox [checked]="selectedPayrollIds.length === paginatedPayrolls.length" 
+                           (change)="selectedPayrollIds.length === paginatedPayrolls.length ? deselectAllPayrolls() : selectAllPayrolls()">
+                تحديد الكل
+              </mat-checkbox>
+              <span class="selection-info">
+                تم تحديد {{ selectedPayrollIds.length }} من {{ allPayrolls.length }}
+              </span>
+            </div>
+
+            <div class="payroll-table" dir="rtl">
+              <div class="table-row header-row">
+                <div class="table-cell checkbox-cell"></div>
+                <div class="table-cell">كود الموظف</div>
+                <div class="table-cell">الاسم</div>
+                <div class="table-cell">الفترة</div>
+                <div class="table-cell">الراتب الأساسي</div>
+                <div class="table-cell">الإضافي</div>
+                <div class="table-cell">الخصومات</div>
+                <div class="table-cell">الصافي</div>
+                <div class="table-cell">الحالة</div>
+                <div class="table-cell">الإجراءات</div>
+              </div>
+
+              <div class="table-row" *ngFor="let payroll of paginatedPayrolls">
+                <div class="table-cell checkbox-cell">
+                  <mat-checkbox [checked]="isPayrollSelected(payroll.id)" 
+                               (change)="togglePayrollSelection(payroll.id)">
+                  </mat-checkbox>
+                </div>
+                <div class="table-cell">{{ payroll.employeeCode }}</div>
+                <div class="table-cell">{{ payroll.employeeName }}</div>
+                <div class="table-cell">{{ payroll.payPeriod | date:'MM/yyyy' }}</div>
+                <div class="table-cell primary">{{ formatCurrency(payroll.basicSalary) }}</div>
+                <div class="table-cell success">{{ formatCurrency(payroll.overtimePay) }}</div>
+                <div class="table-cell danger">{{ formatCurrency(payroll.deductions) }}</div>
+                <div class="table-cell primary">{{ formatCurrency(payroll.netSalary) }}</div>
+                <div class="table-cell">
+                  <span class="status-badge" [ngStyle]="{ background: getStatusColor(payroll.status) }">
+                    {{ getStatusText(payroll.status) }}
+                  </span>
+                </div>
+                <div class="table-cell actions">
+                  <button mat-icon-button matTooltip="تفاصيل" (click)="selectPayroll(payroll)">
+                    <mat-icon>info</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="تسجيل محاسبي" 
+                         *ngIf="payroll.status === 'Generated'"
+                         (click)="postToAccounting(payroll.id)">
+                    <mat-icon>assignment</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="دفع" 
+                         *ngIf="payroll.status === 'Posted'"
+                         (click)="markAsPaid(payroll.id, 'BankTransfer')">
+                    <mat-icon>done</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" dir="rtl" *ngIf="totalPages > 1">
+              <button mat-icon-button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+                <mat-icon>navigate_before</mat-icon>
+              </button>
+              <span class="page-info">
+                الصفحة {{ currentPage }} من {{ totalPages }}
+              </span>
+              <button mat-icon-button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+                <mat-icon>navigate_next</mat-icon>
+              </button>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="bulk-actions" *ngIf="selectedPayrollIds.length > 0">
+              <button mat-raised-button color="primary" (click)="postBulkToAccounting()" class="action-btn">
+                <mat-icon>done_all</mat-icon>
+                تسجيل محاسبي جماعي ({{ selectedPayrollIds.length }})
+              </button>
+              <button mat-raised-button color="accent" (click)="markBulkAsPaid()" class="action-btn">
+                <mat-icon>check_circle</mat-icon>
+                دفع جماعي ({{ selectedPayrollIds.length }})
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="empty-state" *ngIf="!isLoading && paginatedPayrolls.length === 0">
+          <mat-card-content class="text-center">
+            <mat-icon class="empty-icon">assignment</mat-icon>
+            <p>لا توجد بيانات متوفرة</p>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 4: Payment Methods & Accounting -->
+      <mat-tab label="الدفع والمحاسبة">
+        <ng-template mat-tab-label>
+          <mat-icon>account_balance</mat-icon>
+          <span class="tab-label">الدفع والمحاسبة</span>
+        </ng-template>
+
+        <mat-card class="accounting-card">
+          <mat-card-header>
+            <mat-card-title>عمليات الدفع والتسجيل المحاسبي</mat-card-title>
+          </mat-card-header>
+          <mat-card-content dir="rtl">
+            <div class="accounting-info">
+              <mat-card class="info-item">
+                <mat-card-header>
+                  <mat-card-title>الكشوف المعلقة</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="info-value">
+                    <span class="number" *ngIf="summary">{{ summary.generatedCount }}</span>
+                    <span class="label">كشف في حالة الإنشاء</span>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="info-item">
+                <mat-card-header>
+                  <mat-card-title>انتظار الدفع</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="info-value">
+                    <span class="number" *ngIf="summary">{{ summary.postedCount }}</span>
+                    <span class="label">كشف مسجل محاسبياً</span>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="info-item">
+                <mat-card-header>
+                  <mat-card-title>مدفوع</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="info-value">
+                    <span class="number" *ngIf="summary">{{ summary.paidCount }}</span>
+                    <span class="label">كشف مدفوع</span>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <mat-divider class="divider"></mat-divider>
+
+            <div class="instructions">
+              <h3>خطوات عملية الدفع:</h3>
+              <ol>
+                <li>إنشاء كشف الراتب (الحالة: تم الإنشاء)</li>
+                <li>تسجيل الكشف في المحاسبة (الحالة: مسجل محاسبياً)</li>
+                <li>تعيين الكشف كمدفوع (الحالة: تم الدفع)</li>
+              </ol>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+      <!-- Tab 5: Payroll Details -->
+      <mat-tab label="التفاصيل" *ngIf="selectedPayroll">
+        <ng-template mat-tab-label>
+          <mat-icon>description</mat-icon>
+          <span class="tab-label">تفاصيل الكشف</span>
+        </ng-template>
+
+        <mat-card class="details-card" *ngIf="selectedPayroll">
+          <mat-card-header>
+            <mat-card-title>تفاصيل كشف الراتب</mat-card-title>
+          </mat-card-header>
+          <mat-card-content dir="rtl">
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="label">كود الموظف</span>
+                <span class="value">{{ selectedPayroll.employeeCode }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">اسم الموظف</span>
+                <span class="value">{{ selectedPayroll.employeeName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">القسم</span>
+                <span class="value">{{ selectedPayroll.department }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">فترة الراتب</span>
+                <span class="value">{{ selectedPayroll.payPeriod | date:'MM/yyyy' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">الراتب الأساسي</span>
+                <span class="value primary">{{ formatCurrency(selectedPayroll.basicSalary) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">العمل الإضافي</span>
+                <span class="value success">{{ formatCurrency(selectedPayroll.overtimePay) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">الخصومات</span>
+                <span class="value danger">{{ formatCurrency(selectedPayroll.deductions) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">الصافي</span>
+                <span class="value primary bold">{{ formatCurrency(selectedPayroll.netSalary) }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">الحالة</span>
+                <span class="value" [ngStyle]="{ color: getStatusColor(selectedPayroll.status) }">
+                  {{ getStatusText(selectedPayroll.status) }}
+                </span>
+              </div>
+              <div class="detail-item" *ngIf="selectedPayroll.accountingEntryNumber">
+                <span class="label">رقم القيد</span>
+                <span class="value">{{ selectedPayroll.accountingEntryNumber }}</span>
+              </div>
+              <div class="detail-item" *ngIf="selectedPayroll.paymentMethod">
+                <span class="label">طريقة الدفع</span>
+                <span class="value">{{ selectedPayroll.paymentMethod }}</span>
+              </div>
+              <div class="detail-item" *ngIf="selectedPayroll.paidDate">
+                <span class="label">تاريخ الدفع</span>
+                <span class="value">{{ formatDate(selectedPayroll.paidDate) }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+</div>

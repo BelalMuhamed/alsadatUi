@@ -20,6 +20,7 @@ import { EmployeesListComponent } from '../Components/employees-list-component/e
 import { RolesComponent } from '../Components/roles-component/roles-component';
 import { EmployeeAddComponent } from '../Components/employee-add-component/employee-add-component';
 import { EmployeeSalaryComponent } from '../Components/employee-salary-component/employee-salary-component';
+import { PayrollComponent } from '../Components/payroll-component/payroll-component';
 import { StockComponent } from '../Components/stock/stock.component';
 import { SalarySearchComponent } from '../Components/salary-search-component/salary-search-component';
 import { QuickAttendanceComponent } from '../Components/quick-attendance-component/quick-attendance-component';
@@ -104,6 +105,7 @@ export const routes: Routes = [
       { path: 'hr/all-leave-requests', component: AllLeaveRequestsComponent, canActivate: [authGuard] },
       { path: 'hr/payroll-deductions', component: PayrollDeductionsComponent, canActivate: [authGuard] },
       { path: 'hr/employee-deductions', component: EmployeeDeductionsSummaryComponent, canActivate: [authGuard] },
+      { path: 'hr/payroll', component: PayrollComponent, canActivate: [authGuard] },
             
       {
         path: 'hr/employee-loan-summary',
