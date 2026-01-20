@@ -14,11 +14,12 @@ import { LeaveTypeDto } from '../../../app/models/leave/leave-type.model';
 import Swal from 'sweetalert2';
 import { LeaveTypeDialogComponent } from './leave-type-dialog/leave-type-dialog.component';
 import { MatCard, MatCardContent } from "@angular/material/card";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-leave-types',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatPaginatorModule, FormsModule, MatCardModule, MatTooltipModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatPaginatorModule, FormsModule, MatCardModule, MatTooltipModule, MatProgressSpinner],
   templateUrl: './leave-types.component.html',
   styleUrls: ['./leave-types.component.css']
 })

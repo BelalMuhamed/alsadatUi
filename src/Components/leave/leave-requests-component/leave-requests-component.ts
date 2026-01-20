@@ -13,6 +13,7 @@ import { EmployeeLeaveRequestDto, LeaveRequestFilterDto } from '../../../app/mod
 import { PaginationParams, PagedList } from '../../../app/models/IEmployee';
 import Swal from 'sweetalert2';
 import { CreateLeaveRequestComponent } from '../create-leave-request/create-leave-request';
+import { MatCard, MatCardContent } from "@angular/material/card";
 
 @Component({
   selector: 'app-leave-requests',

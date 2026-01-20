@@ -9,11 +9,15 @@ import { environment } from '../../../environments/environment.development';
 import { EmployeeLeaveRequestDto, ApproveRejectLeaveDto } from '../../../app/models/leave/employee-leave-request.model';
 import { EmployeeLeaveService } from '../../../app/Services/employee-leave.service';
 import Swal from 'sweetalert2';
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-pending-requests',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatPaginator, MatProgressSpinnerModule, MatCardModule, MatTooltipModule],
   templateUrl: './pending-leave-requests.html',
   styleUrls: ['./pending-leave-requests.css']
 })
@@ -22,6 +26,9 @@ export class PendingLeaveRequestsComponent implements OnInit {
   private http = inject(HttpClient);
 
   items: EmployeeLeaveRequestDto[] = [];
+  isLoading = false;
+  totalCount = 0;
+  pageSize = 10;
 
   ngOnInit(): void { this.load(); }
 
@@ -42,5 +49,9 @@ export class PendingLeaveRequestsComponent implements OnInit {
         this.leaveService.rejectLeaveRequest(item.id, dto, '').subscribe({ next: () => { Swal.fire('تم','تم الرفض','success'); this.load(); }, error: () => Swal.fire('خطأ','فشل العملية','error') });
       }
     });
+  }
+
+  onPageChange(event: any): void {
+    // Pagination handler
   }
 }

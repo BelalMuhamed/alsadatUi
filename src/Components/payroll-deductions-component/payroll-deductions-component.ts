@@ -11,17 +11,22 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import Swal from 'sweetalert2';
 import { PayrollDeductionService } from '../../app/Services/payroll-deduction-service';
 import { AddEditPayrollDeductionPopupComponent } from '../../app/Popups/add-edit-payroll-deduction-popup/add-edit-payroll-deduction-popup.component';
 import { EmployeeService } from '../../app/Services/employee.service';
 import { HttpClient } from '@angular/common/http';
+import { DeductionDetailDto } from '../../app/models/IPayrollDeduction';
 
 @Component({
   selector: 'app-payroll-deductions',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatNativeDateModule, MatCardModule, MatAutocompleteModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatNativeDateModule, MatCardModule, MatAutocompleteModule, MatCheckboxModule, MatSlideToggleModule, MatDialogModule, MatProgressSpinnerModule, MatTooltipModule],
   templateUrl: './payroll-deductions-component.html',
   styleUrls: ['./payroll-deductions-component.css']
 })
@@ -102,21 +107,26 @@ export class PayrollDeductionsComponent implements OnInit {
   load(page: number = 1) {
     this.isLoading = true;
     const dto = {
-      EmployeeCode: this.filters.employeeCode || undefined,
-      Month: this.filters.month || undefined,
-      Year: this.filters.year || undefined,
-      FromDate: this.normalizeDate(this.filters.fromDate),
-      ToDate: this.normalizeDate(this.filters.toDate),
-      IncludeDeleted: this.filters.includeDeleted
+      employeeCode: this.filters.employeeCode || undefined,
+      month: this.filters.month || undefined,
+      year: this.filters.year || undefined,
+      fromDate: this.normalizeDate(this.filters.fromDate),
+      toDate: this.normalizeDate(this.filters.toDate),
+      includeDeleted: this.filters.includeDeleted
     };
 
     this.service.searchPayrollDeductions(dto, page, this.pageSize).subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        this.items = res?.items ?? res?.data ?? res ?? [];
-        this.totalCount = res?.totalCount ?? res?.data?.totalCount ?? (Array.isArray(this.items) ? this.items.length : 0);
+        // Backend returns ApiResponse<PagedResponse<DeductionDetailDto>>
+        const pagedData = res?.data ?? res ?? {};
+        this.items = (pagedData?.items ?? []) as DeductionDetailDto[];
+        this.totalCount = pagedData?.totalCount ?? 0;
       },
-      error: (err) => { this.isLoading = false; Swal.fire('خطأ', err?.error?.message ?? 'فشل التحميل', 'error'); }
+      error: (err) => { 
+        this.isLoading = false; 
+        Swal.fire('خطأ', err?.error?.message ?? 'فشل التحميل', 'error'); 
+      }
     });
   }
 
@@ -126,21 +136,21 @@ export class PayrollDeductionsComponent implements OnInit {
   onPageChange(e: PageEvent) { this.pageSize = e.pageSize; this.pageNumber = e.pageIndex + 1; this.load(this.pageNumber); }
 
   openAdd() {
-    const ref = this.dialog.open(AddEditPayrollDeductionPopupComponent, { width: '650px', data: null });
-    ref.afterClosed().subscribe((result: any) => { if (result) { this.service.addPayrollDeduction(result).subscribe({ next: () => { Swal.fire('تم', 'تمت الإضافة', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل', 'error') }); } });
+    const ref = this.dialog.open(AddEditPayrollDeductionPopupComponent, { width: '500px', data: null });
+    ref.afterClosed().subscribe((result: any) => { if (result) { this.service.addPayrollDeduction(result).subscribe({ next: (res: any) => { Swal.fire('نجاح', res?.message ?? 'تمت الإضافة بنجاح', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل الحفظ', 'error') }); } });
   }
 
-  openEdit(item: any) {
-    const ref = this.dialog.open(AddEditPayrollDeductionPopupComponent, { width: '650px', data: item });
-    ref.afterClosed().subscribe((result: any) => { if (result) { this.service.updatePayrollDeduction(result).subscribe({ next: () => { Swal.fire('تم', 'تم التحديث', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل', 'error') }); } });
+  openEdit(item: DeductionDetailDto) {
+    const ref = this.dialog.open(AddEditPayrollDeductionPopupComponent, { width: '500px', data: item });
+    ref.afterClosed().subscribe((result: any) => { if (result) { this.service.updatePayrollDeduction(result).subscribe({ next: (res: any) => { Swal.fire('نجاح', res?.message ?? 'تم التحديث بنجاح', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل التحديث', 'error') }); } });
   }
 
-  delete(item: any) {
-    Swal.fire({ title: 'تأكيد', text: 'هل تريد حذف الخصم؟', icon: 'warning', showCancelButton: true }).then(r => { if (r.isConfirmed) { this.service.softDeletePayrollDeduction(item.id).subscribe({ next: () => { Swal.fire('تم', 'تم الحذف', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل', 'error') }); } });
+  delete(item: DeductionDetailDto) {
+    Swal.fire({ title: 'تأكيد الحذف', text: `هل أنت متأكد من حذف خصم الموظف ${item.employeeName}؟`, icon: 'warning', showCancelButton: true, confirmButtonText: 'حذف', cancelButtonText: 'إلغاء' }).then(r => { if (r.isConfirmed) { this.service.softDeletePayrollDeduction(item.id).subscribe({ next: (res: any) => { Swal.fire('نجاح', res?.message ?? 'تم الحذف بنجاح', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل الحذف', 'error') }); } });
   }
 
-  restore(item: any) {
-    Swal.fire({ title: 'تأكيد الاستعادة', showCancelButton: true }).then(r => { if (r.isConfirmed) { this.service.restorePayrollDeduction(item.id).subscribe({ next: () => { Swal.fire('تم', 'تمت الاستعادة', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل', 'error') }); } });
+  restore(item: DeductionDetailDto) {
+    Swal.fire({ title: 'تأكيد الاستعادة', text: 'هل تريد استعادة هذا الخصم؟', icon: 'warning', showCancelButton: true, confirmButtonText: 'استعادة', cancelButtonText: 'إلغاء' }).then(r => { if (r.isConfirmed) { this.service.restorePayrollDeduction(item.id).subscribe({ next: (res: any) => { Swal.fire('نجاح', res?.message ?? 'تمت الاستعادة بنجاح', 'success'); this.load(this.pageNumber); }, error: (e) => Swal.fire('خطأ', e?.error?.message ?? 'فشل الاستعادة', 'error') }); } });
   }
 
   viewSummary(empCode: string) {

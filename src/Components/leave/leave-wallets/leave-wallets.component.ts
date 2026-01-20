@@ -15,11 +15,13 @@ import { EmployeeService } from '../../../app/Services/employee.service';
 import { EmployeeLeaveService } from '../../../app/Services/employee-leave.service';
 import { environment } from '../../../environments/environment.development';
 import { LeaveBalanceSummaryDto } from '../../../app/models/leave/leave-balance.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-leave-wallets',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, MatTableModule],
   templateUrl: './leave-wallets.component.html',
   styleUrls: ['./leave-wallets.component.css']
 })
@@ -33,6 +35,7 @@ export class LeaveWalletsComponent implements OnInit {
   _selectedEmployee: any = null;
   years: number[] = [];
   year = new Date().getFullYear();
+  isLoading = false;
 
   leaveTypes: any[] = [];
   selectedLeaveType: any = null; // single

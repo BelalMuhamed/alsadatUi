@@ -20,11 +20,13 @@ import { EmployeeSummaryComponent } from './employee-summary/employee-summary.co
 import { LoanPaymentsComponent } from './loan-payments/loan-payments.component';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-employee-loan',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, MatButtonModule, MatIconModule, MatDialogModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, MatButtonModule, MatIconModule, MatDialogModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatProgressSpinner, MatTooltipModule],
   templateUrl: './employee-loan-component.html',
   styleUrls: ['./employee-loan-component.css']
 })

@@ -1,83 +1,150 @@
 .salary-container {
-  padding: 18px;
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: calc(100vh - 80px);
-  gap: 12px;
+  padding: 16px;
 }
 
 .header-section {
-  margin-bottom: 20px;
-}
-
-.header-section h2 {
-  margin: 0;
-  font-weight: 600;
-  color: var(--gold); /* make title gold like attendance page */
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .page-title {
+  margin: 0;
   color: var(--gold);
-  text-align: left;
-  font-weight: 700;
+  font-weight: 500;
+  font-size: 24px;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-/* unify button look with attendance page */
-.action-buttons .action-btn {
-  min-width: 140px;
-  height: 38px;
+.filters {
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 16px;
   border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }
 
-.mat-card {
-  padding: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: var(--card-shadow);
+.filter-form {
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-:host-context(body.dark-mode) mat-card {
-  background: #1e1e1e;
-  color: #e8e8e8;
+.action-btn {
+  min-width: 120px;
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
-:host-context(body.light-mode) mat-card {
-  background: #fff;
-}
-
-/* filters */
-.filters .mat-form-field {
-  background: transparent;
-  min-width: 180px;
-}
-
-.filters .flex-grow-1 {
-  min-width: 240px;
-}
-
-/* table */
-table.mat-elevation-z1 {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: transparent;
+.paginator-container {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
 }
 
 table {
   width: 100%;
 }
 
-table thead th {
-  color: var(--muted);
+/* Card styling */
+:host ::ng-deep .mat-mdc-card {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+:host-context(body.dark-mode) .mat-mdc-card {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Table styling */
+.mat-mdc-table {
+  background-color: transparent !important;
+}
+
+.mat-mdc-header-cell {
+  color: var(--gold) !important;
+  font-weight: 600;
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 2px solid rgba(241, 196, 15, 0.2);
+}
+
+.mat-mdc-cell {
+  text-align: center;
+  padding: 12px 8px;
+  color: inherit;
+}
+
+:host-context(body.dark-mode) .mat-mdc-cell {
+  color: #ddd;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:host-context(body.light-mode) .mat-mdc-cell {
+  color: #333;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Button group styling */
+.button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 18px;
+  }
+
+  .filter-form {
+    flex-direction: column;
+  }
+
+  .mat-mdc-form-field {
+    width: 100% !important;
+  }
+}
+
+/* Focus states */
+:host ::ng-deep .mat-mdc-button:focus,
+:host ::ng-deep .mat-icon-button:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Dark mode */
+:host-context(body.dark-mode) .filters {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+:host-context(body.dark-mode) .filter-form {
+  color: #e8e8e8;
+}
+
+/* Light mode */
+:host-context(body.light-mode) .filters {
+  background-color: rgba(0, 0, 0, 0.02);
   font-weight: 600;
   text-transform: none;
   border-bottom: 1px solid var(--border);

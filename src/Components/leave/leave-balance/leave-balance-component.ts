@@ -8,11 +8,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EmployeeLeaveService } from '../../../app/Services/employee-leave.service';
 import { LeaveBalanceSummaryDto } from '../../../app/models/leave/leave-balance.model';
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-leave-balance',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatAutocompleteModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatAutocompleteModule, MatIconModule, MatProgressSpinnerModule, MatTableModule],
   templateUrl: './leave-balance-component.html',
   styleUrls: ['./leave-balance-component.css']
 })
@@ -21,13 +24,17 @@ export class LeaveBalanceComponent implements OnInit {
   summary: LeaveBalanceSummaryDto | null = null;
   year = new Date().getFullYear();
   employeeCode = localStorage.getItem('userName') || '';
-
+  isLoading = false;
   years: number[] = [];
 
   ngOnInit(): void { this.load(); }
 
   load() {
-    this.leaveService.getMyLeaveBalance(this.employeeCode, this.year).subscribe({ next: (r) => this.summary = r, error: () => this.summary = null });
+    this.isLoading = true;
+    this.leaveService.getMyLeaveBalance(this.employeeCode, this.year).subscribe({ 
+      next: (r) => { this.summary = r; this.isLoading = false; }, 
+      error: () => { this.summary = null; this.isLoading = false; }
+    });
   }
 
   constructor() {
