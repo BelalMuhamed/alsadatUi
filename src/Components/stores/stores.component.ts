@@ -84,7 +84,6 @@ filters:StoreFilteration={
   this.dataSource.data = res.data;
             this.totalCount=res.totalCount;
             this.isLoading = false;
-            console.log(res.data);
 
         },
         error:(err)=>{

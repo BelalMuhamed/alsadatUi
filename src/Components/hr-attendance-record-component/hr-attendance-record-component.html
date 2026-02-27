@@ -24,6 +24,12 @@
     <mat-datepicker #recordDatePicker></mat-datepicker>
   </mat-form-field>
 
+  <mat-form-field appearance="outline" class="custom-input-theme ms-2">
+    <mat-label>الوقت</mat-label>
+    <input matInput type="time" [(ngModel)]="selectedTime" name="selectedTime" #timeInput />
+    <mat-icon matSuffix (click)="openTimePicker()" style="cursor: pointer;">schedule</mat-icon>
+  </mat-form-field>
+
   <mat-form-field appearance="outline" class="custom-input-theme">
     <mat-label>نوع التسجيل</mat-label>
     <mat-select [(ngModel)]="selectedType" name="selectedType">
@@ -38,7 +44,7 @@
 <div>
   <button mat-raised-button color="primary" (click)="onManualRecord()" [disabled]="isProcessing" class="action-btn">
     <mat-icon>{{ selectedType === 'checkin' ? 'login' : 'logout' }}</mat-icon>
-    تسجيل
+    {{ selectedType === 'checkin' ? 'تسجيل دخول' : 'تسجيل انصراف' }}
   </button>
   <button mat-stroked-button (click)="onReset()" class="action-btn mx-3" [disabled]="isProcessing">
     إعادة تعيين

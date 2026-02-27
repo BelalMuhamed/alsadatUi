@@ -34,13 +34,12 @@ abs(value: number): number {
     this.treeAccountsService.getTreeAccounts().subscribe({
       next: (data) => {
         this.accounts = data
-        console.log(data);
 
         this.flatAccounts = this.flattenTree(data)
         this.loading = false
       },
       error: (error) => {
-        console.error("Error loading accounts:", error)
+        // error handled silently
         this.loading = false
       },
     })
@@ -111,7 +110,7 @@ onAdd() {
 }
 
   onEdit(account: TreeAccountDto): void {
-    console.log("Edit account", account)
+    // edit account invoked
     // Implement edit logic or open dialog
   }
   private showSuccessAndNavigate() {
@@ -151,7 +150,7 @@ onAdd() {
   }
 
   onView(account: TreeAccountDto): void {
-    console.log("View account details", account)
+    // view account details invoked
     // Implement view details
   }
 

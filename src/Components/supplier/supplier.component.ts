@@ -135,7 +135,7 @@ private supplierService = inject(SupplierService)
 
   openAddEditPopup(supplier?: SupplierDto): void {
     // This will be implemented when you have the popup component
-    console.log("Opening dialog for supplier:", supplier)
+    // Opening dialog for supplier
   }
 
   initForm(): void {

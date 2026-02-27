@@ -181,10 +181,10 @@ export class HrAttendanceComponent {
 
   getAttendance() {
     this.isLoading = true;
-    try { console.log('[HR] getAttendance - sending filters', { ...this.filters }); } catch (e) {}
+    // debug logging removed for HR attendance filters
     this.attendanceService.getByFilter(this.filters).subscribe({
       next: (res: any) => {
-        try { console.log('[HR] getAttendance - server response', res); } catch (e) {}
+        // server response handling (debug logging removed)
         const items = (res && (res.items || res.Items)) || (res && res.data && Array.isArray(res.data) ? res.data : (res && res.data && (res.data.items || res.data.Items))) || null;
 
         if (Array.isArray(items)) {

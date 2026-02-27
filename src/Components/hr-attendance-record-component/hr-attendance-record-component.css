@@ -16,6 +16,19 @@
 
 .text-center { text-align: center; }
 
+/* Time Input Styling */
+:host-context(body.dark-mode) input[type="time"],
+:host-context(body.dark-mode) input[type="time"]::-webkit-calendar-picker-indicator {
+  color: var(--gold) !important;
+  background: transparent !important;
+}
+
+:host-context(body.light-mode) input[type="time"],
+:host-context(body.light-mode) input[type="time"]::-webkit-calendar-picker-indicator {
+  color: #1565c0 !important;
+  background: transparent !important;
+}
+
 @media (max-width: 600px) {
   .filter-form { flex-direction: column; gap: 0.6rem; }
 }

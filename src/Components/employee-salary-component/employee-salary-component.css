@@ -1,6 +1,6 @@
 .salary-container {
   padding: 20px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -68,20 +68,49 @@ mat-card-content {
   padding: 20px;
 }
 
-/* Info Grid */
+/* Tab Styles */
+.salary-tabs {
+  margin-bottom: 20px;
+}
+
+.tab-label {
+  margin-right: 8px;
+}
+
+::ng-deep .salary-tabs .mat-mdc-tab-list {
+  border-bottom: 2px solid var(--gold);
+}
+
+::ng-deep .salary-tabs .mat-mdc-tab {
+  color: #666;
+}
+
+::ng-deep .salary-tabs .mat-mdc-tab.mat-mdc-tab-active {
+  color: var(--gold);
+}
+
+/* Grid Styles */
 .info-grid,
-.attendance-grid {
+.attendance-grid,
+.analysis-grid,
+.performance-grid,
+.stats-grid,
+.summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
 }
 
 .info-item,
-.attendance-item {
+.attendance-item,
+.analysis-item,
+.performance-item,
+.stat-item,
+.summary-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 12px;
   background: rgba(0, 0, 0, 0.02);
   border-radius: 6px;
   border-right: 3px solid var(--gold);
@@ -95,6 +124,7 @@ mat-card-content {
 .value {
   color: #666;
   margin-right: 10px;
+  font-weight: 500;
 }
 
 .value.primary {
@@ -109,6 +139,16 @@ mat-card-content {
 
 .value.danger {
   color: #f44336;
+  font-weight: 600;
+}
+
+.value.info {
+  color: #2196f3;
+  font-weight: 600;
+}
+
+.value.warning {
+  color: #ff9800;
   font-weight: 600;
 }
 
@@ -140,14 +180,191 @@ mat-card-content {
   color: #333;
 }
 
+.salary-row.section-title {
+  background: rgba(241, 196, 15, 0.05);
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 6px;
+  border-right: 4px solid var(--gold);
+}
+
+.salary-row.totals {
+  background: rgba(241, 196, 15, 0.08);
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
 .salary-row.net-salary {
-  background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent);
+  background: linear-gradient(90deg, rgba(241, 196, 15, 0.15), transparent);
   padding: 15px;
   border-radius: 6px;
   margin-top: 10px;
+  border: 2px solid var(--gold);
 }
 
-/* Dark Mode Styles */
+/* Tables */
+.details-table,
+.attendance-table,
+.history-table,
+.metrics-comparison {
+  width: 100%;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  align-items: center;
+}
+
+.table-row.header-row {
+  background: linear-gradient(135deg, var(--gold) 0%, rgba(241, 196, 15, 0.8) 100%);
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 6px 6px 0 0;
+  border-bottom: 2px solid var(--gold);
+}
+
+.table-cell {
+  padding: 8px;
+  overflow-wrap: break-word;
+  text-align: right;
+}
+
+.table-cell.success {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.table-cell.danger {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.table-cell.primary {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge,
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.status-badge.present {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.status-badge.late {
+  background: #ffe0b2;
+  color: #e65100;
+}
+
+.status-badge.early {
+  background: #fff9c4;
+  color: #f57f17;
+}
+
+.status-badge.absent {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.badge.paid {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.badge.unpaid {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.performance-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Comparison Styles */
+.comparison-filters {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  padding: 15px;
+  background: rgba(241, 196, 15, 0.05);
+  border-radius: 6px;
+}
+
+.filter-group {
+  flex: 1;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.select-group {
+  display: flex;
+  gap: 10px;
+}
+
+.select-group mat-form-field {
+  flex: 1;
+  min-width: 150px;
+}
+
+.compare-btn {
+  min-width: 150px;
+}
+
+.comparison-summary {
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border-right: 3px solid var(--gold);
+  margin-bottom: 20px;
+}
+
+.comparison-summary h4 {
+  margin: 0 0 10px 0;
+  color: var(--text-color);
+}
+
+.comparison-text {
+  color: #666;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.performance-change {
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* Dark Mode */
 :host-context(body.dark-mode) mat-card {
   background: #1e1e1e;
   color: #e8e8e8;
@@ -159,7 +376,11 @@ mat-card-content {
 }
 
 :host-context(body.dark-mode) .info-item,
-:host-context(body.dark-mode) .attendance-item {
+:host-context(body.dark-mode) .attendance-item,
+:host-context(body.dark-mode) .analysis-item,
+:host-context(body.dark-mode) .performance-item,
+:host-context(body.dark-mode) .stat-item,
+:host-context(body.dark-mode) .summary-item {
   background: rgba(255, 255, 255, 0.05);
   color: #ddd;
 }
@@ -172,6 +393,10 @@ mat-card-content {
   color: #aaa;
 }
 
+:host-context(body.dark-mode) .salary-row {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
 :host-context(body.dark-mode) .salary-row .label {
   color: #e8e8e8;
 }
@@ -180,17 +405,26 @@ mat-card-content {
   color: #ddd;
 }
 
-:host-context(body.dark-mode) .salary-row {
-  border-bottom-color: rgba(255, 255, 255, 0.06);
-}
-
 :host-context(body.dark-mode) .salary-row.net-salary {
   background: linear-gradient(90deg, rgba(241, 196, 15, 0.15), transparent);
 }
 
-/* Light Mode Styles */
+:host-context(body.dark-mode) .table-cell {
+  color: #ddd;
+}
+
+:host-context(body.dark-mode) .comparison-summary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ddd;
+}
+
+/* Light Mode */
 :host-context(body.light-mode) .info-item,
-:host-context(body.light-mode) .attendance-item {
+:host-context(body.light-mode) .attendance-item,
+:host-context(body.light-mode) .analysis-item,
+:host-context(body.light-mode) .performance-item,
+:host-context(body.light-mode) .stat-item,
+:host-context(body.light-mode) .summary-item {
   background: #f5f5f5;
   color: #333;
 }
@@ -214,7 +448,9 @@ mat-card-content {
 /* Print Styles */
 @media print {
   .action-buttons,
-  .filters-section {
+  .filters-section,
+  .comparison-filters,
+  .compare-btn {
     display: none;
   }
 
@@ -258,7 +494,31 @@ mat-card-content {
   }
 
   .info-grid,
-  .attendance-grid {
+  .attendance-grid,
+  .analysis-grid,
+  .performance-grid,
+  .stats-grid,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .select-group {
+    flex-direction: column;
+  }
+
+  .select-group mat-form-field {
+    width: 100%;
+  }
+
+  .comparison-filters {
+    flex-direction: column;
+  }
+
+  .compare-btn {
+    width: 100%;
+  }
+
+  .table-row {
     grid-template-columns: 1fr;
   }
 }
@@ -296,3 +556,4 @@ h2 {
 .text-center {
   text-align: center;
 }
+

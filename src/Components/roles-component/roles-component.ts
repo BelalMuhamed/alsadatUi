@@ -68,7 +68,7 @@ export class RolesComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error(err);
+        // error handled silently
         Swal.fire('خطأ', err?.message ?? 'حدث خطأ', 'error');
       }
     });

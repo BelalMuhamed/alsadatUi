@@ -77,7 +77,6 @@ export class SalarySearchComponent implements OnInit {
     }
 
     this.isSearching = true;
-    console.log('[Salary Search] Fetching for', this.employeeCode, this.selectedMonth, this.selectedYear);
 
     this.employeeService.getEmployeeSalary(
       this.employeeCode.trim(),
@@ -85,7 +84,7 @@ export class SalarySearchComponent implements OnInit {
       this.selectedYear
     ).subscribe({
       next: (res: any) => {
-        console.debug('[Salary Search] Response', res);
+        // response received
         
         if (res?.isSuccess && res?.data) {
           this.salaryData = res.data;
@@ -98,7 +97,6 @@ export class SalarySearchComponent implements OnInit {
       },
       error: (err) => {
         this.isSearching = false;
-        console.error('[Salary Search] Error', err);
         Swal.fire('خطأ', err?.error?.message ?? 'حدث خطأ في جلب البيانات', 'error');
         this.salaryData = null;
       }

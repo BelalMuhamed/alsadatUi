@@ -1,14 +1,11 @@
-<div class="salary-container">
-  <div class="header-section">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2>الإجازات الثانوية</h2>
-      <div class="action-buttons">
+<div class="w-100 d-flex justify-content-between align-items-center mb-3">
+  <h2 class="w-25 text-center page-title">الإجازات الثانوية</h2>
+  <div class="action-buttons">
         <button mat-stroked-button color="primary" (click)="openAdd()" class="action-btn mx-2">
           <mat-icon>add</mat-icon>
           إضافة عطلة
         </button>
       </div>
-    </div>
   </div>
 
   <mat-card>
@@ -68,4 +65,4 @@
   <div *ngIf="!isLoading && (!holidays || holidays.length === 0)" class="empty-state text-center">
     لا توجد عطل متاحة
   </div>
-</div>
+

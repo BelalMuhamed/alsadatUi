@@ -1,10 +1,5 @@
-دعم
-  الدارك
+
   .dark-theme
-  لل
-  Angular
-  Material
-  Datepicker /* Calendar base in dark mode: keep dark background and light text */
   body.dark-mode
   .mat-datepicker-content,
 body.dark-mode .mat-calendar,
@@ -14,7 +9,32 @@ body.dark-mode .mat-calendar-body-label {
   background: #222 !important;
   color: #fff !important;
 }
-/* .dark-theme,
+
+/* Time Picker Styling - Dark Mode */
+body.dark-mode input[type="time"],
+body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+body.dark-mode input[type="time"]::-webkit-outer-spin-button,
+body.dark-mode input[type="time"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+/* Time Picker Container - Dark Mode */
+body.dark-mode .mat-mdc-form-field-focus-overlay {
+  background: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Light Mode Time Picker */
+body.light-mode input[type="time"],
+body.light-mode input[type="time"]::-webkit-calendar-picker-indicator {
+  color: #000 !important;
+  background: transparent !important;
+}
+
+.dark-theme,
 .dark-theme * {
     color: var(--text-color) !important;
 }
@@ -62,6 +82,19 @@ body.dark-mode .mat-calendar-arrow {
   --text-high: #0c5460;
   --text-safe: #155724;
   --text-deleted: white;
+
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --primary: #1565c0;
+  --primary-contrast: #ffffff;
+  --accent: #d81b60;
+  --danger: #d32f2f;
+  --border: #e5e7eb;
+  --card-shadow: 0 1px 3px rgba(16,24,40,0.06);
+  --radius: 8px;
+  --table-row-hover: rgba(21,101,192,0.06);
 }
 
 body.dark-mode {
@@ -835,6 +868,83 @@ body.dark-mode .custom-select-panel .mat-mdc-list .mat-mdc-list-item:hover {
   color: var(--gold) !important;
 }
 
+/* Overlay-level fixes: panels live under body > .cdk-overlay-container so :host-context won't reach them.
+   Use body.dark-mode selectors to force dark theme on overlay panels (autocomplete, select, dialog). */
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel,
+body.dark-mode .cdk-overlay-container .mat-mdc-autocomplete-panel,
+body.dark-mode .cdk-overlay-container .mat-select-panel,
+body.dark-mode .cdk-overlay-container .mat-mdc-select-panel {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-option,
+body.dark-mode .cdk-overlay-container .mat-mdc-option {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-option:hover,
+body.dark-mode .cdk-overlay-container .mat-mdc-option:hover,
+body.dark-mode .cdk-overlay-container .mat-option.mat-active,
+body.dark-mode .cdk-overlay-container .mat-mdc-option.mdc-list-item--selected {
+  background: rgba(212,175,55,0.14) !important;
+  color: #fff !important;
+}
+
+/* Dialog containers opened from overlay (payments dialog) */
+body.dark-mode .cdk-overlay-container .mat-dialog-container {
+  background: transparent !important; /* keep dialog component styles, but ensure body behind is dark */
+  color: #e8e8e8 !important;
+}
+
+/* Prevent overlay panes from showing default white backgrounds in dark mode */
+body.dark-mode .cdk-overlay-pane {
+  background: transparent !important;
+}
+
+/* Remove extra padding in dialog container so the dialog card fully controls background */
+body.dark-mode .mat-dialog-container {
+  padding: 0 !important;
+}
+
+/* Ensure dialog card content (payments, loan dialogs) use dark surfaces inside overlay */
+body.dark-mode .cdk-overlay-container .mat-card,
+body.dark-mode .cdk-overlay-container .payments-card,
+body.dark-mode .cdk-overlay-container .loan-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+/* Form field inputs inside overlays */
+body.dark-mode .cdk-overlay-container .mat-form-field .mat-input-element,
+body.dark-mode .cdk-overlay-container .mat-form-field .mat-mdc-input-element,
+body.dark-mode .cdk-overlay-container input.mat-input-element,
+body.dark-mode .cdk-overlay-container input.mat-mdc-input-element {
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+
+body.dark-mode .cdk-overlay-container .mat-form-field-appearance-outline .mat-form-field-outline,
+body.dark-mode .cdk-overlay-container .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Scrollbars for overlay panels */
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-select-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-mdc-autocomplete-panel::-webkit-scrollbar,
+body.dark-mode .cdk-overlay-container .mat-mdc-select-panel::-webkit-scrollbar {
+  width: 10px;
+}
+body.dark-mode .cdk-overlay-container .mat-autocomplete-panel::-webkit-scrollbar-thumb,
+body.dark-mode .cdk-overlay-container .mat-select-panel::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+}
+
 /* Also ensure select panel uses readable colors in light mode */
 body.light-mode .custom-select-panel { background: var(--sidenav-bg); color: var(--text-color); }
 
@@ -1289,19 +1399,363 @@ body.dark-mode .mat-mdc-dialog-container .mat-stroked-button {
   border-color: rgba(255,255,255,0.12) !important;
 }
 
-/* Dark mode for all text inside expansion panel header */
-body.dark-mode .mat-mdc-expansion-panel-header,
-body.dark-mode .mat-mdc-expansion-panel-header * {
-    color: #fff !important;
+/* Global Material Checkbox Styling for Dark Mode */
+body.dark-mode mat-checkbox {
+  --mdc-checkbox-selected-checkmark-color: #000 !important;
+  --mdc-checkbox-selected-focus-icon-color: var(--gold, #f1c40f) !important;
+  --mdc-checkbox-selected-hover-icon-color: var(--gold, #f1c40f) !important;
+  --mdc-checkbox-selected-icon-color: var(--gold, #f1c40f) !important;
+  --mdc-theme-primary: var(--gold, #f1c40f) !important;
 }
 
-/* Specific catches for Angular tags */
-body.dark-mode mat-panel-title,
-body.dark-mode mat-panel-description,
-body.dark-mode mat-panel-title *,
-body.dark-mode mat-panel-description * {
-    color: #fff !important;
+/* Override MDC Checkbox background colors in Dark Mode */
+body.dark-mode ::ng-deep .mdc-checkbox__background {
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
 }
+
+body.dark-mode ::ng-deep .mdc-checkbox--checked .mdc-checkbox__background {
+  background-color: var(--gold, #f1c40f) !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox--checked .mdc-checkbox__checkmark {
+  color: #000 !important;
+}
+
+body.dark-mode ::ng-deep .mdc-checkbox__checkmark-path {
+  stroke: #000 !important;
+}
+
+/* Checkbox native control (hidden) in dark mode */
+body.dark-mode ::ng-deep .mdc-checkbox__native-control:checked {
+  accent-color: var(--gold, #f1c40f) !important;
+}
+
+/* Global Autocomplete and Select Styling for Dark Mode */
+body.dark-mode .mat-mdc-autocomplete-panel {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option,
+body.dark-mode .mat-mdc-select-panel .mat-mdc-option {
+  background: #2a2a2a !important;
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option:hover,
+body.dark-mode .mat-mdc-select-panel .mat-mdc-option:hover {
+  background: rgba(241, 196, 15, 0.15) !important;
+}
+
+body.dark-mode .mat-mdc-option:not(.mat-mdc-option-disabled).mdc-list-item--selected,
+body.dark-mode .mat-mdc-option:not(.mat-mdc-option-disabled).mdc-list-item--activated {
+  background: rgba(241, 196, 15, 0.25) !important;
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mdc-list-item__primary-text {
+  color: var(--gold, #f1c40f) !important;
+  font-weight: 500 !important;
+}
+
+body.dark-mode .mat-mdc-option-disabled {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+body.dark-mode .mat-mdc-select-panel {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-select-value,
+body.dark-mode .mat-mdc-select-trigger {
+  color: var(--gold, #f1c40f) !important;
+  font-weight: 500 !important;
+}
+
+/* Dark Mode Form Field */
+body.dark-mode .mat-mdc-form-field-label {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field-focus-overlay {
+  background: rgba(241, 196, 15, 0.1) !important;
+}
+
+/* Dark Mode Input Text Color */
+body.dark-mode .mdc-text-field__input {
+  color: var(--gold, #f1c40f) !important;
+  caret-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-input-element {
+  color: var(--gold, #f1c40f) !important;
+  caret-color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Autocomplete Disabled Option */
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option:disabled,
+body.dark-mode .mat-mdc-autocomplete-panel .mat-mdc-option.mat-mdc-option-disabled {
+  color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Spinner in Autocomplete Loading */
+body.dark-mode .mat-spinner circle {
+  stroke: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Form Field Outline - Appearance Outline */
+body.dark-mode .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: var(--gold, #f1c40f) !important;
+  --mdc-text-field-filled-label-text-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mdc-notched-outline__leading,
+body.dark-mode .mdc-notched-outline__notch,
+body.dark-mode .mdc-notched-outline__trailing {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__leading,
+body.dark-mode .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__notch,
+body.dark-mode .mat-mdc-form-field-appearance-outline:hover .mdc-notched-outline__trailing {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__leading,
+body.dark-mode .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__notch,
+body.dark-mode .mat-mdc-form-field-appearance-outline.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Placeholder */
+body.dark-mode .mdc-text-field__input::placeholder {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+body.dark-mode .mat-mdc-input-element::placeholder {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+/* Dark Mode Select Dropdown Arrow */
+body.dark-mode .mat-mdc-select-arrow {
+  color: var(--gold, #f1c40f) !important;
+}
+
+/* Dark Mode Datepicker Icon */
+body.dark-mode .mat-mdc-form-field-hint-wrapper {
+  color: rgba(241, 196, 15, 0.6) !important;
+}
+
+/* Dark Mode Button Toggle Group - Employee/Representative Selector */
+body.dark-mode .mat-button-toggle-group {
+  background: #2a2a2a !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .mat-button-toggle {
+  color: var(--gold, #f1c40f) !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-button-toggle:not(.mat-button-toggle-checked) {
+  color: var(--gold, #f1c40f) !important;
+  background-color: transparent !important;
+  border-right: 1px solid var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .mat-button-toggle.mat-button-toggle-checked {
+  background-color: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-mode .mat-button-toggle:hover:not(.mat-button-toggle-checked) {
+  background-color: rgba(241, 196, 15, 0.15) !important;
+}
+
+body.dark-mode .mat-button-toggle-disabled {
+  color: rgba(241, 196, 15, 0.5) !important;
+}
+
+/* Light Mode Button Toggle Group */
+.mat-button-toggle-group {
+  border: 2px solid var(--gold, #f1c40f) !important;
+}
+
+.mat-button-toggle {
+  color: var(--gold, #f1c40f) !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+.mat-button-toggle.mat-button-toggle-checked {
+  background-color: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}
+
+/* ===== SweetAlert (Swal) Dark Mode Styling ===== */
+body.dark-mode .swal2-popup {
+  background: #2a2a2a !important;
+  color: #e8e8e8 !important;
+  border: 2px solid var(--gold, #f1c40f) !important;
+  box-shadow: 0 0 20px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Swal Title */
+body.dark-mode .swal2-title {
+  color: var(--gold, #f1c40f) !important;
+  font-weight: 600 !important;
+}
+
+/* Swal HTML Content */
+body.dark-mode .swal2-html-container {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .swal2-html-container p {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .swal2-html-container strong {
+  color: #fff !important;
+}
+
+/* Swal Input */
+body.dark-mode .swal2-input {
+  background: #1e1e1e !important;
+  color: var(--gold, #f1c40f) !important;
+  border: 1px solid var(--gold, #f1c40f) !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-input::placeholder {
+  color: rgba(241, 196, 15, 0.5) !important;
+}
+
+body.dark-mode .swal2-input:focus {
+  border-color: var(--gold, #f1c40f) !important;
+  box-shadow: 0 0 5px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Swal Checkbox */
+body.dark-mode .swal2-checkbox {
+  color: #e8e8e8 !important;
+}
+
+body.dark-mode .swal2-checkbox input[type="checkbox"] {
+  accent-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-checkbox label {
+  color: #e8e8e8 !important;
+}
+
+/* Swal Confirm Button */
+body.dark-mode .swal2-confirm {
+  background: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-confirm:hover {
+  background: #e8b907 !important;
+  box-shadow: 0 0 10px rgba(241, 196, 15, 0.5) !important;
+}
+
+body.dark-mode .swal2-confirm:focus {
+  outline: none !important;
+  box-shadow: 0 0 10px rgba(241, 196, 15, 0.5) !important;
+}
+
+/* Swal Cancel Button */
+body.dark-mode .swal2-cancel {
+  background: #555555 !important;
+  color: #e8e8e8 !important;
+  border: 1px solid var(--gold, #f1c40f) !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-cancel:hover {
+  background: #666666 !important;
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-cancel:focus {
+  outline: none !important;
+  box-shadow: 0 0 5px rgba(241, 196, 15, 0.3) !important;
+}
+
+/* Swal Deny Button */
+body.dark-mode .swal2-deny {
+  background: #f44336 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+body.dark-mode .swal2-deny:hover {
+  background: #da190b !important;
+}
+
+/* Swal Icon */
+body.dark-mode .swal2-icon {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-warning {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-warning [class*='swal2-icon-content'] {
+  color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-error {
+  border-color: #f44336 !important;
+}
+
+body.dark-mode .swal2-icon.swal2-success {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-info {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+body.dark-mode .swal2-icon.swal2-question {
+  border-color: var(--gold, #f1c40f) !important;
+}
+
+/* Light Mode Swal (keep defaults clean) */
+.swal2-popup {
+  border: 1px solid #ddd !important;
+}
+
+.swal2-title {
+  color: var(--gold, #f1c40f) !important;
+}
+
+.swal2-confirm {
+  background: var(--gold, #f1c40f) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}
+
+.swal2-confirm:hover {
+  background: #e8b907 !important;
+}
+
 
 
 

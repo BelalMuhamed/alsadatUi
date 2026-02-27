@@ -44,8 +44,6 @@ export class AuthLayout implements OnInit {
 
     this.authService.login(dto).subscribe({
       next: res => {
-        console.log('Login success:', res);
-
         localStorage.setItem('refreshToken', res.data?.refreshToken ?? "");
         localStorage.setItem('accessToken', res.data?.accessToken ?? "");
         localStorage.setItem('userName', res.data?.userName ?? "");
@@ -54,7 +52,7 @@ export class AuthLayout implements OnInit {
         this.isLoading = false;
       },
       error: err => {
-        console.error(err);
+        // handled error (no console output)
         this.errorMessage = 'Invalid email or password';
         this.isLoading = false;
       }

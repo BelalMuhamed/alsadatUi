@@ -75,8 +75,7 @@ export class PublicHolidayDialogComponent implements OnInit {
 
     this.isLoading = true;
 
-    // Log for debugging
-    console.log('[PublicHolidayDialog] Save:', { isEdit: this.isEdit, id: this.holiday.id, name: this.holiday.name, date: this.holiday.date });
+    // Save invoked (debug logging removed)
 
     const request = this.isEdit
       ? this.holidayService.update(this.holiday)

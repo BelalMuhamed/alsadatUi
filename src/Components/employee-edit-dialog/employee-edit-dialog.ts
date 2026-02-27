@@ -156,7 +156,7 @@ export class EmployeeEditDialog implements OnInit {
           const list = res?.items ?? res?.data ?? [];
           this.departments = Array.isArray(list) ? list.filter((d: any) => !d.isDeleted) : [];
           this.filteredDepartments = [...this.departments];
-        }, error: (e) => { console.warn('Failed to load departments', e); this.departments = []; this.filteredDepartments = []; } });
+        }, error: (e) => { this.departments = []; this.filteredDepartments = []; } });
       }
 
       filterDepartments(q: string) {
@@ -179,7 +179,7 @@ export class EmployeeEditDialog implements OnInit {
             this.cities = list;
             this.filteredCities = [...this.cities];
           },
-          error: (err) => console.error('Failed to load cities', err)
+          error: (err) => { /* failed to load cities */ }
         });
       }
 
@@ -260,7 +260,6 @@ export class EmployeeEditDialog implements OnInit {
       },
       error: (err) => {
         this.saving = false;
-        console.error('Update error', err);
         const msg = err?.error ?? err?.message ?? 'حدث خطأ أثناء الحفظ';
         Swal.fire('خطأ', msg, 'error');
       }

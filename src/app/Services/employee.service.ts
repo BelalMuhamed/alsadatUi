@@ -5,7 +5,11 @@ import { environment } from '../../environments/environment.development';
 import { 
   EmployeeDTo, 
   EmployeeHelper, 
-  EmployeeSalaryDTo, 
+  EmployeeSalaryDTo,
+  MonthlySalarySummaryDto,
+  MonthlyStatisticsDto,
+  SalaryComparisonDto,
+  SalaryHistoryDto,
   PaginationParams, 
   PagedList 
 } from '../models/IEmployee';
@@ -190,6 +194,80 @@ export class EmployeeService {
   getRoles(): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}Role/GetAllRoles`).pipe(
       // don't transform here; let subscribers handle errors/fallback
+    );
+  }
+
+  // Get monthly salary summary (Financial and Performance Analysis)
+  getMonthlySalarySummary(
+    empCode: string,
+    month?: number,
+    year?: number
+  ): Observable<Result<MonthlySalarySummaryDto>> {
+    let httpParams = new HttpParams().set('empCode', empCode);
+    if (month != null) {
+      httpParams = httpParams.set('month', String(month));
+    }
+    if (year != null) {
+      httpParams = httpParams.set('year', String(year));
+    }
+    return this.http.get<Result<MonthlySalarySummaryDto>>(
+      `${this.apiUrl}Employee/GetMonthlySalarySummary`,
+      { params: httpParams }
+    );
+  }
+
+  // Get monthly statistics (Salary, Attendance, Leave, Overtime stats)
+  getMonthlyStatistics(
+    empCode: string,
+    month?: number,
+    year?: number
+  ): Observable<Result<MonthlyStatisticsDto>> {
+    let httpParams = new HttpParams().set('empCode', empCode);
+    if (month != null) {
+      httpParams = httpParams.set('month', String(month));
+    }
+    if (year != null) {
+      httpParams = httpParams.set('year', String(year));
+    }
+    return this.http.get<Result<MonthlyStatisticsDto>>(
+      `${this.apiUrl}Employee/GetMonthlyStatistics`,
+      { params: httpParams }
+    );
+  }
+
+  // Compare salaries between two months
+  compareMonthlySalaries(
+    empCode: string,
+    baseMonth: number,
+    baseYear: number,
+    compareMonth: number,
+    compareYear: number
+  ): Observable<Result<SalaryComparisonDto>> {
+    let httpParams = new HttpParams()
+      .set('empCode', empCode)
+      .set('baseMonth', String(baseMonth))
+      .set('baseYear', String(baseYear))
+      .set('compareMonth', String(compareMonth))
+      .set('compareYear', String(compareYear));
+
+    return this.http.get<Result<SalaryComparisonDto>>(
+      `${this.apiUrl}Employee/CompareMonthlySalaries`,
+      { params: httpParams }
+    );
+  }
+
+  // Get salary history for a specific year
+  getSalaryHistory(
+    empCode: string,
+    year?: number
+  ): Observable<Result<SalaryHistoryDto>> {
+    let httpParams = new HttpParams().set('empCode', empCode);
+    if (year != null) {
+      httpParams = httpParams.set('year', String(year));
+    }
+    return this.http.get<Result<SalaryHistoryDto>>(
+      `${this.apiUrl}Employee/GetSalaryHistory`,
+      { params: httpParams }
     );
   }
 }

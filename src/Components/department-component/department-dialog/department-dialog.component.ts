@@ -33,8 +33,7 @@ export class DepartmentDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: Department | null,
     private departmentService: DepartmentService
   ) {
-    // Debug: log incoming dialog data so we can diagnose add vs edit
-    console.log('[DepartmentDialog] incoming data', data);
+    // incoming dialog data (add/edit)
     if (data) {
       // merge incoming data, keeping defaults for missing fields
       this.department = { ...this.department, ...data };
@@ -54,8 +53,7 @@ export class DepartmentDialogComponent implements OnInit {
 
     this.isLoading = true;
 
-    // Log for debugging
-    console.log('[DepartmentDialog] Save:', { isEdit: this.isEdit, id: this.department.id, name: this.department.name });
+    // saving department (add/edit)
 
     const request = this.isEdit
       ? this.departmentService.update(this.department)
