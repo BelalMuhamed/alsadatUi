@@ -19,11 +19,13 @@ import { MatOption } from "@angular/material/core";
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from "@angular/router";
 import { AddEditMerchDisPopupComponent } from '../../app/Popups/add-edit-merch-dis-popup/add-edit-merch-dis-popup.component';
+import { TreeAccountsService } from '../../app/Services/tree-accounts.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-dis-and-merchant',
   standalone: true,
-  imports: [MatProgressSpinner, MatColumnDef, MatHeaderCellDef, MatCellDef, MatIcon, MatHeaderRowDef, MatRowDef,
+  imports: [MatTooltipModule,MatProgressSpinner, MatColumnDef, MatHeaderCellDef, MatCellDef, MatIcon, MatHeaderRowDef, MatRowDef,
     MatTableModule,
     MatProgressSpinner,
     MatColumnDef,
@@ -49,6 +51,8 @@ export class DisAndMerchantComponent {
   private fb = inject(FormBuilder);
   private _DisAndMerchantService = inject(DisAndMerchantService);
   private _DisAndMerchantSubscription = new Subscription();
+    private _TreeAccountService = inject(TreeAccountsService);
+  private _TreeAccountSubscription = new Subscription();
   filters:DistributorsAndMerchantsFilters={
     page:1,
     pageSize:10,
@@ -63,11 +67,6 @@ export class DisAndMerchantComponent {
   { key: 'address', label: 'العنوان', type: 'text' },
   { key: 'type', label: 'النوع (موزع/تاجر)', type: 'DisOrMecrhant' },
 
-  { key: 'pointsBalance', label: 'رصيد النقاط', type: 'number' },
- 
-
-  { key: 'cashBalance', label: 'الرصيد النقدي', type: 'currency' },
-  { key: 'indebtedness', label: 'المديونية', type: 'currency' },
 
   { key: 'createdAt', label: 'تاريخ الإنشاء', type: 'date' },
   { key: 'createdBy', label: 'أنشئ بواسطة', type: 'text' },
@@ -263,4 +262,58 @@ Swal.fire({
   });
 }
 
+
+
+
+
+
+GetDisDetailsByUserId(userId: string) {
+
+  this._DisAndMerchantService.getById(userId).subscribe({
+    next: (res) => {
+console.log(res.data);
+
+      const data = res.data;
+const cashBalance = Number(data?.cashBalance ?? 0);
+const pointsBalance = Number(data?.pointsBalance ?? 0);
+
+Swal.fire({
+  title: 'تفاصيل الحساب',
+  html: `
+    <div class="swal-details">
+
+      <div class="row">
+        <span>الاسم:</span>
+        <strong>${data?.fullName ?? '-'}</strong>
+      </div>
+
+      <div class="row">
+        <span>رصيد النقاط:</span>
+        <strong class="points">${pointsBalance}</strong>
+      </div>
+
+      <div class="row">
+  <span>الرصيد المالي:</span>
+  <strong class="${cashBalance >= 0 ? 'positive' : 'negative'}">
+    ${cashBalance <= 0 ? cashBalance.toFixed(2) : (-cashBalance).toFixed(2)}
+  </strong>
+</div>
+    </div>
+  `,
+  confirmButtonText: 'إغلاق',
+  background: document.body.classList.contains('dark-mode') ? '#1a1a1a' : '#fff',
+  color: document.body.classList.contains('dark-mode') ? '#fff' : '#000'
+});
+
+    },
+    error: (err) => {
+         Swal.fire({
+                  icon: 'error',
+                  title: 'خطأ',
+                  text: `${err.error?.message ?? 'حدثت مشكلة أثناء الاتصال !'}`,
+                });
+    }
+  });
+
+}
 }

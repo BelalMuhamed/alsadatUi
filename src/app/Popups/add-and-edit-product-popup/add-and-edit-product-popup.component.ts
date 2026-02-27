@@ -57,6 +57,7 @@ constructor(
       this.form = this.fb.group({
         name: [this.data?.name || '', Validators.required],
          sellingPrice: [this.data?.sellingPrice || '', Validators.required],
+         productCode:[this.data?.productCode || '', Validators.required],
         pointPerUnit:[this.data?.pointPerUnit || '', Validators.required],
         categoryId:[this.data?.categoryId || '', Validators.required],
         theHighestPossibleQuantity:[this.data?.theHighestPossibleQuantity||'',Validators.required],
@@ -153,6 +154,7 @@ save() {
     // حالة التعديل: لا نغير createBy/createAt
     product = {
       id: this.data!.id,
+      productCode:this.form.get('productCode')?.value ?? '',
       name: this.form.get('name')?.value ?? null,
       sellingPrice: Number(this.form.get('sellingPrice')?.value ?? 0),
       pointPerUnit: Number(this.form.get('pointPerUnit')?.value ?? 0),
@@ -184,6 +186,8 @@ save() {
     // حالة الإضافة: لا نرسل updateBy/updateAt
     product = {
       id: null,
+      productCode:this.form.get('productCode')?.value ?? '',
+
       name: this.form.get('name')?.value ?? null,
       sellingPrice: Number(this.form.get('sellingPrice')?.value ?? 0),
       pointPerUnit: Number(this.form.get('pointPerUnit')?.value ?? 0),

@@ -14,10 +14,16 @@ body.dark-mode .mat-calendar-body-label {
   background: #222 !important;
   color: #fff !important;
 }
-.dark-theme,
+/* .dark-theme,
 .dark-theme * {
     color: var(--text-color) !important;
 }
+     */
+
+     .dark-theme body *:not(.swal2-container):not(.swal2-container *) {
+  color: var(--text-color);
+}
+
 .dark-theme .Indicators span,
 .dark-theme .Indicators label,
 .dark-theme .Indicators div {
@@ -44,6 +50,9 @@ body.dark-mode .mat-calendar-arrow {
 
 :root {
   --topbar-height: 70px;
+    --danger-color: #d32f2f;
+  --gold: #d4af37;
+
    --color-low: #f8d7da;       /* أحمر فاتح */
   --color-high: #d1ecf1;      /* أزرق فاتح */
   --color-safe: #d4edda;      /* أخضر فاتح */
@@ -65,6 +74,7 @@ body.dark-mode {
   --active-bg: rgba(212, 175, 55, 0.25);
   --input-bg: #1a1a1a;
   --input-text: #ffffff;
+  --danger-color: #ff6b6b;
   --input-label: #cccccc;
   --input-placeholder: #777;
   --input-border: #555;
@@ -1050,7 +1060,7 @@ body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button {
 /* === تحسين التباين في الوضع الداكن === */
 body.dark-mode th,
 body.dark-mode td,
-body.dark-mode span,
+body.dark-mode span:not(.text-danger):not(.deleted-product),
 body.dark-mode h2,
 body.dark-mode label,
 body.dark-mode input,
@@ -1070,32 +1080,26 @@ body.dark-mode .table-container {
   border-color: #d4af37 !important;
 }
 
-/* تحسين وضوح الأيقونات */
 body.dark-mode mat-icon {
   color: #ffd700 !important;
 }
 
-/* تحسين لون السلايد توجل */
 body.dark-mode .mat-slide-toggle-thumb {
   background-color: #ffd700 !important;
 }
-/* ✅ تخصيص لون أسهم الـ paginator */
 ::ng-deep .mat-mdc-paginator-navigation-button svg path {
-  fill: var(--gold, #d4af37) !important; /* اللون الذهبي */
+  fill: var(--gold, #d4af37) !important;
   opacity: 1 !important;
   transition: fill 0.3s ease;
 }
 
-/* ✅ في الوضع الفاتح */
 body.light-mode ::ng-deep .mat-mdc-paginator-navigation-button svg path {
-  fill: #333 !important; /* رمادي غامق */
+  fill: #333 !important;
 }
 
-/* ✅ في الوضع الداكن */
 body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button svg path {
-  fill: #ffd700 !important; /* ذهبي لامع */
-  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6)); /* توهج بسيط */
-}
+  fill: #ffd700 !important;
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
 
 /* ✅ عند hover */
 body.dark-mode ::ng-deep .mat-mdc-paginator-navigation-button:hover svg path {
@@ -1164,13 +1168,21 @@ body.dark-mode .mat-mdc-row::after {
 .swal2-popup .swal2-title {
   color: var(--gold) !important;
 }
+body.dark-mode .swal2-popup {
+  background: #1e1e1e !important;
+  color: black !important;
+  border: 1px solid var(--gold);
+}
 
-/* ============================================
-   🎯 POPUP/DIALOG STYLING
-   Material Dialog & Custom Popups with Theme
-   ============================================ */
+body.dark-mode .swal2-title {
+  color: var(--gold) !important;
+}
 
-/* 🔹 Material Dialog Container */
+body.dark-mode .swal2-html-container {
+  color: black !important;
+}
+
+
 .mat-mdc-dialog-container {
   background-color: var(--sidenav-bg) !important;
   color: var(--text-color);
@@ -1180,7 +1192,6 @@ body.dark-mode .mat-mdc-row::after {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* 🔹 Dialog Title */
 .mat-mdc-dialog-title,
 .mat-dialog-title {
   color: var(--gold) !important;
@@ -1278,8 +1289,21 @@ body.dark-mode .mat-mdc-dialog-container .mat-stroked-button {
   border-color: rgba(255,255,255,0.12) !important;
 }
 
+/* Dark mode for all text inside expansion panel header */
+body.dark-mode .mat-mdc-expansion-panel-header,
+body.dark-mode .mat-mdc-expansion-panel-header * {
+    color: #fff !important;
+}
+
+/* Specific catches for Angular tags */
+body.dark-mode mat-panel-title,
+body.dark-mode mat-panel-description,
+body.dark-mode mat-panel-title *,
+body.dark-mode mat-panel-description * {
+    color: #fff !important;
+}
 
 
 
 
-
+}

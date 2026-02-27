@@ -14,7 +14,7 @@ export interface ProductDto {
   categoryName: string|null;
   theSmallestPossibleQuantity:number|null;
   theHighestPossibleQuantity:number|null;
-
+productCode:string;
 }
 export interface ProductFilterationDto {
   name: string | null;

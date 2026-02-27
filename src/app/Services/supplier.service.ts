@@ -30,7 +30,8 @@ getAllSuppliers(
   if (filters.page !== null && filters.page !== undefined) {
     params = params.set('page', filters.page.toString());
   }
-
+if (filters.isDeleted !== null&& filters.isDeleted !== undefined)
+    params = params.set('isDeleted', filters.isDeleted.toString());
   if (filters.pageSize !== null && filters.pageSize !== undefined) {
     params = params.set('pageSize', filters.pageSize.toString());
   }

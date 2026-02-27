@@ -58,6 +58,7 @@ export class ProductComponent {
     isLoaded:boolean=false;
       columns: ColumnDef[] = [
         { key: 'name', label: 'اسم المنتج ' },
+        { key: 'productCode', label: 'كود المنتج ' },
         { key: 'sellingPrice', label: 'سعر البيع', type: 'currency' },
         { key: 'pointPerUnit', label: 'عدد النقاط مقابل الوحدة' },
         { key: 'theHighestPossibleQuantity', label: 'أعلي كمية ممكنة ' },

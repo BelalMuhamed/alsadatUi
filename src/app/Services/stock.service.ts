@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StockDto, StockFilterations } from '../models/IStockVM';
-import { ApiResponse } from '../models/ApiReponse';
+import { ProductStockDto, StockDto, StockFilterations } from '../models/IStockVM';
+import { ApiResponse, Result } from '../models/ApiReponse';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +31,12 @@ constructor(private http: HttpClient) {}
 
   getStoreStockById(id: number|null): Observable<ApiResponse<StockDto>> {
     return this.http.get<ApiResponse<StockDto>>(`${this.apiUrl}Stock/${id}`);
+  }
+
+
+  getStockByProductId(id: number | null): Observable<Result<ProductStockDto>> {
+    return this.http.get<Result<ProductStockDto>>(
+      `${this.apiUrl}Stock/product/${id}`
+    );
   }
 }

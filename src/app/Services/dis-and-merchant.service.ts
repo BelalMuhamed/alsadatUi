@@ -57,4 +57,9 @@ export class DisAndMerchantService {
  return this.http.post<Result<any>>(`${this.apiUrl}DistAndMerch/add`, dto);
 
   }
+  getById(userId: string): Observable<Result<DistributorsAndMerchantsDto>> {
+  return this.http.get<Result<DistributorsAndMerchantsDto>>(
+    `${this.apiUrl}DistAndMerch/get/${userId}`
+  );
+}
 }

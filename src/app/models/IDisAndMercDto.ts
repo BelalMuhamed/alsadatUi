@@ -15,7 +15,7 @@ export interface DistributorsAndMerchantsDto {
   cityName?: string | null;
   phoneNumber?: string | null; // phone/email/username
   password?: string | null;
-  PointsBalance?: number | null;
+  pointsBalance?: number | null;
   cashBalance?: number | null;
   indebtedness?: number | null;
   firstSpecialDiscount?:number|null;
@@ -28,6 +28,6 @@ export interface DistributorsAndMerchantsFilters {
   cityName?: string | null;
   type?: number | null;
   isDeleted:boolean|null;
-  page: number;
-  pageSize: number;
+  page: number|null;
+  pageSize: number|null;
 }

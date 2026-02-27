@@ -5,11 +5,13 @@ import { MatIcon, MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tree-accounts',
   standalone: true,
-  imports: [MatIcon,CommonModule, MatIconModule, MatButtonModule, MatTooltipModule],
+  imports: [MatIcon,CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, RouterLink],
   templateUrl: './tree-accounts.component.html',
   styleUrl: './tree-accounts.component.css'
 })
@@ -18,7 +20,7 @@ export class TreeAccountsComponent {
   flatAccounts: TreeAccountDto[] = []
   loading = false
 
-  constructor(private treeAccountsService: TreeAccountsService) {}
+  constructor(private treeAccountsService: TreeAccountsService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadAccounts()
@@ -91,24 +93,61 @@ abs(value: number): number {
 
     return null
   }
-
   hasChildren(account: TreeAccountDto): boolean {
     return account.children && account.children.length > 0
   }
 
-  onAdd(account?: TreeAccountDto): void {
-    console.log("Add account", account)
-    // Implement add logic or open dialog
+  hasParentId(account: TreeAccountDto): boolean {
+
+    return !(account.parentId !== null && account.parentId !== undefined);
+
   }
+
+ // tree-accounts.component.ts
+onAdd() {
+
+    this.router.navigate(['/TreeAccounts/add']); // لو في المستقبل حابين إضافة Root
+
+}
 
   onEdit(account: TreeAccountDto): void {
     console.log("Edit account", account)
     // Implement edit logic or open dialog
   }
+  private showSuccessAndNavigate() {
+  Swal.fire({
+    icon: 'success',
+    title:  'تم الحذف بنجاح' ,
+    confirmButtonText: 'موافق'
+  }).then(() => {
+  this.loadAccounts();
+  });
+}
+  onDelete(id:number): void {
+  this.treeAccountsService.deleteAccount(id).subscribe({
+    next: (res) => {
+      if(res.isSuccess) {
+        this.showSuccessAndNavigate();
+      }
+      else{
+          Swal.fire({
+                icon: 'error',
+                title: 'حدث خطأ',
+                text: res.message || 'حدث خطأ غير متوقع',
+                confirmButtonText: 'موافق'
+              });
+      }
+    },
+    error: (err) => {
+        Swal.fire({
+              icon: 'error',
+              title: 'حدث خطأ',
+              text: err?.error?.message || 'حدث خطأ غير متوقع',
+              confirmButtonText: 'موافق'
+            });
+    }
+  })
 
-  onDelete(account: TreeAccountDto): void {
-    console.log("Delete account", account)
-    // Implement delete logic with confirmation
   }
 
   onView(account: TreeAccountDto): void {

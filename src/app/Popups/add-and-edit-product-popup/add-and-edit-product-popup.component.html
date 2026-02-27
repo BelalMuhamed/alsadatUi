@@ -8,6 +8,11 @@
     <input matInput formControlName="name" />
     <mat-error *ngIf="form.get('name')?.hasError('required')">حقل مطلوب</mat-error>
   </mat-form-field>
+   <mat-form-field appearance="outline" class="full-width">
+    <mat-label>كود المنتج </mat-label>
+    <input matInput formControlName="productCode" />
+    <mat-error *ngIf="form.get('productCode')?.hasError('required')">حقل مطلوب</mat-error>
+  </mat-form-field>
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>سعر البيع </mat-label>
     <input matInput formControlName="sellingPrice" type="number"/>

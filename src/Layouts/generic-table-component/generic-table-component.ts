@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 export interface ColumnDef {
   key: string;
   label: string;
-  type?: 'text' | 'number' | 'date' | 'currency' | 'boolean' | 'actions'|'calculated'|'discounted'|'string'|'copounPaiedType'|'DisOrMecrhant'
+  type?: 'text' | 'number' | 'date' | 'currency' | 'boolean' | 'actions'|'calculated'|'discounted'|'string'|'copounPaiedType'|'DisOrMecrhant'|'settledStatus'|'referenceType'
 }
 @Component({
   selector: 'app-generic-table-component',

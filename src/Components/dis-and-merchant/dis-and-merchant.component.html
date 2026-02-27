@@ -114,10 +114,24 @@
     <div class="action-buttons">
 
 <!-- داخل الجدول -->
-<button mat-icon-button color="primary" class="border-0 bg-transparent"(click)="openEditPopup(element)" >
+<button
+  matTooltip="   تعديل"
+  matTooltipPosition="above"
+  matTooltipShowDelay="200"
+   mat-icon-button color="primary" class="border-0 bg-transparent"(click)="openEditPopup(element)" >
   <mat-icon>edit</mat-icon>
 </button>
-
+<button
+  mat-icon-button
+  color="primary"
+  class="border-0 bg-transparent"
+    matTooltip="عرض رصيد  المحافظ"
+  matTooltipPosition="above"
+  matTooltipShowDelay="200"
+  (click)="GetDisDetailsByUserId(element.userId)"
+>
+  <mat-icon>visibility</mat-icon>
+</button>
 
     </div>
   }
@@ -139,8 +153,8 @@
    <div dir="rtl" class="paginator-arabic">
   <mat-paginator
     [length]="totalCount"
-    [pageSize]="filters.pageSize"
-    [pageIndex]="filters.page- 1"
+   [pageSize]="filters.pageSize ?? 10"
+[pageIndex]="(filters.page ?? 1) - 1"
     [pageSizeOptions]="[5, 10, 20,30,50,70,100]"
     (page)="onPageChange($event)">
   </mat-paginator>

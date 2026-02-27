@@ -1,12 +1,13 @@
 <div class="tree-accounts-container">
   <div class="tree-header">
     <h2>شجرة الحسابات</h2>
-    <button mat-raised-button class="action-btn" (click)="onAdd()">
-      <mat-icon>add</mat-icon>
-      إضافة حساب رئيسي
-    </button>
-  </div>
 
+  </div>
+ <div class="w-100 me-auto  d-flex justify-content-end  mb-3">
+       <button class="add-coupon-btn  " (click)="onAdd()">
+    <mat-icon>add</mat-icon>
+إضافة حساب جديد  </button>
+  </div>
   <div class="tree-content" *ngIf="!loading">
     <div class="tree-table-header">
       <div class="col-account">اسم الحساب</div>
@@ -62,38 +63,32 @@
 
           <!-- Actions -->
           <div class="col-actions">
+           <button *ngIf="account.isLeaf"
+  mat-icon-button
+  class="action-icon-btn"
+  matTooltip="عرض التفاصيل"
+  [routerLink]="['/TreeAccounts/details', account.id]">
+  <mat-icon>visibility</mat-icon>
+</button>
             <button
-              mat-icon-button
-              class="action-icon-btn"
-              matTooltip="عرض التفاصيل"
-              (click)="onView(account)">
-              <mat-icon>visibility</mat-icon>
-            </button>
+  *ngIf="!hasParentId(account)"
+  mat-icon-button
+  class="action-icon-btn"
+  matTooltip="تعديل"
+  [routerLink]="['/TreeAccounts/edit', account.id]">
+  <mat-icon>edit</mat-icon>
+</button>
+ <button
 
-            <button
-              mat-icon-button
-              class="action-icon-btn"
-              matTooltip="تعديل"
-              (click)="onEdit(account)">
-              <mat-icon>edit</mat-icon>
-            </button>
+  mat-icon-button
+  class="action-icon-btn"
+  matTooltip="حذف"
+  (click)="onDelete(account.id!)">
+  <mat-icon>delete</mat-icon>
+</button>
 
-            <button
-              *ngIf="hasChildren(account)"
-              mat-icon-button
-              class="action-icon-btn add-child"
-              matTooltip="إضافة حساب فرعي"
-              (click)="onAdd(account)">
-              <mat-icon>add_circle</mat-icon>
-            </button>
 
-            <button
-              mat-icon-button
-              class="action-icon-btn delete"
-              matTooltip="حذف"
-              (click)="onDelete(account)">
-              <mat-icon>delete</mat-icon>
-            </button>
+
           </div>
         </div>
       </div>

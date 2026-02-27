@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
+import { InvoiceChangeStatusReq, SalesInvoiceFilters } from './../../app/models/IsalesInvoice';
+import { ChangeDetectorRef, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { finalize, Subscription } from 'rxjs';
 import { SalesInvoice } from '../../app/Services/sales-invoice';
-import { SalesInvoiceFilterations, SalesInvoicesResponse } from '../../app/models/IsalesInvoice';
+import { SalesInvoicesResponse } from '../../app/models/IsalesInvoice';
 import Swal from 'sweetalert2';
 import { ColumnDef, GenericTableComponent } from '../../Layouts/generic-table-component/generic-table-component';
 import { CommonModule } from '@angular/common';
@@ -20,151 +21,340 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { log } from 'console';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { DisAndMerchantService } from '../../app/Services/dis-and-merchant.service';
+import { DistributorsAndMerchantsDto, DistributorsAndMerchantsFilters } from '../../app/models/IDisAndMercDto';
+import { PurchaseInvoiceService } from '../../app/Services/purchase-invoice.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PurchaseInvoiceDtos } from '../../app/models/IPurchaseInvoiceVMs';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-sales-invoices-component',
    providers: [
     { provide: MatPaginatorIntl, useValue: getArabicPaginatorIntl() }
   ],
-  imports: [CommonModule,MatTableModule,
+  imports: [CommonModule, MatTableModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatInputModule,
     MatButtonModule,
     FormsModule,
-  MatIconModule,
-ReactiveFormsModule,
+    MatIconModule,
+    ReactiveFormsModule,
     MatDatepickerModule,
     MatFormFieldModule,
-     MatSelectModule,
-    MatInputModule,    MatNativeDateModule,HttpClientModule,HttpClientModule],
+    MatSelectModule,
+    MatInputModule, MatNativeDateModule, HttpClientModule, HttpClientModule, RouterLink
+
+      ,MatSelectModule],
     standalone:true,
   templateUrl: './sales-invoices-component.html',
-  styleUrl: './sales-invoices-component.css'
+  styleUrls: ['./sales-invoices-component.css']
 })
 export class SalesInvoicesComponent {
-@ViewChild(MatPaginator) paginator!: MatPaginator;
 
-   columns: ColumnDef[] = [
-    { key: 'createdAt', label: 'تاريخ الشراء', type: 'date' },
-    { key: 'distributorName', label: 'الموزع' },
-    { key: 'totalBeforDiscounts', label: 'قبل الخصم', type: 'currency' },
-    { key: 'totalAfterDiscounts', label: 'بعد الخصم', type: 'currency' },
-    { key: 'paid', label: 'مدفوع', type: 'currency' },
-    { key: 'residual', label: 'متبقي', type: 'currency' },
-    { key: 'totalCopouns', label: 'الكوبونات المستحقة ', type: 'number' },
-    { key: 'createdBy', label: 'منشئ الفاتورة' },
-    { key: 'isReturn', label: 'فاتورة مرتجع', type: 'boolean' },
-    { key: 'salesInvoiceStatus', label: 'حالة الفاتورة', type: 'number' },
-    { key: 'actions', label: 'الإجراءات', type: 'actions' }
-  ];
+   //#region  subscriptions
+ private _DisAndMerchantService = inject(DisAndMerchantService);
+  private _DisAndMerchantSubscription = new Subscription();
+    private _SalesInvoiceService = inject(SalesInvoice);
+  private _SalesInvoiceSubscription = new Subscription();
+    isUserAdmin:boolean=true;
+    //#endregion
+    //#region  filters
+filters:DistributorsAndMerchantsFilters={
+    page:null,
+    pageSize:null,
+    cityName:null,
+    fullName:null,
+    phoneNumber:null,
+    type:null,
+    isDeleted:null
+  }
+    salesInvoiceFilters:SalesInvoiceFilters=
+    {
+      page:1,
+      pageSize:10,
+      invoiceNumber:null,
+      customerId:null,
+      createAt:null,
+      deleteStatus:null
+    }
 
-  displayedColumnKeys = this.columns.map(c => c.key);
-  dataSource = new MatTableDataSource<SalesInvoicesResponse>([]);
-  totalCount = 0;
-  isLoading = false;
- range!:FormGroup;
+    //#endregion
 
-  filters: SalesInvoiceFilterations = {
-    page: 1,
-    pageSize: 10,
-    salesInvoiceType: null,
-    craetedBy:null,
-    distributorName:null,
-    dates:null
-  };
+  //#region variables
+  AllCustomers:DistributorsAndMerchantsDto[]=[];
+  CustomerSearch: string = '';
 
-  constructor(private invoiceService:SalesInvoice, private cdr: ChangeDetectorRef,private fb:FormBuilder,private router: Router) {}
+  //#endregion
+  @ViewChild(MatPaginator) paginator!: MatPaginator
+   @ViewChild('CustomerSearchInput') customerSearchInput!: ElementRef<HTMLInputElement>;
 
-  ngOnInit(): void {
-    this.initDateForm();
-  setTimeout(() => this.loadInvoices(), 0);
-}
+    isLoaded = false
 
-  ngAfterViewInit(): void {
-  this.dataSource.paginator = this.paginator;
-}
+    columns: ColumnDef[] = [
+      { key: "invoiceNumber", label: "رقم الفاتورة" },
+      { key: "distributorName", label: "اسم العميل" },
+      { key: "totalPoints",  label: "عدد النقاط المستحقة " },
+      { key: "totalNetAmount",  label: "الصافي " },
+      { key: "createdAt", label: "تاريخ الإنشاء ",type:"date" },
+      { key: "createdBy", label: "المنشئ " },
+      { key: "updateBy", label: "أخر مستخدم قام بتعديل" },
+      { key: "updateAt", label: "تاريخ التعديل ",type:"date" },
+      { key: "actions", label: "الإجراءات", type: "actions" },
+    ]
 
-  loadInvoices() {
-    this.isLoading = true;
-  this.invoiceService.getAllSalesInvoices(this.filters).subscribe({
+    displayedColumnKeys = this.columns.map((c) => c.key)
+    totalCount = 0
+    dataSource = new MatTableDataSource<SalesInvoicesResponse>([])
 
-    next: (res: ApiResponse<SalesInvoicesResponse[]>) => {
+    private dialog = inject(MatDialog)
+    private fb = inject(FormBuilder)
+    form!: FormGroup
 
-      this.dataSource.data = res.data;
-      this.totalCount = res.totalCount;
-            this.cdr.markForCheck();
+  ngOnInit(): void
+  {
+  this.GetAllCustomers();
+  this.GetAllSalesInvoices();
+  this.InitSearchForm();
+  }
+  ngOnDestroy():void
+  {
+    this._DisAndMerchantSubscription?.unsubscribe();
+    this._SalesInvoiceSubscription?.unsubscribe();
+  }
+  //#region methods
+  get filteredCustomers() {
 
-      this.isLoading = false;
+    if (!this.CustomerSearch) return this.AllCustomers;
+    return this.AllCustomers.filter(c =>
+      c.fullName?.toLowerCase().includes(this.CustomerSearch.toLowerCase())
+    );
+  }
+  GetAllCustomers(): void
+  {
+    this._DisAndMerchantSubscription.add( this._DisAndMerchantService.getAllDisAndMerch(this.filters).subscribe({
+      next: (res) => {
 
+        this.AllCustomers = res.data;
 
-    },
-    error: () => { this.isLoading = false;
-            this.cdr.markForCheck();
+      },
+      error: (err) => {
+         Swal.fire({
+                    icon: "error",
+                    title: "حدث خطأ أثناء تجميل العملاء  ",
+                    text: `${err?.error?.message}`,
+                    confirmButtonText: "موافق",
+                    confirmButtonColor: "#d33",
+                  })
+      }}));
+  }
+  GetAllSalesInvoices():void
+  {
+    this._SalesInvoiceSubscription.add(this._SalesInvoiceService.getAllSalesInvoices(this.salesInvoiceFilters).subscribe({
+      next:(res)=>
+      {
 
+         this.isLoaded = true
+            this.dataSource.data = res.data
+            console.log(res.data);
+
+            this.totalCount = res.totalCount
+      }
+        ,
+        error:(err)=>
+        {
+         this.isLoaded = true
+           Swal.fire({
+                      icon: "error",
+                      title: "حدث خطأ أثناء تحميل فواتير المشتريات  ",
+                      text: `${err?.error?.message}`,
+                      confirmButtonText: "موافق",
+                      confirmButtonColor: "#d33",
+                    })
+        }
+    }));
+  }
+  onPageChange(event: PageEvent): void {
+      this.salesInvoiceFilters.page = event.pageIndex + 1
+      this.salesInvoiceFilters.pageSize = event.pageSize
+      this.GetAllSalesInvoices()
+  }
+  AskToDeleteSalesInvoice(element:SalesInvoicesResponse):void
+  {
+    const req:InvoiceChangeStatusReq={
+      id:element.id,
+      deleteStatus:0,
+      salesInvoiceStatus:0,
+      updateBy:`${localStorage.getItem('userName')}|${localStorage.getItem('userEmail')}`
+    }
+  this._SalesInvoiceSubscription.add(this._SalesInvoiceService.changeInvoiceStatus(req
+    ).subscribe({
+    next:(res)=>
+    {
       Swal.fire({
-        icon: 'error',
-        title: 'حدث خطأ',
-        text: 'فشل في تحميل فواتير المبيعات. حاول مرة أخرى لاحقًا.',
-        confirmButtonText: 'موافق',
-        confirmButtonColor: '#d33'
+              icon: "success",
+              title: "تم الطلب بنجاح",
+              text: "تم إرسال طلب حذف الفاتورة للموافقة",
+              confirmButtonText: "موافق",
+              confirmButtonColor: "#3085d6",
+            });
+            this.GetAllSalesInvoices();
+            this.GetAllCustomers();
+    },
+    error:(err)=>{
+        Swal.fire({
+                  icon: "error",
+                  title: "حدث خطأ",
+                  text: `${err.message}`,
+                  confirmButtonText: "موافق",
+                  confirmButtonColor: "#d33",
+                })
+    }
+  }));
+  }
+  CancelSalesInvoiceDeleteRequest(element:PurchaseInvoiceDtos):void
+  {
+    if(element.id != null)
+    {
+    const req:InvoiceChangeStatusReq={
+      id:element.id,
+      deleteStatus:1,
+      salesInvoiceStatus:0,
+      updateBy:`${localStorage.getItem('userName')}|${localStorage.getItem('userEmail')}`
+    }
+  this._SalesInvoiceSubscription.add(this._SalesInvoiceService.changeInvoiceStatus(req).subscribe({
+    next:(res)=>
+    {
+      Swal.fire({
+              icon: "success",
+              title: "تم الطلب بنجاح",
+              text: "تم إلغاء طلب حذف الفاتورة للموافقة",
+              confirmButtonText: "موافق",
+              confirmButtonColor: "#3085d6",
+            });
+            this.GetAllSalesInvoices();
+            this.GetAllCustomers();
+    },
+    error:(err)=>{
+        Swal.fire({
+                  icon: "error",
+                  title: "حدث خطأ",
+                  text: `${err.message}`,
+                  confirmButtonText: "موافق",
+                  confirmButtonColor: "#d33",
+                })
+    }
+  }));
+    }
+    else
+    {
+       Swal.fire({
+            icon: "error",
+            title: "حدث خطأ",
+            text: `خطأ أثناء إرسال بينات الفاتورة للحذف لا يوجد معرف `,
+            confirmButtonText: "موافق",
+            confirmButtonColor: "#d33",
+          });
+    }
+  }
+  DeleteSalesInvoice(id: number): void {
+    if (!id) {
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "رقم الفاتورة غير موجود",
+        confirmButtonText: "موافق",
+        confirmButtonColor: "#d33",
       });
+      return;
     }
-  });
-  }
 
-  onPageChange(event: PageEvent) {
-    this.filters.page = event.pageIndex + 1;
-    this.filters.pageSize = event.pageSize;
-    this.loadInvoices();
-  }
+    this._SalesInvoiceSubscription.add(
+      this._SalesInvoiceService.deleteInvoice(id).subscribe({
+        next: (res) => {
+          Swal.fire({
+            icon: "success",
+            title: "تم الحذف بنجاح",
+            text: "تم حذف الفاتورة بنجاح",
+            confirmButtonText: "موافق",
+            confirmButtonColor: "#3085d6",
+          });
+          this.GetAllCustomers();
+          this.GetAllSalesInvoices();
+        },
+        error: (err) => {
+          console.log(err);
 
-  getStatusText(status: number): string {
-    switch (status) {
-      case 0: return 'جديد';
-      case 1: return 'دفع جزئي';
-      case 2: return 'مدفوعة';
-      case 3: return 'مرتجع';
-      default: return 'غير معروف';
-    }
+          Swal.fire({
+            icon: "error",
+            title: "حدث خطأ",
+            text: `${err.error.message || err.message}`,
+            confirmButtonText: "موافق",
+            confirmButtonColor: "#d33",
+          });
+        },
+      })
+    );
   }
-      initDateForm(){
-    this.range = this.fb.group({
-      start:[''],
-      end:[''],
+  InitSearchForm()
+  {
+    this.form = this.fb.group({
+       invoiceNumber: [""],
+      customerId: [""],
+      createAt: [null],
+      deleteStatus: [null]
     })
   }
-  onFilter() {
-    let stringDate = JSON.stringify(this.range.value);
-    let dateObj = JSON.parse(stringDate);
-    let startDate = dateObj.start.substring(0,10);
-    let endDate = dateObj.end.substring(0,10);
-  if(startDate !=null && endDate !=null)
-  {
-    this.filters.dates=[startDate,endDate];
+onSearch() {
+  if (this.form.valid) {
+    const formValues = this.form.value;
+
+    this.salesInvoiceFilters = {
+      ...this.salesInvoiceFilters,
+      deleteStatus:
+        formValues.deleteStatus === null || formValues.deleteStatus === ''
+          ? null
+          : Number(formValues.deleteStatus),
+
+      invoiceNumber: formValues.invoiceNumber || null,
+      customerId: formValues.customerId || null,
+
+      createAt: formValues.createAt
+        ? new Date(formValues.createAt).toISOString()
+        : null
+    };
+    console.log(this.salesInvoiceFilters);
+
+    this.GetAllSalesInvoices();
   }
-  this.filters.page = 1;
-  console.log(this.filters);
-
-  this.loadInvoices();
 }
+  resetFilters(){
+    this.salesInvoiceFilters = {
+      ...this.salesInvoiceFilters,
+     deleteStatus: null,
+      invoiceNumber: null,
+      customerId: null,
+      createAt: null };
+    this.InitSearchForm();
+    this.GetAllSalesInvoices();
+  }
+    onCustomerSelectOpened(isOpen: boolean): void {
+      if (isOpen) {
+        // ركز على input عند فتح select
+        setTimeout(() => {
+          this.customerSearchInput?.nativeElement.focus();
+        }, 100);
+      } else {
+        // امسح البحث عند إغلاق select
+        this.CustomerSearch = '';
+      }
+    }
 
-onReset() {
-  this.filters = {
-    page: 1,
-    pageSize: 10,
-    salesInvoiceType: null,
-    craetedBy: null,
-    distributorName: null,
-    dates: null
-  };
-  this.loadInvoices();
-}
+    // ...existing code...
 
-goToDetails(invoice: any) {
+  //#endregion
 
-  this.router.navigate(['/sales-invoices/details', invoice.id]);
-}
 }

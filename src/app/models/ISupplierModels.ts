@@ -14,6 +14,7 @@ export interface SupplierDto {
 export interface SupplierFilteration {
   name: string|null
   phoneNumbers?: string|null
+  isDeleted?: boolean|null;
   page?: number|null
   pageSize?: number|null
 }

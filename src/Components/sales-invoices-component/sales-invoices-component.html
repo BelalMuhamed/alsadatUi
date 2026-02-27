@@ -1,127 +1,223 @@
 <div class="w-100 d-flex justify-content-center align-items-center">
-  <h2 class="w-25 text-center">فواتير المبيعات</h2>
+  <h2 class="w-25 text-center">فواتير البيع</h2>
 </div>
-<div class="filter-form" dir="rtl">
-  <mat-form-field appearance="outline" >
-    <mat-label>اسم الموزع</mat-label>
-    <input matInput [(ngModel)]="filters.distributorName" placeholder="أدخل اسم الموزع" />
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>منشئ الفاتورة</mat-label>
-    <input matInput [(ngModel)]="filters.craetedBy" placeholder="أدخل اسم المنشئ" />
-  </mat-form-field>
-<mat-form-field appearance="outline">
-  <mat-label>حالة الفاتورة</mat-label>
-  <mat-select [(ngModel)]="filters.salesInvoiceType">
-   <mat-option value="" disabled selected>اختر الحالة</mat-option>
-    <mat-option [value]="0">جديد</mat-option>
-    <mat-option [value]="1">دفع جزئي</mat-option>
-    <mat-option [value]="2">مدفوعة</mat-option>
-    <mat-option [value]="3">مرتجع</mat-option>
-  </mat-select>
-</mat-form-field>
-
-  <mat-form-field>
-                <mat-label >Enter a date range</mat-label>
-                <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-                    <input matStartDate formControlName="start" placeholder="Start date">
-                    <input matEndDate formControlName="end" placeholder="End date">
-                </mat-date-range-input>
-                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker></mat-date-range-picker>
-            </mat-form-field>
-
-
-</div>
-<div class="container d-flex justify-content-center align-items-center">
-  <button mat-raised-button color="primary" (click)="onFilter()" class="action-btn mx-4">بحث</button>
-  <button mat-stroked-button color="warn" (click)="onReset()" class="action-btn">إعادة تعيين</button>
-</div>
-
 <hr style="border-color: var(--gold); opacity: 0.5; margin: 10px 0;">
 
-  <div class="page-content">
-@if (isLoading) {
-    <p  class="text-center" style="color: var(--gold);">Loading...</p>
-}
-@else  {
+@if (!isLoaded) {
+  <p class="text-center" style="color: var(--gold);">جاري التحميل...</p>
+} @else {
+  <div class="w-100 me-auto d-flex justify-content-end">
+    <button class="add-coupon-btn"   [routerLink]="['/sales-invoice/add']">
+
+      <mat-icon>add</mat-icon>
+      إضافة فاتورة جديدة
+    </button>
+  </div>
+
+  <!-- Filter Form -->
+  <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+    <form [formGroup]="form" class="popup-form">
+      <div class="w-100 d-block">
+        <mat-form-field class="custom-input-theme ms-2" appearance="outline">
+          <mat-label>رقم الفاتورة </mat-label>
+          <input matInput formControlName="invoiceNumber">
+        </mat-form-field>
+
+       <mat-form-field appearance="outline" >
+  <mat-label>حالة الحذف</mat-label>
+
+  <mat-select formControlName="deleteStatus">
+    <mat-option  [value]="null">الكل</mat-option>
+    <mat-option  [value]="0">طلبات الحذف</mat-option>
+    <mat-option  [value]="1">طلبات حذف مرفضة </mat-option>
+
+  </mat-select>
+      </mat-form-field>
+<mat-form-field appearance="outline">
+  <mat-label>اسم العميل</mat-label>
+  <mat-select formControlName="customerId" (openedChange)="onCustomerSelectOpened($event)">
+    <mat-option>
+      <input
+        #customerSearchInput
+        matInput
+        type="text"
+        [(ngModel)]="CustomerSearch"
+        [ngModelOptions]="{standalone: true}"
+        placeholder="ابحث باسم المورد..."
+        (click)="$event.stopPropagation()"
+        (keydown)="$event.stopPropagation()"
+      />
+    </mat-option>
+    <mat-option *ngFor="let cus of filteredCustomers" [value]="cus.userId">
+      {{ cus.fullName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field appearance="outline" class="custom-input-theme ms-2">
+  <mat-label>تاريخ الإنشاء</mat-label>
+
+  <input
+    matInput
+    [matDatepicker]="picker"
+    formControlName="createAt"
+    readonly
+  />
+
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <button
+          mat-raised-button
+          class="add-coupon-btn px-3 ms-2 m-0 gold"
+          (click)="onSearch()"
+          type="button"
+        >
+          <mat-icon aria-hidden="false" aria-label="Search icon">search</mat-icon>
+          ابحث
+        </button>
+        <button
+          mat-raised-button
+          class="add-coupon-btn px-3 m-0 gold"
+          (click)="resetFilters()"
+          type="button"
+        >
+          <mat-icon aria-hidden="false" aria-label="Reset icon">refresh</mat-icon>
+          إعادة تعيين
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table -->
   <div class="table-container mat-elevation-z8">
- <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
-
-   @for (col of columns; track col.key) {
-  <ng-container [matColumnDef]="col.key">
-    <th mat-header-cell *matHeaderCellDef> {{ col.label }} </th>
-    <td mat-cell *matCellDef="let element">
-      @switch (col.type) {
- @case ('date') {
-  <span>{{ element[col.key] | date:'dd-MM-yyyy' }}</span>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      @for (col of columns; track col.key) {
+        <ng-container [matColumnDef]="col.key">
+          <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+          <td mat-cell *matCellDef="let element">
+            @switch (col.type) {
+              @case('date') {
+  <span>
+    {{ element[col.key] | date:'fullDate' }} - {{ element[col.key] | date:'shortTime' }}
+  </span>
 }
 
+              @case ('actions') {
+               <div class="action-buttons">
+               @if(((element.salesInvoiceStatus==0 && element.deleteStatus==null)|| (element.salesInvoiceStatus==0 && element.deleteStatus==1))&& !isUserAdmin )
+                {
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      class="border-0 bg-transparent"
+                      matTooltip="طلب حذف"
+                      matTooltipPosition="above"
+                      (click)="AskToDeleteSalesInvoice(element)"
+                    >
+                     <mat-icon>assignment_late</mat-icon>
+                    </button>
 
-        @case ('currency') {
-          <span>{{ element[col.key] | currency:'EGP':'symbol' }}</span>
-        }
-        @case ('boolean') {
-          @if (element[col.key]) {
-            <mat-icon >check_circle</mat-icon>
-          } @else {
-            <mat-icon >cancel</mat-icon>
-          }
-        }
-         @case ('number') {
-      @if (col.key === 'salesInvoiceStatus') {
-        <span>{{ getStatusText(element[col.key]) }}</span>
-      } @else {
-        <span>{{ element[col.key] }}</span>
+                }
+                  @if(element.salesInvoiceStatus==0 && element.deleteStatus==0 && isUserAdmin)
+                {
+
+                <button
+                      mat-icon-button
+                      color="warn"
+                      class="border-0 bg-transparent"
+                      matTooltip=" الموافقة علي طلب الحذف"
+                      matTooltipPosition="above"
+                      (click)="DeleteSalesInvoice(element.id)"
+                    >
+                     <mat-icon>task_alt</mat-icon>
+
+                    </button>
+                       <button
+                      mat-icon-button
+                      color="warn"
+                      class="border-0 bg-transparent"
+                      matTooltip=" رفض طلب الحذف   "
+                      matTooltipPosition="above"
+                      (click)="CancelSalesInvoiceDeleteRequest(element)"
+                    >
+                   <mat-icon>cancel</mat-icon>
+
+
+                    </button>
+                }
+                 @if(element.salesInvoiceStatus==0 && (element.deleteStatus==1||element.deleteStatus==null) && isUserAdmin)
+                {
+
+                <button
+                      mat-icon-button
+                      color="warn"
+                      class="border-0 bg-transparent"
+                      matTooltip=" الحذف"
+                      matTooltipPosition="above"
+                      (click)="DeleteSalesInvoice(element.id)"
+                    >
+                    <mat-icon>delete</mat-icon>
+
+
+                    </button>
+                }
+                        @if(element.salesInvoiceStatus==0)
+                {
+              <button
+                mat-icon-button
+                color="primary"
+                class="border-0 bg-transparent"
+                [routerLink]="['/sales-invoice/edit/', element.id]"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+                <button
+                mat-icon-button
+                color="primary"
+                class="border-0 bg-transparent"
+                [routerLink]="['/sales-invoice/confirmation/', element.id]"
+              >
+              <mat-icon>verified</mat-icon>
+            </button>
+            }
+            @else if(element.salesInvoiceStatus==1){
+                <button
+                mat-icon-button
+                color="primary"
+                class="border-0 bg-transparent"
+                 [routerLink]="['/sales-invoice', element.id, 'details']">
+              
+  <mat-icon>visibility</mat-icon>
+              </button>
+            }
+
+            </div>
+              }
+              @default {
+                <span>{{ element[col.key] ?? '-' }}</span>
+              }
+            }
+          </td>
+        </ng-container>
       }
-    }
-     @case ('actions') {
-    <div class="action-buttons">
-      <button mat-icon-button color="primary" (click)="goToDetails(element)">
-        <mat-icon>visibility</mat-icon>
-      </button>
 
-      <button mat-icon-button color="accent" >
-        <mat-icon>edit</mat-icon>
-      </button>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
+    </table>
+
+    <div dir="rtl" class="paginator-container">
+      <mat-paginator
+        [length]="totalCount"
+         [pageSize]="salesInvoiceFilters.pageSize"
+    [pageIndex]="(salesInvoiceFilters.page ?? 1) - 1"
+    [pageSizeOptions]="[5, 10, 20,50,70,100]"
+        [showFirstLastButtons]="true"
+        (page)="onPageChange($event)"
+        aria-label="جدول فواتير المشتريات"
+      ></mat-paginator>
     </div>
-  }
-        @default {
-
-            <span>{{ element[col.key] }}</span>
-
-        }
-      }
-    </td>
-  </ng-container>
+  </div>
 }
-
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumnKeys"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnKeys"></tr>
-  </table>
-</div>
-  <div dir="rtl" class="paginator-container">
-  <mat-paginator
-    [length]="totalCount"
-    [pageSize]="filters.pageSize"
-    [pageIndex]="filters.page - 1"
-    [pageSizeOptions]="[5, 10, 20]"
-    [showFirstLastButtons]="true"
-    (page)="onPageChange($event)"
-    aria-label="جدول فواتير المبيعات">
-  </mat-paginator>
-</div>
-
-  <ng-template #loading>
-    <div class="flex justify-center p-4">
-      <mat-spinner></mat-spinner>
-    </div>
-  </ng-template>
-}
-
-
-
-</div>
