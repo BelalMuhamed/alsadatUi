@@ -25,7 +25,7 @@ export class EmployeeSummaryComponent implements OnInit {
   isLoading = false;
 
   ngOnInit(): void {
-    const code = this.data?.employeeCode;
+    const code = this.data?.employeeCode ?? this.data?.representativeCode ?? this.data?.employee?.code ?? this.data?.representative?.representativesCode;
     if (!code) return;
     this.loadSummary(code);
     this.loadLoans(code);
@@ -56,8 +56,8 @@ export class EmployeeSummaryComponent implements OnInit {
     const ref = this.dialog.open(LoanPaymentsComponent, { data: loan, width: '720px', maxHeight: '80vh' });
     ref.afterClosed().subscribe(() => {
       // refresh summary/loans after returning from payments
-      this.loadSummary(this.data.employeeCode);
-      this.loadLoans(this.data.employeeCode);
+      const code = this.data?.employeeCode ?? this.data?.representativeCode ?? this.data?.employee?.code ?? this.data?.representative?.representativesCode;
+      if (code) { this.loadSummary(code); this.loadLoans(code); }
     });
   }
 

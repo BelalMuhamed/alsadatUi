@@ -20,8 +20,10 @@ import Swal from 'sweetalert2';
 import { PayrollDeductionService } from '../../app/Services/payroll-deduction-service';
 import { AddEditPayrollDeductionPopupComponent } from '../../app/Popups/add-edit-payroll-deduction-popup/add-edit-payroll-deduction-popup.component';
 import { EmployeeService } from '../../app/Services/employee.service';
+import { RepresentativeService } from '../../app/Services/representative-service';
 import { HttpClient } from '@angular/common/http';
 import { DeductionDetailDto } from '../../app/models/IPayrollDeduction';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-payroll-deductions',
@@ -33,6 +35,7 @@ import { DeductionDetailDto } from '../../app/models/IPayrollDeduction';
 export class PayrollDeductionsComponent implements OnInit {
   private service = inject(PayrollDeductionService);
   private employeeService = inject(EmployeeService);
+  private representativeService = inject(RepresentativeService);
   private http = inject(HttpClient);
   private dialog = inject(MatDialog);
 
@@ -57,8 +60,20 @@ export class PayrollDeductionsComponent implements OnInit {
 
   loadEmployees() {
     this.employeesLoading = true;
-    this.employeeService.getEmployeesByFilter(this.pagination, {}).subscribe({
-      next: (res: any) => { this.employees = (res?.items ?? res?.data ?? res) as any[]; this.employeesLoading = false; },
+    // Load employees and representatives and merge into a unified list with `code` and `fullName`
+    forkJoin({
+      employees: this.employeeService.getEmployeesByFilter(this.pagination as any, {}),
+      representatives: this.representativeService.getRepresentativesByFilter(this.pagination as any, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 } as any)
+    }).subscribe({
+      next: (res: any) => {
+        const emps = (res.employees?.items ?? res.employees?.data ?? res.employees) as any[] || [];
+        const reps = (res.representatives?.items ?? res.representatives?.data ?? res.representatives) as any[] || [];
+        const normalized: any[] = [];
+        emps.forEach(e => normalized.push({ code: e.employeeCode || e.code || '', fullName: e.fullName || e.name || '', isRepresentative: false, raw: e }));
+        reps.forEach(r => normalized.push({ code: r.representativesCode || r.representativeCode || r.code || '', fullName: (r.user?.fullName || r.user?.FullName || r.fullName || r.name) || '', isRepresentative: true, raw: r }));
+        this.employees = normalized;
+        this.employeesLoading = false;
+      },
       error: () => { this.employees = []; this.employeesLoading = false; }
     });
   }
@@ -68,7 +83,7 @@ export class PayrollDeductionsComponent implements OnInit {
     const q = this.employeeFilter.toLowerCase().trim();
     return this.employees.filter((e: any) => {
       const name = (e.fullName || e.name || '').toLowerCase();
-      const code = (e.employeeCode || e.code || '').toString().toLowerCase();
+      const code = (e.code || e.employeeCode || '').toString().toLowerCase();
       return name.includes(q) || code.includes(q);
     }).slice(0,20);
   }
@@ -76,7 +91,7 @@ export class PayrollDeductionsComponent implements OnInit {
   set selectedEmployee(value: any) {
     this._selectedEmployee = value;
     if (value) {
-      this.filters.employeeCode = value.employeeCode || value.code || '';
+      this.filters.employeeCode = value.code || value.employeeCode || '';
     }
   }
   get selectedEmployee() { return this._selectedEmployee; }
@@ -88,11 +103,11 @@ export class PayrollDeductionsComponent implements OnInit {
 
   onEmployeeSelected(event: any) {
     const selectedValue = event.option.value;
-    const emp = this.employees.find((e: any) => (e.employeeCode && e.employeeCode === selectedValue) || (e.code && e.code === selectedValue));
+    const emp = this.employees.find((e: any) => (e.code && e.code === selectedValue));
     if (emp) {
       this.selectedEmployee = emp;
       const empName = emp.fullName || emp.name || '';
-      const empCode = emp.employeeCode || emp.code || '';
+      const empCode = emp.code || emp.employeeCode || '';
       this.employeeFilter = `${empName} (${empCode})`;
     }
   }

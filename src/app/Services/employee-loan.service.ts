@@ -40,7 +40,8 @@ export class EmployeeLoanService {
     if (filter) {
       if (filter.employeeCode) params = params.set('employeeCode', filter.employeeCode);
       if (filter.employeeName) params = params.set('employeeName', filter.employeeName);
-      if (filter.status) params = params.set('status', filter.status);
+      // Important: check for zero explicitly since 0 is falsy in JavaScript
+      if (filter.status !== undefined && filter.status !== null) params = params.set('status', filter.status);
       if (filter.fromDate) params = params.set('fromDate', filter.fromDate);
       if (filter.toDate) params = params.set('toDate', filter.toDate);
     }

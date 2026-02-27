@@ -55,6 +55,7 @@ export class EmployeeLeaveService {
     if (filter.pageNumber != null) params = params.set('pageNumber', String(filter.pageNumber));
     if (filter.pageSize != null) params = params.set('pageSize', String(filter.pageSize));
     if (filter.employeeCode) params = params.set('employeeCode', filter.employeeCode);
+    if ((filter as any).representativeCode) params = params.set('representativeCode', (filter as any).representativeCode);
     if (filter.leaveTypeId != null) params = params.set('leaveTypeId', String(filter.leaveTypeId));
     if (filter.status != null) params = params.set('status', String(filter.status));
     if (filter.fromDate) params = params.set('fromDate', String(filter.fromDate));

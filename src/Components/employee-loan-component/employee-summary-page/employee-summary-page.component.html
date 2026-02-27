@@ -4,8 +4,15 @@
   </div>
 
   <div class="search-row mb-3">
+    <div class="d-flex justify-content-center mb-2">
+      <mat-button-toggle-group name="userType" [(ngModel)]="userType" appearance="legacy">
+        <mat-button-toggle value="employee">موظف</mat-button-toggle>
+        <mat-button-toggle value="representative">مندوب</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
     <mat-form-field appearance="outline" class="w-100 custom-input-theme">
-      <mat-label>الموظف (البحث بالاسم أو الكود)</mat-label>
+      <mat-label>{{ userType === 'employee' ? 'الموظف (البحث بالاسم أو الكود)' : 'المندوب (البحث بالاسم أو الكود)' }}</mat-label>
       <input matInput [(ngModel)]="employeeFilter" (ngModelChange)="onEmployeeFilterChange($event)" [matAutocomplete]="auto" placeholder="ابحث بالاسم أو الكود" />
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
         <mat-option *ngIf="employeesLoading" disabled>
@@ -17,7 +24,7 @@
         <mat-option *ngFor="let e of filteredEmployees" [value]="e">
           <div class="d-flex justify-content-between w-100 employee-option">
             <div class="employee-name">{{ e.fullName || e.name || 'بدون اسم' }}</div>
-            <div class="employee-code text-muted">{{ e.employeeCode || e.code }}</div>
+            <div class="employee-code text-muted">{{ e.employeeCode || e.code || e.representativesCode || e.representativeCode }}</div>
           </div>
         </mat-option>
 

@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EmployeeService } from '../../../app/Services/employee.service';
 import { EmployeeLoanService } from '../../../app/Services/employee-loan.service';
+import { RepresentativeService } from '../../../app/Services/representative-service';
 import { LoanPaymentsComponent } from '../loan-payments/loan-payments.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -28,6 +30,7 @@ import Swal from 'sweetalert2';
     MatInputModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatButtonToggleModule,
     MatCardModule,
     MatTableModule,
     MatButtonModule,
@@ -39,13 +42,17 @@ import Swal from 'sweetalert2';
 export class EmployeeSummaryPageComponent implements OnInit, OnDestroy {
   private employeeService = inject(EmployeeService);
   private loanService = inject(EmployeeLoanService);
+  private representativeService = inject(RepresentativeService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
   employeeFilter = '';
   employees: any[] = [];
+  representatives: any[] = [];
   employeesLoading = false;
+  representativesLoading = false;
+  userType: 'employee' | 'representative' = 'employee';
 
   selectedEmployee: any = null;
   summary: any = null;
@@ -56,6 +63,7 @@ export class EmployeeSummaryPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadAllEmployees();
+    this.loadAllRepresentatives();
 
     const sub = this.route.queryParams.subscribe(params => {
       const code = params['employeeCode'];
@@ -96,12 +104,32 @@ export class EmployeeSummaryPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadAllRepresentatives(): void {
+    this.representativesLoading = true;
+    const pagination = { pageNumber: 1, pageSize: 1000 } as any;
+    this.representativeService.getRepresentativesByFilter(pagination, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 }).subscribe({
+      next: (res: any) => {
+        const payload = res?.data ?? res ?? [];
+        const list = payload?.items ?? payload ?? [];
+        const map = new Map<string, any>();
+        for (const e of list) {
+          const key = (e.representativesCode || e.representativeCode || e.code || e.id || '').toString();
+          if (key && !map.has(key)) map.set(key, e);
+        }
+        this.representatives = Array.from(map.values());
+        this.representativesLoading = false;
+      },
+      error: () => { this.representatives = []; this.representativesLoading = false; }
+    });
+  }
+
   get filteredEmployees(): any[] {
     const q = (this.employeeFilter || '').toString().trim().toLowerCase();
-    if (!q) return this.employees.slice(0, 30);
-    return this.employees.filter((e:any) => {
-      const name = (e.fullName || e.name || '').toString().toLowerCase();
-      const code = (e.employeeCode || e.code || '').toString().toLowerCase();
+    const list = this.userType === 'employee' ? this.employees : this.representatives;
+    if (!q) return list.slice(0, 30);
+    return list.filter((e:any) => {
+      const name = (e.fullName || e.name || e.user?.fullName || '').toString().toLowerCase();
+      const code = (e.employeeCode || e.code || e.representativesCode || e.representativeCode || '').toString().toLowerCase();
       return name.includes(q) || code.includes(q);
     }).slice(0, 30);
   }
@@ -113,14 +141,14 @@ export class EmployeeSummaryPageComponent implements OnInit, OnDestroy {
 
   onEmployeeSelected(event: any) {
     const emp = event.option.value;
-    // option value is whole employee object (see template)
+    // option value is whole object (employee or representative)
     this.selectEmployee(emp);
   }
 
   selectEmployee(emp: any) {
     if (!emp) return;
     this.selectedEmployee = emp;
-    const code = emp.employeeCode ?? emp.code ?? emp.id;
+    const code = this.userType === 'employee' ? (emp.employeeCode ?? emp.code ?? emp.id) : (emp.representativesCode ?? emp.representativeCode ?? emp.code ?? emp.id);
     // update URL
     this.router.navigate([], { queryParams: { employeeCode: code }, queryParamsHandling: 'merge' });
     this.loadSummary(code);
@@ -152,7 +180,7 @@ export class EmployeeSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   openAddLoan() {
-    const ref = this.dialog.open(LoanDialogComponent, { data: { loan: null, employees: this.employees }, width: '520px' });
+    const ref = this.dialog.open(LoanDialogComponent, { data: { loan: null, employees: this.employees, representatives: this.representatives }, width: '520px' });
     ref.afterClosed().subscribe((saved:any) => {
       if (saved && this.selectedEmployee) {
         const code = this.selectedEmployee.employeeCode ?? this.selectedEmployee.code;
@@ -162,7 +190,7 @@ export class EmployeeSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   calculateMonthlyDeduction() {
-    const code = this.selectedEmployee?.employeeCode ?? this.selectedEmployee?.code;
+    const code = this.userType === 'employee' ? (this.selectedEmployee?.employeeCode ?? this.selectedEmployee?.code) : (this.selectedEmployee?.representativesCode ?? this.selectedEmployee?.representativeCode ?? this.selectedEmployee?.code);
     if (!code) { Swal.fire('تحذير','اختر موظف أولاً','warning'); return; }
     this.loanService.calculateMonthlyDeduction(code).subscribe({
       next: (res:any) => {

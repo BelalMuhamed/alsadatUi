@@ -6,7 +6,7 @@
     <!-- حقل الموظف -->
     <div class="mb-3">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>الموظف</mat-label>
+        <mat-label>الموظف / المندوب</mat-label>
         
         <!-- حالة التعديل: عرض فقط -->
         <ng-container *ngIf="data?.id; else newEmployeeField">
@@ -41,13 +41,13 @@
             
             <!-- عرض الموظفين -->
             <mat-option *ngFor="let employee of filteredEmployees"
-            [value]="employee.employeeCode || employee.code">
+              [value]="employee.code">
               <div class="d-flex align-items-center w-100 employee-option">
                 <span class="employee-name">
                   {{ employee.fullName || employee.name || 'بدون اسم' }}
                 </span>
                 <span class="employee-code text-muted">
-                  {{ employee.employeeCode || employee.code }}
+                    {{ employee.code }}
                 </span>
               </div>
             </mat-option>
@@ -70,7 +70,7 @@
         
         <!-- رسالة الخطأ -->
         <mat-error *ngIf="form.get('employeeCode')?.hasError('required')">
-          يجب اختيار موظف
+          يجب اختيار موظف أو مندوب
         </mat-error>
       </mat-form-field>
     </div>

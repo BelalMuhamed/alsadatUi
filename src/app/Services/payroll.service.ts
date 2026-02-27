@@ -10,7 +10,9 @@ import {
   BulkPayrollResultDto,
   PayrollSummaryDto,
   PayrollExportDto,
-  MarkPayrollPaidDto
+  MarkPayrollPaidDto,
+  PayrollPreviewDto,
+  PreviewBulkPayrollDto
 } from '../models/IPayroll';
 import { Result } from '../models/ApiReponse';
 
@@ -21,6 +23,22 @@ export class PayrollService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
+
+  // الحصول على معاينة كشف الراتب (قبل التأكيد)
+  previewPayroll(request: GeneratePayrollRequestDto): Observable<Result<PayrollPreviewDto>> {
+    return this.http.get<Result<PayrollPreviewDto>>(
+      `${this.apiUrl}Payroll/PreviewPayroll`,
+      { params: this.payrollRequestToParams(request) }
+    );
+  }
+
+  // الحصول على معاينة كشوف رواتب جماعي (قبل التأكيد)
+  previewBulkPayroll(request: GenerateBulkPayrollRequestDto): Observable<Result<PreviewBulkPayrollDto>> {
+    return this.http.get<Result<PreviewBulkPayrollDto>>(
+      `${this.apiUrl}Payroll/PreviewBulkPayroll`,
+      { params: this.bulkPayrollRequestToParams(request) }
+    );
+  }
 
   // إنشاء كشف راتب فردي
   generatePayroll(request: GeneratePayrollRequestDto): Observable<Result<PayrollResponseDto>> {
@@ -39,20 +57,24 @@ export class PayrollService {
   }
 
   // تسجيل كشف راتب فردي في المحاسبة
-  postToAccounting(payrollId: number): Observable<Result<string>> {
-    let httpParams = new HttpParams().set('payrollId', String(payrollId));
+  postToAccounting(payrollId: number, confirmLoans: boolean = false): Observable<Result<string>> {
+    let httpParams = new HttpParams()
+      .set('payrollId', String(payrollId))
+      .set('confirmLoans', String(confirmLoans));
     return this.http.post<Result<string>>(
       `${this.apiUrl}Payroll/PostToAccounting`,
-      null,
+      {}, // Send empty object instead of null
       { params: httpParams }
     );
   }
 
   // تسجيل جماعي في المحاسبة
-  postBulkToAccounting(payrollIds: number[]): Observable<Result<string>> {
+  postBulkToAccounting(payrollIds: number[], confirmLoans: boolean = false): Observable<Result<string>> {
+    let httpParams = new HttpParams().set('confirmLoans', String(confirmLoans));
     return this.http.post<Result<string>>(
       `${this.apiUrl}Payroll/PostBulkToAccounting`,
-      payrollIds
+      payrollIds,
+      { params: httpParams }
     );
   }
 
@@ -78,6 +100,15 @@ export class PayrollService {
     return this.http.put<Result<string>>(
       `${this.apiUrl}Payroll/MarkBulkAsPaid`,
       dto
+    );
+  }
+
+  // حذف كشف راتب
+  deletePayroll(payrollId: number): Observable<Result<string>> {
+    let httpParams = new HttpParams().set('PayrollID', String(payrollId));
+    return this.http.delete<Result<string>>(
+      `${this.apiUrl}Payroll/DeletePayroll`,
+      { params: httpParams }
     );
   }
 
@@ -178,4 +209,63 @@ export class PayrollService {
       { params: httpParams }
     );
   }
+
+  // Helper method to convert PayrollRequest to HttpParams
+  private payrollRequestToParams(request: GeneratePayrollRequestDto): HttpParams {
+    let params = new HttpParams()
+      .set('month', String(request.month))
+      .set('year', String(request.year));
+    // optional employee or representative
+    if (request.employeeCode) {
+      params = params.set('employeeCode', request.employeeCode!);
+    }
+    if ((request as any).representativeCode) {
+      params = params.set('representativeCode', (request as any).representativeCode);
+    }
+    if (request.payLoansFromSalary !== undefined) {
+      params = params.set('payLoansFromSalary', String(request.payLoansFromSalary));
+    }
+    if (request.paymentMethodForLoans) {
+      params = params.set('paymentMethodForLoans', request.paymentMethodForLoans);
+    }
+
+    return params;
+  }
+
+  // Helper method to convert BulkPayrollRequest to HttpParams
+  private bulkPayrollRequestToParams(request: GenerateBulkPayrollRequestDto): HttpParams {
+    let params = new HttpParams()
+      .set('month', String(request.month))
+      .set('year', String(request.year))
+      .set('includeActiveOnly', String(request.includeActiveOnly ?? true));
+
+    // Support userCodes (mix of employees and representatives)
+    if ((request as any).userCodes && (request as any).userCodes.length > 0) {
+      (request as any).userCodes.forEach((code: string) => {
+        params = params.append('userCodes', code);
+      });
+    }
+
+    if (request.employeeCodes && request.employeeCodes.length > 0) {
+      request.employeeCodes.forEach(code => {
+        params = params.append('employeeCodes', code);
+      });
+    }
+
+    if (request.autoPostToAccounting !== undefined) {
+      params = params.set('autoPostToAccounting', String(request.autoPostToAccounting));
+    }
+    if (request.payLoansFromSalary !== undefined) {
+      params = params.set('payLoansFromSalary', String(request.payLoansFromSalary));
+    }
+    if (request.confirmLoans !== undefined) {
+      params = params.set('confirmLoans', String(request.confirmLoans));
+    }
+    if (request.paymentMethod) {
+      params = params.set('paymentMethod', request.paymentMethod);
+    }
+
+    return params;
+  }
 }
+

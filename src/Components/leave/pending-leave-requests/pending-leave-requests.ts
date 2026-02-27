@@ -33,13 +33,31 @@ export class PendingLeaveRequestsComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load() {
-    this.leaveService.getPendingRequests().subscribe({ next: (res) => this.items = res ?? [], error: (e) => Swal.fire('خطأ','فشل تحميل القوائم','error') });
+    this.isLoading = true;
+    this.leaveService.getPendingRequests().subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        let arr: any[] = [];
+        if (Array.isArray(res)) arr = res;
+        else if (res?.items) arr = res.items;
+        else if (res?.data) arr = Array.isArray(res.data) ? res.data : (res.data.items ?? []);
+
+        arr = (arr || []).map((it: any) => {
+          const name = it.employeeName || it.representativeName || it.fullName || it.name || it.user?.fullName || it.user?.name || '';
+          const code = it.employeeCode || it.representativeCode || it.code || it.userId || it.id || it.representativeId || '';
+          return { ...it, employeeName: name || code, fullName: name, employeeCode: code };
+        });
+
+        this.items = arr;
+        this.totalCount = arr.length || 0;
+      },
+      error: (e) => { this.isLoading = false; Swal.fire('خطأ','فشل تحميل القوائم','error'); }
+    });
   }
 
   approve(item: EmployeeLeaveRequestDto) {
     const dto: ApproveRejectLeaveDto = { leaveRequestId: item.id, reason: '' };
-    this.leaveService.approveLeaveRequest(item.id, dto, '');
-    this.leaveService.approveLeaveRequest(item.id, dto, '').subscribe({ next: () => { Swal.fire('تم','تمت الموافقة','success'); this.load(); }, error: (e) => Swal.fire('خطأ','فشل العملية','error') });
+    this.leaveService.approveLeaveRequest(item.id, dto, item.employeeCode || '').subscribe({ next: () => { Swal.fire('تم','تمت الموافقة','success'); this.load(); }, error: (e) => Swal.fire('خطأ','فشل العملية','error') });
   }
 
   reject(item: EmployeeLeaveRequestDto) {

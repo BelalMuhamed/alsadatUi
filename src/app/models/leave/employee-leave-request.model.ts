@@ -2,7 +2,9 @@
 export interface EmployeeLeaveRequestDto {
   id: number;
   employeeCode: string;
+  representativeCode?: string;
   employeeName?: string;
+  representativeName?: string;
   leaveTypeId: number;
   leaveTypeName?: string;
   fromDate: string | Date;
@@ -26,8 +28,9 @@ export interface ApproveRejectLeaveDto {
 }
 
 export interface CreateLeaveRequestDto {
-  employeeEmail: string;
-  employeeCode: string;
+  employeeEmail?: string;
+  employeeCode?: string;
+  representativeCode?: string;
   leaveTypeId: number;
   fromDate: string | Date;
   toDate: string | Date;
@@ -38,6 +41,7 @@ export interface CreateLeaveRequestDto {
 
 export interface LeaveRequestFilterDto {
   employeeCode?: string | null;
+  representativeCode?: string | null;
   leaveTypeId?: number | null;
   status?: number | null;
   fromDate?: string | Date | null;

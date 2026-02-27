@@ -10,10 +10,15 @@
   <div class="filters mb-3">
     <div class="filter-form w-100 d-flex gap-2 align-items-center" dir="rtl">
       <mat-form-field appearance="outline" class="custom-input-theme" style="min-width:220px;">
-        <mat-label>الموظف</mat-label>
+        <mat-label>الموظف / المندوب</mat-label>
         <input type="text" matInput [(ngModel)]="employeeFilter" (ngModelChange)="onEmployeeFilterChange($event)" [matAutocomplete]="auto" placeholder="ابحث بالاسم أو الكود" />
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)">
-          <mat-option *ngFor="let e of filteredEmployees" [value]="e.employeeCode || e.code">{{(e.fullName || e.name)}}</mat-option>
+          <mat-option *ngFor="let e of filteredEmployees" [value]="e.code">
+            <div class="d-flex align-items-center w-100 employee-option">
+              <span>{{ e.fullName || e.name || 'بدون اسم' }}</span>
+              <span class="text-muted" style="margin-left:8px">{{ e.code }}</span>
+            </div>
+          </mat-option>
         </mat-autocomplete>
       </mat-form-field>
 

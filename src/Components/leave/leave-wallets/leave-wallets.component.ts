@@ -12,25 +12,29 @@ import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { firstValueFrom } from 'rxjs';
 import { EmployeeService } from '../../../app/Services/employee.service';
+import { RepresentativeService } from '../../../app/Services/representative-service';
 import { EmployeeLeaveService } from '../../../app/Services/employee-leave.service';
 import { environment } from '../../../environments/environment.development';
 import { LeaveBalanceSummaryDto } from '../../../app/models/leave/leave-balance.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-leave-wallets',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, MatTableModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule, MatTableModule, MatButtonToggleModule],
   templateUrl: './leave-wallets.component.html',
   styleUrls: ['./leave-wallets.component.css']
 })
 export class LeaveWalletsComponent implements OnInit {
   private http = inject(HttpClient);
   private employeeService = inject(EmployeeService);
+  private representativeService = inject(RepresentativeService);
   private leaveService = inject(EmployeeLeaveService);
 
   employees: any[] = [];
+  representatives: any[] = [];
   employeeFilter = '';
   _selectedEmployee: any = null;
   years: number[] = [];
@@ -42,6 +46,8 @@ export class LeaveWalletsComponent implements OnInit {
   selectedLeaveTypes: number[] = []; // multi for bulk
 
   balances: LeaveBalanceSummaryDto | null = null;
+
+  userType: 'employee' | 'representative' = 'employee';
 
   pagination = { pageNumber: 1, pageSize: 1000 };
 
@@ -55,6 +61,7 @@ export class LeaveWalletsComponent implements OnInit {
   async init(): Promise<void> {
     this.loadLeaveTypes();
     await this.loadAllEmployees();
+    await this.loadAllRepresentatives();
   }
 
   private normalizeToArray(res: any): any[] {
@@ -76,26 +83,55 @@ export class LeaveWalletsComponent implements OnInit {
     });
   }
 
-  removeDuplicates(items: any[]) { const map = new Map(); const out: any[] = []; for (const e of items) { const key = e.employeeCode || e.code || e.id; if (key && !map.has(key)) { map.set(key, true); out.push(e); } } return out; }
-
-  get filteredEmployees() {
-    if (!this.employeeFilter || this.employeeFilter.trim().length === 0) return this.employees.slice(0,20);
-    const q = this.employeeFilter.toLowerCase().trim();
-    return this.employees.filter((e:any) => { const name = (e.fullName || e.name || '').toLowerCase(); const code = (e.employeeCode || e.code || '').toString().toLowerCase(); return name.includes(q) || code.includes(q); }).slice(0,20);
+  async loadAllRepresentatives(): Promise<void> {
+    return new Promise((resolve) => {
+      this.representativeService.getRepresentativesByFilter(this.pagination, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 }).subscribe({
+        next: (res: any) => {
+          const loaded = this.normalizeToArray(res);
+          let reps = this.removeDuplicates(loaded);
+          reps = reps.map((r: any) => ({
+            ...r,
+            employeeCode: r.representativeCode || r.code || r.userId || r.id || r.representativeCode || '',
+            fullName: r.fullName || r.name || r.user?.fullName || r.user?.name || ''
+          }));
+          this.representatives = reps;
+          resolve();
+        },
+        error: () => { this.representatives = []; resolve(); }
+      });
+    });
   }
 
-  set selectedEmployee(v: any) { this._selectedEmployee = v; if (v) { this.employeeFilter = `${v.fullName || v.name} (${v.employeeCode || v.code})`; } }
+  removeDuplicates(items: any[]) { const map = new Map(); const out: any[] = []; for (const e of items) { const key = e.employeeCode || e.code || e.representativeCode || e.representiveCode || e.userId || e.id || e.representativeId; if (key && !map.has(key)) { map.set(key, true); out.push(e); } } return out; }
+
+  get filteredEmployees() {
+    const list = this.userType === 'employee' ? this.employees : this.representatives;
+    if (!this.employeeFilter || this.employeeFilter.trim().length === 0) return list.slice(0,20);
+    const q = this.employeeFilter.toLowerCase().trim();
+    return list.filter((e:any) => { const name = (e.fullName || e.name || '').toLowerCase(); const code = (e.employeeCode || e.code || e.representativeCode || e.representiveCode || '').toString().toLowerCase(); return name.includes(q) || code.includes(q); }).slice(0,20);
+  }
+
+  formatPerson(e: any): string {
+    const name = e?.fullName || e?.name || e?.user?.fullName || e?.user?.name || '';
+    const code = e?.employeeCode || e?.code || e?.representativeCode || e?.representiveCode || e?.userId || e?.id || e?.representativeId || '';
+    if (name && code) return `${name} — ${code}`;
+    if (name) return name;
+    return code || '';
+  }
+
+  set selectedEmployee(v: any) { this._selectedEmployee = v; if (v) { const code = v.employeeCode || v.code || v.representativeCode || v.representiveCode || v.userId || v.id || ''; this.employeeFilter = `${v.fullName || v.name} (${code})`; } }
   get selectedEmployee() { return this._selectedEmployee; }
 
   onEmployeeSelected(event: any) {
     const val = event.option.value;
-    const emp = this.employees.find((e:any) => (e.employeeCode && e.employeeCode === val) || (e.code && e.code === val));
+    const list = this.userType === 'employee' ? this.employees : this.representatives;
+    const emp = list.find((e:any) => (e.employeeCode && e.employeeCode === val) || (e.code && e.code === val) || (e.representativeCode && e.representativeCode === val) || (e.representiveCode && e.representiveCode === val) || (e.userId && e.userId === val) || (e.id && e.id === val));
     if (emp) this.selectedEmployee = emp;
   }
 
   async fetchBalances() {
     if (!this.selectedEmployee) { Swal.fire('تنبيه','اختر موظفاً أولاً','warning'); return; }
-    const code = this.selectedEmployee.employeeCode || this.selectedEmployee.code || '';
+    const code = this.selectedEmployee.employeeCode || this.selectedEmployee.code || this.selectedEmployee.userId || this.selectedEmployee.id || this.selectedEmployee.representativeCode || this.selectedEmployee.representiveCode || '';
     try {
       if (this.selectedLeaveType) {
         const res = await firstValueFrom(this.leaveService.getLeaveBalanceByType(code, Number(this.selectedLeaveType), this.year));

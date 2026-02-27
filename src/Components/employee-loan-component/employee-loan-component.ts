@@ -14,6 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import Swal from 'sweetalert2';
 import { EmployeeLoanService } from '../../app/Services/employee-loan.service';
+import { RepresentativeService } from '../../app/Services/representative-service';
 import { LoanDialogComponent } from './loan-dialog/loan-dialog.component';
 import { PaymentsDialogComponent } from './payments-dialog/payments-dialog.component';
 import { EmployeeSummaryComponent } from './employee-summary/employee-summary.component';
@@ -32,6 +33,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class EmployeeLoanComponent implements OnInit {
   private loanService = inject(EmployeeLoanService);
+  private representativeService = inject(RepresentativeService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
@@ -82,10 +84,16 @@ export class EmployeeLoanComponent implements OnInit {
   loadLoans(): void {
     this.isLoading = true;
 
-    // build a clean filters object for the API (don't send empty values)
+    // build a clean filters object for the API (only for status and dates, NOT for general search)
     const reqFilters: any = {};
-    if (this.filters.q) reqFilters.q = this.filters.q.trim();
-    // normalize date filters to ISO date (yyyy-MM-dd) to avoid server validation errors
+    
+    // الحالة - ترسل للـ Backend
+    if (this.filters.status !== '' && this.filters.status != null) {
+      const sNum = Number(this.filters.status);
+      if (!isNaN(sNum)) reqFilters.status = sNum;
+    }
+    
+    // التواريخ - ترسل للـ Backend (normalize to ISO date yyyy-MM-dd)
     if (this.filters.fromDate) {
       const d = this.filters.fromDate;
       const fromStr = (d instanceof Date) ? d.toISOString().split('T')[0] : (typeof d === 'string' && d ? new Date(d).toISOString().split('T')[0] : d);
@@ -96,11 +104,6 @@ export class EmployeeLoanComponent implements OnInit {
       const toStr = (d2 instanceof Date) ? d2.toISOString().split('T')[0] : (typeof d2 === 'string' && d2 ? new Date(d2).toISOString().split('T')[0] : d2);
       reqFilters.toDate = toStr;
     }
-    // only include status when set; convert to number
-    if (this.filters.status !== '' && this.filters.status != null) {
-      const sNum = Number(this.filters.status);
-      if (!isNaN(sNum)) reqFilters.status = sNum;
-    }
 
     (this.loanService as any).getAllLoans(this.currentPage, this.pageSize, reqFilters).subscribe({
       next: (res: any) => {
@@ -108,37 +111,20 @@ export class EmployeeLoanComponent implements OnInit {
         const payload = res?.data ?? res;
         if (payload?.items && Array.isArray(payload.items)) {
           let items = payload.items;
-          const f = this.filters;
-          const hasFilter = !!(f.q || (f.status && f.status !== '') || f.fromDate || f.toDate);
-          if (hasFilter) {
-            const from = f.fromDate ? new Date(f.fromDate) : null;
-            const to = f.toDate ? new Date(f.toDate) : null;
-            const filterStatusCode = (f.status !== '' && f.status != null) ? Number(f.status) : null;
+          
+          // البحث العام - الفلترة المحلية فقط
+          if (this.filters.q) {
+            const q = this.filters.q.toString().toLowerCase().trim();
             items = items.filter((it: any) => {
-              if (f.q) {
-                const q = f.q.toString().toLowerCase();
-                if (!((it.employeeName || '').toLowerCase().includes(q) || (it.employeeCode || '').toLowerCase().includes(q) || (it.loanNumber || '').toLowerCase().includes(q))) return false;
-              }
-              if (filterStatusCode != null) {
-                const itStatus = this.normalizeItemStatus(it);
-                if (itStatus === null || itStatus !== filterStatusCode) return false;
-              }
-              if (from) {
-                const d = new Date(it.firstInstallmentDate ?? it.startDate ?? it.createdAt);
-                if (d < from) return false;
-              }
-              if (to) {
-                const d = new Date(it.firstInstallmentDate ?? it.startDate ?? it.createdAt);
-                if (d > to) return false;
-              }
-              return true;
+              const name = (it.employeeName || it.representativeName || it.employee?.fullName || it.representative?.fullName || '').toLowerCase();
+              const code = (it.employeeCode || it.representativeCode || it.code || '').toString().toLowerCase();
+              const loanNum = (it.loanNumber || '').toString().toLowerCase();
+              return name.includes(q) || code.includes(q) || loanNum.includes(q);
             });
-            this.loans = items;
-            this.totalCount = items.length;
-          } else {
-            this.loans = items;
-            this.totalCount = payload.totalCount ?? items.length;
           }
+          
+          this.loans = items;
+          this.totalCount = items.length;
         } else if (res?.success === true) {
           this.loans = [];
           this.totalCount = payload?.totalCount ?? 0;
@@ -169,8 +155,8 @@ export class EmployeeLoanComponent implements OnInit {
   getStatusText(item: any): string {
     const code = this.normalizeItemStatus(item);
     const map: Record<number,string> = {
-      0: 'قيد المراجعة',
-      1: 'موافق',
+      0: 'قيد الموافقة',
+      1: 'نشط',
       2: 'مسدد',
       3: 'مرفوض',
       4: 'متأخر',
@@ -197,15 +183,37 @@ export class EmployeeLoanComponent implements OnInit {
 
   openAdd(): void {
     this.loadEmployees().subscribe((emps: any[]) => {
-      const ref = this.dialog.open(LoanDialogComponent, { data: { loan: null, employees: emps }, width: '520px' });
-      ref.afterClosed().subscribe((saved: any) => { if (saved) this.loadLoans(); });
+      const pagination = { pageNumber: 1, pageSize: 1000 } as any;
+      this.representativeService.getRepresentativesByFilter(pagination, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 }).subscribe({
+        next: (res: any) => {
+          const payload = res?.data ?? res ?? [];
+          const reps = payload?.items ?? payload ?? [];
+          const ref = this.dialog.open(LoanDialogComponent, { data: { loan: null, employees: emps, representatives: reps }, width: '520px' });
+          ref.afterClosed().subscribe((saved: any) => { if (saved) this.loadLoans(); });
+        },
+        error: () => {
+          const ref = this.dialog.open(LoanDialogComponent, { data: { loan: null, employees: emps, representatives: [] }, width: '520px' });
+          ref.afterClosed().subscribe((saved: any) => { if (saved) this.loadLoans(); });
+        }
+      });
     });
   }
 
   openEdit(loan: any): void {
     this.loadEmployees().subscribe((emps: any[]) => {
-      const ref = this.dialog.open(LoanDialogComponent, { data: { loan, employees: emps }, width: '520px' });
-      ref.afterClosed().subscribe((saved: any) => { if (saved) this.loadLoans(); });
+      const pagination = { pageNumber: 1, pageSize: 1000 } as any;
+      this.representativeService.getRepresentativesByFilter(pagination, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 }).subscribe({
+        next: (res: any) => {
+          const payload = res?.data ?? res ?? [];
+          const reps = payload?.items ?? payload ?? [];
+          const ref = this.dialog.open(LoanDialogComponent, { data: { loan, employees: emps, representatives: reps }, width: '520px' });
+          ref.afterClosed().subscribe((saved: any) => { if (saved) this.loadLoans(); });
+        },
+        error: () => {
+          const ref = this.dialog.open(LoanDialogComponent, { data: { loan, employees: emps, representatives: [] }, width: '520px' });
+          ref.afterClosed().subscribe((saved: any) => { if (saved) this.loadLoans(); });
+        }
+      });
     });
   }
 

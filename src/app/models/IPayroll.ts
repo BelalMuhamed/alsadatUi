@@ -1,22 +1,29 @@
 // Payroll DTOs - تطابق الـ Backend DTOs
 
 export interface GeneratePayrollRequestDto {
-  employeeCode: string;
+  employeeCode?: string | null;
+  representativeCode?: string | null;
   month: number;
   year: number;
+  payLoansFromSalary?: boolean;
+  paymentMethodForLoans?: string;
 }
 
 export interface GenerateBulkPayrollRequestDto {
   month: number;
   year: number;
+  userCodes?: string[] | null; // محدد من السيرفر ليشمل موظفين ومندوبين
   employeeCodes?: string[] | null; // null = كل الموظفين
   includeActiveOnly?: boolean;
   autoPostToAccounting?: boolean;
   paymentMethod?: string;
+  payLoansFromSalary?: boolean;
+  confirmLoans?: boolean;
 }
 
 export interface PayrollGenerationDetailDto {
   employeeCode: string;
+  representativeCode?: string;
   employeeName: string;
   department: string;
   basicSalary: number;
@@ -45,7 +52,7 @@ export interface PayrollFilterDto {
   month?: number;
   year?: number;
   departments?: string[];
-  status?: string; // Generated, Posted, Paid
+  status?: string; // "Created", "Approved", "Paid", etc.
   fromDate?: Date;
   toDate?: Date;
   minNetSalary?: number;
@@ -55,13 +62,25 @@ export interface PayrollFilterDto {
 export interface PayrollResponseDto {
   id: number;
   employeeCode: string;
+  representativeCode?: string | null;
   employeeName: string;
   department: string;
   payPeriod: Date;
   basicSalary: number;
+  grossSalary: number;
   overtimePay: number;
-  deductions: number;
+  totalDeductions: number;
+  timeDeductions: number;
+  absentDeductions: number;
+  leaveDeductions: number;
+  lateDeductions: number;
+  earlyLeaveDeductions: number;
+  sanctionDeductions: number;
+  hasPendingLoans: boolean;
+  pendingLoanAmount: number;
+  loanInstallmentsCount: number;
   netSalary: number;
+  // Backend returns status as string: "Created", "Approved", "Paid", "Rejected", "Cancelled"
   status: string;
   paymentMethod?: string;
   accountingEntryNumber?: string;
@@ -70,6 +89,15 @@ export interface PayrollResponseDto {
   paidBy?: string;
   createdAt: Date;
 }
+
+// Status constants - match backend enum ToString() values
+export const PayrollStatus = {
+  Created: 'Created',
+  Approved: 'Approved', 
+  Paid: 'Paid',
+  Rejected: 'Rejected',
+  Cancelled: 'Cancelled'
+} as const;
 
 export interface PayrollExportDto {
   fileContent: Uint8Array;
@@ -105,4 +133,62 @@ export interface PayrollFilterRequest {
   toDate?: string;
   minNetSalary?: number;
   maxNetSalary?: number;
+}
+
+// DTO for Payroll Preview (before confirmation)
+export interface PayrollPreviewDto {
+  employeeCode?: string | null;
+  representativeCode?: string | null;
+  employeeName: string;
+  department: string;
+  month: number;
+  year: number;
+  basicSalary: number;
+  grossSalary: number;
+  overtimePay: number;
+  totalDeductions: number;
+  timeDeductions: number;
+  absentDeductions: number;
+  leaveDeductions: number;
+  lateDeductions: number;
+  earlyLeaveDeductions: number;
+  sanctionDeductions: number;
+  hasPendingLoans: boolean;
+  pendingLoanAmount: number;
+  loanInstallmentsCount: number;
+  dueInstallments: LoanInstallmentDto[];
+  netSalaryBeforeLoan: number;
+  netSalaryAfterLoan: number;
+  deductLoan: boolean;
+}
+
+export interface LoanInstallmentDto {
+  loanId: number;
+  loanNumber: string;
+  installmentAmount: number;
+  dueDate: Date;
+}
+
+// DTO for Bulk Payroll Preview
+export interface PreviewBulkPayrollDto {
+  totalEmployees: number;
+  successCount: number;
+  failedCount: number;
+  totalNetSalary: number;
+  totalDeductions: number;
+  totalOvertime: number;
+  totalBasicSalary: number;
+  successPreviews: PayrollPreviewDto[];
+  failedPreviews: FailedPreviewDto[];
+  previewedAt: Date;
+  previewedBy: string;
+}
+
+export interface FailedPreviewDto {
+  employeeCode: string;
+  employeeName: string;
+  department: string;
+  status: string; // Existing, Error
+  message: string;
+  existingPayrollId?: number;
 }

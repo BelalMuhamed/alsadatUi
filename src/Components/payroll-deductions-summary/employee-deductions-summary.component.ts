@@ -15,7 +15,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PayrollDeductionService } from '../../app/Services/payroll-deduction-service';
 import { EmployeeService } from '../../app/Services/employee.service';
+import { RepresentativeService } from '../../app/Services/representative-service';
 import { DeductionDetailDto, EmployeeDeductionsSummaryDto } from '../../app/models/IPayrollDeduction';
+import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -28,6 +30,7 @@ import Swal from 'sweetalert2';
 export class EmployeeDeductionsSummaryComponent implements OnInit {
   private service = inject(PayrollDeductionService);
   private employeeService = inject(EmployeeService);
+  private representativeService = inject(RepresentativeService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -81,25 +84,19 @@ export class EmployeeDeductionsSummaryComponent implements OnInit {
       this.loadSummary();
     }
   }
-
   async loadAllEmployees(): Promise<void> {
     this.employeesLoading = true;
     const params = { pageNumber: 1, pageSize: 1000 };
-    
-    this.employeeService.getEmployeesByFilter(params as any, {}).subscribe({
+    forkJoin({
+      employees: this.employeeService.getEmployeesByFilter(params as any, {}),
+      representatives: this.representativeService.getRepresentativesByFilter(params as any, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 } as any)
+    }).subscribe({
       next: (res: any) => {
         let loadedEmployees: any[] = [];
-        
-        if (res?.items) {
-          loadedEmployees = res.items;
-        } else if (res?.data?.items) {
-          loadedEmployees = res.data.items;
-        } else if (Array.isArray(res)) {
-          loadedEmployees = res;
-        } else if (res?.data && Array.isArray(res.data)) {
-          loadedEmployees = res.data;
-        }
-        
+        const emps = (res.employees?.items ?? res.employees?.data ?? res.employees) as any[] || [];
+        const reps = (res.representatives?.items ?? res.representatives?.data ?? res.representatives) as any[] || [];
+        emps.forEach(e => loadedEmployees.push({ code: e.employeeCode || e.code || '', fullName: e.fullName || e.name || '', raw: e, isRepresentative: false }));
+        reps.forEach(r => loadedEmployees.push({ code: r.representativesCode || r.representativeCode || r.code || '', fullName: (r.user?.fullName || r.user?.FullName || r.fullName || r.name) || '', raw: r, isRepresentative: true }));
         this.employees = this.removeDuplicates(loadedEmployees);
         this.employeesLoading = false;
       },
@@ -135,8 +132,7 @@ export class EmployeeDeductionsSummaryComponent implements OnInit {
     
     return this.employees.filter((e: any) => {
       const name = (e.fullName || e.name || '').toLowerCase();
-      const code = (e.employeeCode || e.code || '').toString().toLowerCase();
-      
+      const code = (e.code || e.employeeCode || '').toString().toLowerCase();
       return name.includes(q) || code.includes(q);
     }).slice(0, 20);
   }
@@ -144,7 +140,7 @@ export class EmployeeDeductionsSummaryComponent implements OnInit {
   set selectedEmployee(value: any) {
     this._selectedEmployee = value;
     if (value) {
-      this.empCode = value.employeeCode || value.code || '';
+      this.empCode = value.code || value.employeeCode || '';
     }
   }
   
@@ -163,11 +159,7 @@ export class EmployeeDeductionsSummaryComponent implements OnInit {
 
   onEmployeeSelected(event: any): void {
     const selectedValue = event.option.value;
-    
-    const emp = this.employees.find(e => 
-      (e.employeeCode && e.employeeCode === selectedValue) || 
-      (e.code && e.code === selectedValue)
-    );
+    const emp = this.employees.find(e => (e.code && e.code === selectedValue));
     
     if (emp) {
       this.selectedEmployee = emp;

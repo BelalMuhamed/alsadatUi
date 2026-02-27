@@ -11,8 +11,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { EmployeeLoanService } from '../../../app/Services/employee-loan.service';
 import { EmployeeService } from '../../../app/Services/employee.service';
+import { RepresentativeService } from '../../../app/Services/representative-service';
 import Swal from 'sweetalert2';
 import { MatCard } from "@angular/material/card";
 
@@ -31,6 +33,7 @@ import { MatCard } from "@angular/material/card";
     MatNativeDateModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatButtonToggleModule,
     MatCard
 ],
   templateUrl: './loan-dialog.component.html',
@@ -40,6 +43,7 @@ export class LoanDialogComponent implements OnInit {
   dialogRef = inject(MatDialogRef<boolean>);
   private loanService = inject(EmployeeLoanService);
   private employeeService = inject(EmployeeService);
+  private representativeService = inject(RepresentativeService);
   data: any = inject(MAT_DIALOG_DATA) || {};
 
   model: any = {
@@ -51,11 +55,14 @@ export class LoanDialogComponent implements OnInit {
   };
 
   employees: any[] = [];
+  representatives: any[] = [];
   employeeFilter = '';
   employeesLoading = false;
+  representativesLoading = false;
   isViewMode = false;
   isSaving = false;
   _selectedEmployee: any = null;
+  userType: 'employee' | 'representative' = 'employee';
 
   ngOnInit(): void {
     this.initData();
@@ -67,6 +74,8 @@ export class LoanDialogComponent implements OnInit {
 
     // تحميل الموظفين أولاً
     await this.loadAllEmployees();
+    // تحميل المندوبين أيضاً (لازمة عند اختيار المندوب)
+    await this.loadAllRepresentatives();
     
     // ثم معالجة بيانات القرض
     this.processLoanData();
@@ -113,6 +122,48 @@ export class LoanDialogComponent implements OnInit {
     });
   }
 
+  async loadAllRepresentatives(): Promise<void> {
+    if (this.data.representatives && this.data.representatives.length > 0) {
+      let reps = this.removeDuplicates(this.data.representatives);
+      reps = reps.map((r: any) => ({
+        ...r,
+        employeeCode: r.representativeCode || r.code || r.userId || r.id || '',
+        fullName: r.fullName || r.name || r.user?.fullName || r.user?.name || ''
+      }));
+      this.representatives = reps;
+      return;
+    }
+
+    return new Promise((resolve) => {
+      this.representativesLoading = true;
+      const pagination = { pageNumber: 1, pageSize: 1000 } as any;
+      this.representativeService.getRepresentativesByFilter(pagination, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 }).subscribe({
+        next: (res: any) => {
+          let loaded = this.normalizeToArray(res);
+          let reps = this.removeDuplicates(loaded);
+          reps = reps.map((r: any) => ({
+            ...r,
+            employeeCode: r.representativeCode || r.code || r.userId || r.id || '',
+            fullName: r.fullName || r.name || r.user?.fullName || r.user?.name || ''
+          }));
+          this.representatives = reps;
+          this.representativesLoading = false;
+          resolve();
+        },
+        error: () => { this.representatives = []; this.representativesLoading = false; resolve(); }
+      });
+    });
+  }
+
+  private normalizeToArray(res: any): any[] {
+    if (!res) return [];
+    if (Array.isArray(res)) return res;
+    if (Array.isArray(res.items)) return res.items;
+    if (Array.isArray(res.data)) return res.data;
+    if (Array.isArray(res.data?.items)) return res.data.items;
+    return [];
+  }
+
   // دالة لإزالة التكرارات من قائمة الموظفين
   removeDuplicates(employees: any[]): any[] {
     const uniqueEmployees = [];
@@ -120,7 +171,7 @@ export class LoanDialogComponent implements OnInit {
     
     for (const employee of employees) {
       // استخدام الرقم الوظيفي كمعرف فريد
-      const key = employee.employeeCode || employee.code || employee.id;
+      const key = employee.employeeCode || employee.code || employee.representativeCode || employee.representiveCode || employee.userId || employee.id || employee.representativeId;
       
       if (key && !employeeMap.has(key)) {
         employeeMap.set(key, true);
@@ -172,15 +223,16 @@ export class LoanDialogComponent implements OnInit {
 
   get filteredEmployees(): any[] {
     if (!this.employeeFilter || this.employeeFilter.trim().length === 0) {
-      return this.employees.slice(0, 20);
+      const list = this.userType === 'employee' ? this.employees : this.representatives;
+      return list.slice(0, 20);
     }
     
     const q = this.employeeFilter.toLowerCase().trim();
     
-    return this.employees.filter((e: any) => {
-      const name = (e.fullName || e.name || '').toLowerCase();
-      const code = (e.employeeCode || e.code || '').toString().toLowerCase();
-      
+    const list = this.userType === 'employee' ? this.employees : this.representatives;
+    return list.filter((e: any) => {
+      const name = (e.fullName || e.name || e.user?.fullName || '').toLowerCase();
+      const code = (e.employeeCode || e.code || e.representativeCode || e.representativeCode || '').toString().toLowerCase();
       return name.includes(q) || code.includes(q);
     }).slice(0, 20);
   }
@@ -213,9 +265,12 @@ export class LoanDialogComponent implements OnInit {
     
     
     // البحث عن الموظف في القائمة
-    const emp = this.employees.find(e => 
+    const list = this.userType === 'employee' ? this.employees : this.representatives;
+    const emp = list.find(e => 
       (e.employeeCode && e.employeeCode === selectedValue) || 
-      (e.code && e.code === selectedValue)
+      (e.code && e.code === selectedValue) ||
+      (e.representativeCode && e.representativeCode === selectedValue) ||
+      (e.representativeCode && e.representativeCode === selectedValue)
     );
     
     if (emp) {
@@ -223,7 +278,13 @@ export class LoanDialogComponent implements OnInit {
       const empName = emp.fullName || emp.name || '';
       const empCode = emp.employeeCode || emp.code || '';
       this.employeeFilter = `${empName} (${empCode})`;
-      this.model.employeeCode = emp.employeeCode || emp.code || '';
+      if (this.userType === 'employee') {
+        this.model.employeeCode = emp.employeeCode || emp.code || '';
+        this.model.representativeCode = '';
+      } else {
+        this.model.representativeCode = emp.representativeCode || emp.code || '';
+        this.model.employeeCode = '';
+      }
       
       
     } else {
@@ -234,10 +295,17 @@ export class LoanDialogComponent implements OnInit {
   save(): void {
     
     
-    // التحقق من وجود كود الموظف
-    if (!this.model.employeeCode) {
-      Swal.fire('تحذير', 'يرجى اختيار الموظف أو إدخال كود الموظف', 'warning');
-      return;
+    // التحقق من وجود كود الموظف/المندوب
+    if (this.userType === 'employee') {
+      if (!this.model.employeeCode) {
+        Swal.fire('تحذير', 'يرجى اختيار الموظف أو إدخال كود الموظف', 'warning');
+        return;
+      }
+    } else {
+      if (!this.model.representativeCode) {
+        Swal.fire('تحذير', 'يرجى اختيار المندوب أو إدخال كود المندوب', 'warning');
+        return;
+      }
     }
     
     // التحقق من صحة البيانات الأخرى
@@ -257,10 +325,27 @@ export class LoanDialogComponent implements OnInit {
     }
     
     this.isSaving = true;
+    
+    // تحويل التاريخ إلى صيغة محلية YYYY-MM-DD لتجنب مشاكل المناطق الزمنية
+    const dateValue = this.model.firstInstallmentDate;
+    let localDateString = '';
+    if (typeof dateValue === 'string') {
+      localDateString = dateValue.substring(0, 10); // إذا كان string بالفعل
+    } else if (dateValue instanceof Date) {
+      // تحويل Date object إلى YYYY-MM-DD بالتوقيت المحلي (بدون UTC)
+      const year = dateValue.getFullYear();
+      const month = String(dateValue.getMonth() + 1).padStart(2, '0');
+      const day = String(dateValue.getDate()).padStart(2, '0');
+      localDateString = `${year}-${month}-${day}`;
+    }
+    
+    // إنشاء نسخة من البيانات مع التاريخ المصحح
+    const loanData = { ...this.model, firstInstallmentDate: localDateString };
+    
     const svc: any = this.loanService;
-    const op = this.model.id && typeof svc.update === 'function' 
-      ? svc.update(this.model) 
-      : svc.create(this.model);
+    const op = loanData.id && typeof svc.update === 'function' 
+      ? svc.update(loanData) 
+      : svc.create(loanData);
       
     op.subscribe({
       next: (res: any) => {

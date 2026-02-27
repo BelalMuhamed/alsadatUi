@@ -12,7 +12,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import Swal from 'sweetalert2';
 import { EmployeeService } from '../../Services/employee.service';
+import { RepresentativeService } from '../../Services/representative-service';
 import { PayrollDeductionsDto, DeductionDetailDto } from '../../models/IPayrollDeduction';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-payroll-deduction-popup',
@@ -37,6 +39,7 @@ import { PayrollDeductionsDto, DeductionDetailDto } from '../../models/IPayrollD
 export class AddEditPayrollDeductionPopupComponent implements OnInit {
   private fb = inject(FormBuilder);
   private empService = inject(EmployeeService);
+  private representativeService = inject(RepresentativeService);
   constructor(private dialogRef: MatDialogRef<AddEditPayrollDeductionPopupComponent>, @Inject(MAT_DIALOG_DATA) public data: DeductionDetailDto | null) {}
 
   form!: FormGroup;
@@ -69,24 +72,22 @@ export class AddEditPayrollDeductionPopupComponent implements OnInit {
     return new Promise((resolve) => {
       this.employeesLoading = true;
       const params = { pageNumber: 1, pageSize: 1000 };
-      
-      this.empService.getEmployeesByFilter(params as any, {}).subscribe({
+
+      forkJoin({
+        employees: this.empService.getEmployeesByFilter(params as any, {}),
+        representatives: this.representativeService.getRepresentativesByFilter(params as any, { representativeCode: '', representativeName: '', cityName: '', isActive: true, representiveType: 0 } as any)
+      }).subscribe({
         next: (res: any) => {
           let loadedEmployees: any[] = [];
-          
-          if (res?.items) {
-            loadedEmployees = res.items;
-          } else if (res?.data?.items) {
-            loadedEmployees = res.data.items;
-          } else if (Array.isArray(res)) {
-            loadedEmployees = res;
-          } else if (res?.data && Array.isArray(res.data)) {
-            loadedEmployees = res.data;
-          }
-          
+          const emps = (res.employees?.items ?? res.employees?.data ?? res.employees) as any[] || [];
+          const reps = (res.representatives?.items ?? res.representatives?.data ?? res.representatives) as any[] || [];
+
+          emps.forEach(e => loadedEmployees.push({ code: e.employeeCode || e.code || '', fullName: e.fullName || e.name || '', raw: e, isRepresentative: false }));
+          reps.forEach(r => loadedEmployees.push({ code: r.representativesCode || r.representativeCode || r.code || '', fullName: (r.user?.fullName || r.user?.FullName || r.fullName || r.name) || '', raw: r, isRepresentative: true }));
+
           // إزالة التكرارات
           this.employees = this.removeDuplicates(loadedEmployees);
-          
+
           this.employeesLoading = false;
           resolve();
         },
@@ -132,17 +133,16 @@ export class AddEditPayrollDeductionPopupComponent implements OnInit {
     if (deductionData) {
       this.form.patchValue({
         id: deductionData.id ?? null,
-        employeeCode: deductionData.employeeCode ?? '',
+        employeeCode: deductionData.employeeCode ?? deductionData.representativeCode ?? '',
         deductionDate: deductionData.deductionDate ? new Date(deductionData.deductionDate) : new Date(),
         deductionAmount: deductionData.deductionAmount ?? 0,
         deductionReason: deductionData.deductionReason ?? ''
       });
       
-      // البحث عن الموظف المحدد وتعيينه
-      if (deductionData.employeeCode) {
-        const foundEmp = this.employees.find((e: any) => 
-          e.code === deductionData.employeeCode || e.employeeCode === deductionData.employeeCode
-        );
+      // البحث عن الموظف/المندوب المحدد وتعيينه
+      const lookupCode = deductionData.employeeCode ?? deductionData.representativeCode ?? null;
+      if (lookupCode) {
+        const foundEmp = this.employees.find((e: any) => e.code === lookupCode || e.employeeCode === lookupCode);
         if (foundEmp) {
           this.selectedEmployee = foundEmp;
         }
@@ -177,7 +177,7 @@ export class AddEditPayrollDeductionPopupComponent implements OnInit {
   set selectedEmployee(value: any) {
     this._selectedEmployee = value;
     if (value) {
-      this.form.patchValue({ employeeCode: value.employeeCode || value.code });
+      this.form.patchValue({ employeeCode: value.code || value.employeeCode });
     }
   }
   
@@ -194,7 +194,7 @@ export class AddEditPayrollDeductionPopupComponent implements OnInit {
     
     // التحقق من وجود كود الموظف
     if (!v.employeeCode) {
-      Swal.fire('تحذير', 'يرجى اختيار الموظف', 'warning');
+      Swal.fire('تحذير', 'يرجى اختيار الموظف أو المندوب', 'warning');
       return;
     }
     
@@ -210,11 +210,17 @@ export class AddEditPayrollDeductionPopupComponent implements OnInit {
     }
     
     const dto: PayrollDeductionsDto = {
-      employeeCode: v.employeeCode,
       deductionDate: dateString,
       deductionAmount: Number(v.deductionAmount),
       deductionReason: v.deductionReason
     };
+
+    // set either employeeCode or representativeCode depending on selection
+    if (this.selectedEmployee?.isRepresentative) {
+      dto.representativeCode = this.selectedEmployee.code || v.employeeCode;
+    } else {
+      dto.employeeCode = this.selectedEmployee?.code || v.employeeCode;
+    }
     
     // Only add ID if editing existing record
     if (v.id) {

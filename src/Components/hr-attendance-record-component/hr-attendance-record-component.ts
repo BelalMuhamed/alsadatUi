@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,10 +27,12 @@ export class HrAttendanceRecordComponent {
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns = ['employeeCode','employeeName','attendanceDate','checkInTime','checkOutTime','attendanceStatus','actions'];
   pageSizeOptions = [5,10,20];
+  @ViewChild('timeInput') timeInput!: ElementRef;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   employeeCode: string | null = null;
   selectedDateObj: Date | null = new Date();
+  selectedTime: string = '';
   isProcessing = false;
 
   private attendanceService = inject(EmployeeAttendanceService);
@@ -98,8 +100,12 @@ export class HrAttendanceRecordComponent {
       Swal.fire('خطأ', 'برجاء اختيار تاريخ', 'error');
       return;
     }
+    if (!this.selectedTime) {
+      Swal.fire('خطأ', 'برجاء اختيار الوقت', 'error');
+      return;
+    }
     const date = this.formatDate(this.selectedDateObj);
-    const time = new Date().toTimeString().split(' ')[0];
+    const time = this.selectedTime;
     this.isProcessing = true;
     const method = this.selectedType === 'checkin' ? this.attendanceService.checkIn : this.attendanceService.checkOut;
     method.call(this.attendanceService, { employeeCode: code, date, inputTime: time }).subscribe({
@@ -296,5 +302,18 @@ export class HrAttendanceRecordComponent {
   onReset() {
     this.employeeCode = null;
     this.selectedDateObj = new Date();
+    this.selectedTime = '';
+  }
+
+  openTimePicker() {
+    if (this.timeInput && this.timeInput.nativeElement) {
+      const input = this.timeInput.nativeElement as any;
+      if (input.showPicker) {
+        input.showPicker();
+      } else {
+        input.focus();
+        input.click();
+      }
+    }
   }
 }

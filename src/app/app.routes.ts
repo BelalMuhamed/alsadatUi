@@ -14,6 +14,7 @@ import { CityComponent } from '../Components/city/city.component';
 import { DisAndMerchantComponent } from '../Components/dis-and-merchant/dis-and-merchant.component';
 import { HrAttendanceComponent } from '../Components/hr-attendance-component/hr-attendance-component';
 import { HrAttendanceRecordComponent } from '../Components/hr-attendance-record-component/hr-attendance-record-component';
+import { RepresentativeAttendanceComponent } from '../Components/representative-attendance-component/representative-attendance-component';
 import { TransactionsComponent } from '../Components/transactions/transactions.component';
 import { StoresComponent } from '../Components/stores/stores.component';
 import { EmployeesListComponent } from '../Components/employees-list-component/employees-list-component';
@@ -25,6 +26,8 @@ import { StockComponent } from '../Components/stock/stock.component';
 import { SalarySearchComponent } from '../Components/salary-search-component/salary-search-component';
 import { QuickAttendanceComponent } from '../Components/quick-attendance-component/quick-attendance-component';
 import { DepartmentComponent } from '../Components/department-component/department-component';
+import { CollectionRepresentiveRateComponent } from '../Components/collection-representive-rate-component/collection-representive-rate-component';
+import { CoponCollectionRepresentiveRateComponent } from '../Components/copon-collection-representive-rate-component/copon-collection-representive-rate-component';
 import { PublicHolidayComponent } from '../Components/public-holiday-component/public-holiday-component';
 import { EmployeeLoanComponent } from '../Components/employee-loan-component/employee-loan-component';
 
@@ -40,6 +43,9 @@ import { EmployeeDeductionsSummaryComponent } from '../Components/payroll-deduct
 
 import { TreeAccountsComponent } from '../Components/tree-accounts/tree-accounts.component';
 import { SupplierComponent } from '../Components/supplier/supplier.component';
+import { RepresentativesListComponent } from '../Components/representatives-list-component/representatives-list-component';
+import { RepresentativeAddComponent } from '../Components/representative-add-component/representative-add-component';
+import { RepresentativeCheckInComponent } from '../Components/representative-check-in-component/representative-check-in-component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthLayout },
@@ -61,6 +67,8 @@ export const routes: Routes = [
       { path: 'general-setting/cities', component: CityComponent, canActivate: [authGuard]},
       { path: 'hr/attendance', component: HrAttendanceComponent, canActivate: [authGuard]},
       { path: 'hr/attendance-record', component: HrAttendanceRecordComponent, canActivate: [authGuard]},
+      { path: 'hr/representative-attendance', component: RepresentativeAttendanceComponent, canActivate: [authGuard]},
+      { path: 'hr/representative-check-in', component: RepresentativeCheckInComponent, canActivate: [authGuard]},
       { path: 'transactions/all', component: TransactionsComponent, canActivate: [authGuard]},
       { path: 'stores/all', component: StoresComponent, canActivate: [authGuard]},
       {
@@ -94,6 +102,8 @@ export const routes: Routes = [
       { path: 'hr/salaries', component: SalarySearchComponent, canActivate: [authGuard]},
       { path: 'hr/quick-attendance', component: QuickAttendanceComponent, canActivate: [authGuard]},
       { path: 'hr/departments', component: DepartmentComponent, canActivate: [authGuard]},
+      { path: 'hr/collection-rates', component: CollectionRepresentiveRateComponent, canActivate: [authGuard]},
+      { path: 'hr/copon-collection-rates', component: CoponCollectionRepresentiveRateComponent, canActivate: [authGuard]},
       { path: 'hr/employee-loans', component: EmployeeLoanComponent, canActivate: [authGuard]},
       { path: 'hr/my-leave-requests', component: LeaveRequestsComponent, canActivate: [authGuard] },
       { path: 'hr/leave-request/create', component: CreateLeaveRequestComponent, canActivate: [authGuard] },
@@ -114,8 +124,9 @@ export const routes: Routes = [
         canActivate: [authGuard]
       },
       { path: 'hr/public-holidays', component: PublicHolidayComponent, canActivate: [authGuard]},
-       { path: 'tree', component: TreeAccountsComponent, canActivate: [authGuard]},
-
+      { path: 'tree', component: TreeAccountsComponent, canActivate: [authGuard]},
+      { path: 'sales/representatives', component: RepresentativesListComponent, canActivate: [authGuard]},
+      { path: 'sales/representatives/add', component: RepresentativeAddComponent, canActivate: [authGuard]},
     ]
   },
 

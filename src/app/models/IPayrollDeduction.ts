@@ -2,7 +2,8 @@
 
 export interface PayrollDeductionsDto {
   id?: number;
-  employeeCode: string;
+  employeeCode?: string;
+  representativeCode?: string;
   deductionDate: string | Date; // Backend expects YYYY-MM-DD format
   deductionAmount: number;
   moneyAmount?: number; // Calculated by backend
@@ -13,7 +14,8 @@ export interface PayrollDeductionsDto {
 
 export interface DeductionDetailDto {
   id: number;
-  employeeCode: string;
+  employeeCode?: string;
+  representativeCode?: string;
   employeeName: string;
   deductionDate: string | Date;
   deductionAmount: number;
@@ -32,7 +34,8 @@ export interface DeductionTotalsDto {
   totalMoneyAmount: number;
   totalDeductionHours: number;
   totalRecords: number;
-  employeeCode: string;
+  employeeCode?: string;
+  representativeCode?: string;
   employeeName?: string;
   month?: number;
   year?: number;
@@ -45,7 +48,7 @@ export interface EmployeeDeductionsSummaryDto {
 }
 
 export interface PayrollDeductionSearchDto {
-  employeeCode?: string;
+  employeeCode?: string; // can be employee or representative code
   month?: number;
   year?: number;
   fromDate?: string | Date;

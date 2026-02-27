@@ -4,8 +4,14 @@
   <form (ngSubmit)="save()" #loanForm="ngForm">
     <!-- حقل الموظف -->
     <div class="mb-3">
+      <div class="mb-2 d-flex justify-content-center">
+        <mat-button-toggle-group name="userType" [(ngModel)]="userType" appearance="legacy">
+          <mat-button-toggle value="employee">موظف</mat-button-toggle>
+          <mat-button-toggle value="representative">مندوب</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>الموظف</mat-label>
+        <mat-label>{{ userType === 'employee' ? 'الموظف' : 'المندوب' }}</mat-label>
         
         <!-- حالة التعديل: عرض فقط -->
         <ng-container *ngIf="model.id; else newEmployeeField">
@@ -39,13 +45,13 @@
             
             <!-- عرض الموظفين -->
             <mat-option *ngFor="let employee of filteredEmployees"
-            [value]="employee.employeeCode || employee.code">
+            [value]="(employee.employeeCode || employee.code || employee.representativeCode || employee.representativeCode)">
               <div class="d-flex align-items-center w-100 employee-option">
                 <span class="employee-name">
                   {{ employee.fullName || employee.name || 'بدون اسم' }}
                 </span>
                 <span class="employee-code text-muted">
-                  {{ employee.employeeCode || employee.code }}
+                  {{ employee.employeeCode || employee.code || employee.representativeCode || employee.representativeCode }}
                 </span>
               </div>
           </mat-option>
@@ -67,8 +73,8 @@
         </ng-template>
         
         <!-- رسالة الخطأ إذا لم يتم اختيار موظف -->
-        <mat-error *ngIf="loanForm.submitted && !model.employeeCode && !model.id">
-          يجب اختيار موظف
+        <mat-error *ngIf="loanForm.submitted && !model.employeeCode && !model.representativeCode && !model.id">
+          يجب اختيار موظف/مندوب
         </mat-error>
       </mat-form-field>
     </div>
