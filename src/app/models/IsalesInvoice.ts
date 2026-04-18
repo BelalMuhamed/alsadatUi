@@ -60,6 +60,7 @@ export interface InvoiceChangeStatusReq {
   totalNetAmount: number| null;
   taxPrecentage: number| null;
   taxValue: number| null;
+  reverseJournalEntry:number| null;
   items: SalesInvoiceItemsResp[];
 }
 

@@ -1,6 +1,8 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { CategoryService } from '../../app/Services/category-service';
+
 import { Subscription } from 'rxjs';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import { ProductService } from '../../app/Services/product.service';
 import { ProductDto, ProductFilterationDto } from '../../app/models/IProductVM';
 import Swal from 'sweetalert2';
@@ -18,7 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, CurrencyPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { AddAndEditProductPopupComponent } from '../../app/Popups/add-and-edit-product-popup/add-and-edit-product-popup.component';
 import { log } from 'console';
-import { CategoryDto, CategoryFilteration } from '../../app/models/ICategory';
+
 import { MatOption } from "@angular/material/core";
 import { MatSelectModule } from '@angular/material/select';
 
@@ -37,7 +39,7 @@ import { MatSelectModule } from '@angular/material/select';
     HttpClientModule, DatePipe, CurrencyPipe,
     MatPaginator,
     ReactiveFormsModule,
-    MatOption,MatSelectModule,  CommonModule  // ← مهم لـ *ngFor و *ngIf
+    MatSelectModule,  CommonModule  // ← مهم لـ *ngFor و *ngIf
 
 ],
   templateUrl: './product.component.html',
@@ -48,7 +50,7 @@ export class ProductComponent {
   private ProductService = inject(ProductService);
   private ProductSubscription = new Subscription();
   filters:ProductFilterationDto={
-    categoryName:null,
+
     isDeleted:null,
     name:null,
     page:1,
@@ -70,7 +72,7 @@ export class ProductComponent {
         { key: 'updateBy', label: 'اخر مستخدم قام بالتعديل ' },
         { key: 'deleteAt', label: ' وقت إيقاف التفعيل/التفعيل',type:'date' },
         { key: 'deleteBy', label: 'أخر مستخدم قام بإيقاف التفعيل/التفعيل' },
-        { key: 'categoryName', label: 'الفئه' },
+
         { key: 'actions', label: 'الإجراءات', type: 'actions' },
 
 
@@ -79,16 +81,14 @@ export class ProductComponent {
     totalCount = 0;
     dataSource = new MatTableDataSource<ProductDto>([]);
     private dialog =inject(MatDialog);
- private CategoryService = inject(CategoryService);
-    private CategorySubscription = new Subscription();
+
      private fb = inject(FormBuilder);
       form!: FormGroup;
-  categories: CategoryDto[] = [];
 
     ngOnInit():void
     {
       this.GetAllProducts();
-      this.GetCategories();
+
       this.initForm();
 
     }
@@ -110,7 +110,7 @@ export class ProductComponent {
             Swal.fire({
                           icon: 'error',
                           title: 'حدث خطأ',
-                          text: `${err.message}`,
+                          text: `${err.error?.message}`,
                           confirmButtonText: 'موافق',
                           confirmButtonColor: '#d33'
                         });
@@ -146,7 +146,7 @@ export class ProductComponent {
       }
  openAddEditPopup(product?: ProductDto) {
   const dialogRef = this.dialog.open(AddAndEditProductPopupComponent, {
-    width: '600px',
+   width: '500px',
     panelClass: 'custom-popup-panel',
     data: product ?? null // لو موجود بيانات يبقى تعديل، لو null يبقى إضافة
   });
@@ -167,23 +167,279 @@ export class ProductComponent {
       });
 
 }
- GetCategories()
-    {
-      const categoriesFilter:CategoryFilteration={
-        categoryName:null,
-        isDeleted:false,
-        page:null,
-        pageSize:null
+downloadExcelTemplate() {
+
+  const headers = [
+    ['productName', 'productCode', 'sellingPrice', 'pointsPerUnit', 'minQuantity']
+  ];
+
+  const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(headers);
+
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Products': worksheet },
+    SheetNames: ['Products']
+  };
+
+  const excelBuffer: any = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+
+  saveAs(blob, 'Products_Template.xlsx');
+}
+// onFileSelected(event: any) {
+//   const file: File = event.target.files[0];
+//   if (!file) return;
+
+//   const createdUser =localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail'); // أو اسم المستخدم الحالي من session
+
+//   this.ProductService.uploadExcel(file, createdUser).subscribe({
+//     next: (res) => {
+//       if (res.isSuccess) {
+//         console.log('تمت الإضافة:', res.data);
+//         if (res.message) alert(res.message);
+//       } else {
+//         console.error('فشل:', res.message);
+//       }
+//     },
+//     error: (err) => {
+//       console.error('خطأ في السيرفر:', err);
+//     }
+//   });
+// }
+// onFileSelected(event: any) {
+//   const file: File = event.target.files[0];
+//   if (!file) return;
+
+//   const createdUser = localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail');
+
+//   this.ProductService.uploadExcel(file, createdUser).subscribe({
+//     next: (res) => {
+//       // تحديد الثيم الحالي
+//       const isDarkMode = document.body.classList.contains('dark-mode');
+
+//       // إذا كان في أخطاء
+//       if (res.isSuccess && res.data && res.data.length && res.message?.includes('بعض الأخطاء')) {
+//         // تجهيز النص للأخطاء
+//         const failedProducts = res.errors
+//           .filter((p: any) => p.errors && p.errors.length)
+//           .map((p: any) => p.errors.map((e: any) => `${e.Column}: ${e.Message}`).join('\n'))
+//           .join('\n\n');
+
+//         Swal.fire({
+//           title: 'تمت الإضافة مع بعض الأخطاء',
+//           html: `<pre style="text-align:left;">${failedProducts}</pre>`,
+//           icon: 'warning',
+//           confirmButtonText: 'حسناً',
+//           background: isDarkMode ? '#222' : '#fff',
+//           color: isDarkMode ? '#fff' : '#000',
+//         });
+//       }
+//       // إذا نجاح كامل
+//       else if (res.isSuccess) {
+//         Swal.fire({
+//           title: 'تمت الإضافة بنجاح',
+//           text: res.message || 'تمت إضافة جميع المنتجات بنجاح',
+//           icon: 'success',
+//           confirmButtonText: 'حسناً',
+//           background: isDarkMode ? '#222' : '#fff',
+//           color: isDarkMode ? '#fff' : '#000',
+//         });
+//       }
+//       // فشل كامل
+//       else {
+//         Swal.fire({
+//           title: 'فشل إضافة المنتجات',
+//           text: res.message || 'حدث خطأ أثناء إضافة المنتجات',
+//           icon: 'error',
+//           confirmButtonText: 'حسناً',
+//           background: isDarkMode ? '#222' : '#fff',
+//           color: isDarkMode ? '#fff' : '#000',
+//         });
+//       }
+//     },
+//     error: (err) => {
+//       const isDarkMode = document.body.classList.contains('dark-mode');
+//       Swal.fire({
+//         title: 'حدث خطأ في السيرفر',
+//         text: err?.message || 'تعذر الاتصال بالسيرفر',
+//         icon: 'error',
+//         confirmButtonText: 'حسناً',
+//         background: isDarkMode ? '#222' : '#fff',
+//         color: isDarkMode ? '#fff' : '#000',
+//       });
+//     }
+//   });
+// }
+isUploading = false; // متغير للتحكم في عرض الـ spinner
+selectedFileName: string | null = null;
+// onFileSelected(event: any) {
+//   const file: File = event.target.files[0];
+//   if (!file) return;
+
+//   const createdUser = localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail');
+
+//   this.isUploading = true; // إظهار الـ spinner
+
+//   this.ProductService.uploadExcel(file, createdUser).subscribe({
+//     next: (res) => {
+//       this.isUploading = false; // إخفاء الـ spinner
+//       const isDarkMode = document.body.classList.contains('dark-mode');
+
+//       // إذا كان هناك بعض الأخطاء
+//     if (res.isSuccess && res.data?.errors?.length) {
+
+//   const failedProducts = res.data.errors
+//     .map((e: any) => `${e.column}: ${e.message}`)
+//     .join('<br>');
+
+//   Swal.fire({
+//     title: 'تمت الإضافة مع بعض الأخطاء',
+//     html: `<pre style="text-align:left;">${failedProducts}</pre>`,
+//     icon: 'warning'
+//   });
+
+// }
+//       // نجاح كامل
+//       else if (res.isSuccess) {
+//         Swal.fire({
+//           title: 'تمت الإضافة بنجاح',
+//           text: res.message || 'تمت إضافة جميع المنتجات بنجاح',
+//           icon: 'success',
+//           confirmButtonText: 'حسناً',
+//           background: isDarkMode ? '#222' : '#fff',
+//           color: isDarkMode ? '#fff' : '#000',
+//         });
+//       }
+//       // فشل كامل
+//       else {
+//         Swal.fire({
+//           title: 'فشل إضافة المنتجات',
+//           text: res.message || 'حدث خطأ أثناء إضافة المنتجات',
+//           icon: 'error',
+//           confirmButtonText: 'حسناً',
+//           background: isDarkMode ? '#222' : '#fff',
+//           color: isDarkMode ? '#fff' : '#000',
+//         });
+//       }
+//     },
+//     error: (err) => {
+//       this.isUploading = false; // إخفاء الـ spinner
+//       const isDarkMode = document.body.classList.contains('dark-mode');
+//       Swal.fire({
+//         title: 'حدث خطأ في السيرفر',
+//         text: err?.message || 'تعذر الاتصال بالسيرفر',
+//         icon: 'error',
+//         confirmButtonText: 'حسناً',
+//         background: isDarkMode ? '#222' : '#fff',
+//         color: isDarkMode ? '#fff' : '#000',
+//       });
+//     }
+//   });
+// }
+onFileSelected(event: any) {
+
+  const file: File = event.target.files[0];
+  if (!file) return;
+
+    this.selectedFileName = file.name;
+
+  const createdUser =
+    localStorage.getItem('userName') + "|" + localStorage.getItem('userEmail');
+
+  this.isUploading = true;
+
+  this.ProductService.uploadExcel(file, createdUser).subscribe({
+
+    next: (res) => {
+
+      this.isUploading = false;
+
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      const hasSuccessRows = res.data?.data?.length > 0;
+
+      // بعض الصفوف فشلت
+      if (res.isSuccess && res.data?.errors?.length) {
+
+        const failedProducts = res.data.errors
+          .map((e: any) => `${e.column}: ${e.message}`)
+          .join('<br>');
+
+        Swal.fire({
+          title: 'تمت الإضافة مع بعض الأخطاء',
+          html: `<div style="text-align:left">${failedProducts}</div>`,
+          icon: 'warning',
+          confirmButtonText: 'حسناً',
+          background: isDarkMode ? '#1e1e1e' : '#ffffff',
+          color: isDarkMode ? '#ffffff' : '#000000'
+        }).then(() => {
+
+          if (hasSuccessRows) {
+            this.GetAllProducts();
+          }
+
+        });
+
       }
-      this.CategorySubscription.add(this.CategoryService.getAllCategories(categoriesFilter).subscribe({
-        next:(res)=>{
-          this.categories=res.data;
-        }
-        ,error:(err)=>{
-          // error handled silently
-        }
-      }))
+
+      // نجاح كامل
+      else if (res.isSuccess) {
+
+        Swal.fire({
+          title: 'تمت الإضافة بنجاح',
+          text: res.message || 'تمت إضافة جميع المنتجات بنجاح',
+          icon: 'success',
+          confirmButtonText: 'حسناً',
+          background: isDarkMode ? '#1e1e1e' : '#ffffff',
+          color: isDarkMode ? '#ffffff' : '#000000'
+        }).then(() => {
+
+          this.GetAllProducts();
+
+        });
+
+      }
+
+      // فشل كامل
+      else {
+
+        Swal.fire({
+          title: 'فشل إضافة المنتجات',
+          text: res.message || 'حدث خطأ أثناء إضافة المنتجات',
+          icon: 'error',
+          confirmButtonText: 'حسناً',
+          background: isDarkMode ? '#1e1e1e' : '#ffffff',
+          color: isDarkMode ? '#ffffff' : '#000000'
+        });
+
+      }
+
+    },
+
+    error: (err) => {
+
+      this.isUploading = false;
+
+      const isDarkMode = document.body.classList.contains('dark-mode');
+
+      Swal.fire({
+        title: 'حدث خطأ في السيرفر',
+        text: err?.message || 'تعذر الاتصال بالسيرفر',
+        icon: 'error',
+        confirmButtonText: 'حسناً',
+        background: isDarkMode ? '#1e1e1e' : '#ffffff',
+        color: isDarkMode ? '#ffffff' : '#000000'
+      });
+
     }
+
+  });
+
+}
 applyFilters() {
   // Get values from the form
   const formValues = this.form.value;
@@ -193,7 +449,7 @@ applyFilters() {
     ...this.filters, // keep existing pagination values
     name: formValues.name,
     isDeleted: formValues.isDeleted,
-    categoryName: formValues.categoryName
+
   };
 
   // filters updated (logging removed)
@@ -202,7 +458,7 @@ applyFilters() {
 ReAsign()
 {
   this.filters={
-    categoryName:null,
+
     isDeleted:null,
     name:null,
     page:1,

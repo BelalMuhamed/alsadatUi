@@ -1,120 +1,150 @@
-/* 🔥 Popup Container */
-.custom-popup-panel .mat-mdc-dialog-container {
-  background-color: var(--bg-color) !important;
-  color: var(--text-color) !important;
-  border-radius: 24px !important;
-  border: 1px solid var(--gold);
-  padding: 24px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,.8);
-}
+:host { display: block; }
 
-/* 🔥 Title */
-.popup-title {
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 700;
+h4 {
   color: var(--gold);
-  margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 12px;
 }
 
-/* 🔥 Form Layout */
-.popup-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
+.deduction-dialog {
+  background: var(--surface);
+  padding: 18px;
+  max-width: 520px;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Full width for long fields */
-.full-width {
-width: 30%;
-}
-
-/* 🔥 Form Fields */
-.mat-mdc-form-field {
+.w-100 {
   width: 100%;
 }
 
-.mat-mdc-text-field-wrapper,
-.mdc-text-field {
-  background-color: var(--sidenav-bg) !important;
-  border-radius: 12px !important;
-  padding: 4px 12px !important;
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.mdc-text-field--outlined .mdc-notched-outline__leading,
-.mdc-text-field--outlined .mdc-notched-outline__notch,
-.mdc-text-field--outlined .mdc-notched-outline__trailing {
-  border-color: var(--gold) !important;
-}
-
-/* text */
-.mdc-floating-label {
-  color: var(--gold) !important;
-}
-
-/* 🔥 Dropdown Arrow + text */
-.mat-mdc-select-value-text,
-.mat-mdc-select-arrow {
-  color: var(--text-color) !important;
-}
-
-/* dropdown panel */
-.mat-mdc-select-panel {
-  background-color: var(--sidenav-bg) !important;
-  border: 1px solid var(--gold);
-}
-
-/* options */
-.mat-mdc-option {
-  color: var(--text-color) !important;
-}
-
-.mat-mdc-option:hover {
-  background-color: var(--hover-bg) !important;
-}
-
-.popup-actions {
-  margin-top: 25px;
-  padding: 0 30px 20px 30px; /* ✅ مسافة من الجوانب وتحت */
+.deduction-form {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.action-btn {
+  min-width: 140px;
+  height: 38px;
+  border-radius: 8px;
+}
+
+.p-3 {
+  padding: 18px;
+}
+
+.mb-3 {
+  margin-bottom: 12px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.py-2 {
+  padding: 8px 0;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
   align-items: center;
 }
 
-.popup-btn-cancel {
-  padding: 10px 24px;
-  background: transparent;
-  border: 2px solid var(--gold);
-  color: var(--gold);
-  border-radius: 12px;
-  font-weight: 600;
-  transition: 0.3s;
+.justify-content-center {
+  justify-content: center;
 }
 
-.popup-btn-cancel:hover {
-  background: var(--hover-bg);
+.me-2 {
+  margin-right: 8px;
 }
 
-.popup-btn-save {
-  padding: 10px 24px;
-  background: var(--gold);
-  border: none;
-  border-radius: 12px;
-  color: black;
-  font-weight: 700;
-  transition: 0.3s;
+.text-muted {
+  color: #999;
 }
 
-.popup-btn-save:disabled {
-  opacity: .4;
+.employee-option {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
 }
 
-.popup-btn-save:hover:not(:disabled) {
-  background: var(--active-bg);
-  color: var(--gold);
+.employee-name {
+  font-weight: 500;
+  flex: 1;
 }
-.popup-btn-cancel,
-.popup-btn-save {
-  min-width: 110px;   /* ✅ شكل أفضل */
-  border-radius: 14px;
+
+.employee-code {
+  font-size: 12px;
+  min-width: 80px;
+  text-align: left;
 }
+
+/* Dark mode appearance for the deduction dialog */
+:host-context(body.dark-mode) .deduction-dialog,
+body.dark-mode .cdk-overlay-container .deduction-dialog {
+  background: #1b1b1b !important;
+  color: #e8e8e8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Make dialog fit well inside overlay */
+:host-context(body.dark-mode) .mat-dialog-container .deduction-dialog,
+body.dark-mode .cdk-overlay-container .mat-dialog-container .deduction-dialog {
+  width: 520px !important;
+  max-width: calc(100% - 32px) !important;
+}
+
+/* Inputs & form fields in dark mode inside the dialog */
+:host-context(body.dark-mode) .mat-form-field .mat-input-element,
+:host-context(body.dark-mode) .mat-form-field .mat-mdc-input-element,
+body.dark-mode .cdk-overlay-container .deduction-dialog .mat-form-field .mat-input-element {
+  color: #e8e8e8 !important;
+  background: transparent !important;
+}
+
+:host-context(body.dark-mode) .mat-form-field-appearance-outline .mat-form-field-outline,
+body.dark-mode .cdk-overlay-container .deduction-dialog .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Buttons inside dialog */
+:host-context(body.dark-mode) .dialog-actions .action-btn,
+body.dark-mode .cdk-overlay-container .deduction-dialog .dialog-actions .action-btn {
+  color: #e8e8e8 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Light mode form field styling */
+:host-context(body.light-mode) .mat-form-field .mat-input-element,
+:host-context(body.light-mode) .mat-form-field .mat-mdc-input-element {
+  color: #333 !important;
+  background: transparent !important;
+}
+
+:host-context(body.light-mode) .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+

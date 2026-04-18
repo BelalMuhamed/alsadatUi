@@ -38,7 +38,7 @@ body.light-mode input[type="time"]::-webkit-calendar-picker-indicator {
 .dark-theme * {
     color: var(--text-color) !important;
 }
-     */
+
 
      .dark-theme body *:not(.swal2-container):not(.swal2-container *) {
   color: var(--text-color);
@@ -1760,4 +1760,32 @@ body.dark-mode .swal2-icon.swal2-question {
 
 
 
+}
+/* SweetAlert custom styling */
+.custom-swal-popup {
+  border-radius: 12px !important;
+  border: 1px solid var(--gold);
+}
+
+/* Dark mode */
+body.dark-mode .custom-swal-popup {
+  background: #1a1a1a !important;
+  color: #fff !important;
+}
+
+/* Light mode */
+body.light-mode .custom-swal-popup {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+/* Buttons */
+.swal2-confirm {
+  background-color: var(--gold) !important;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+.swal2-cancel {
+  background-color: #6b7280 !important;
 }

@@ -17,7 +17,7 @@ export class ProductService {
   if (filters.page != null) params = params.set('page', filters.page.toString());
 
     if (filters.name) params = params.set('name', filters.name);
-    if (filters.categoryName) params = params.set('categoryName', filters.categoryName);
+
     if (filters.isDeleted !== null && filters.isDeleted !== undefined)
       params = params.set('isDeleted', filters.isDeleted);
 
@@ -37,4 +37,11 @@ export class ProductService {
    toggleStatus(product: ProductDto): Observable<any> {
     return this.http.put(`${this.apiUrl}Product/toggle-status`, product);
   }
+uploadExcel(file: File, createdUser: string): Observable<any> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('createdUser', createdUser); // الحقل الجديد
+
+  return this.http.post(`${this.apiUrl}Product/upload`, formData);
+}
 }

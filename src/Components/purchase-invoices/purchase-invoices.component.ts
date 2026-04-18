@@ -51,7 +51,7 @@ export class PurchaseInvoicesComponent {
   private _SupplierSubscription = new Subscription();
   private _PurchaseInvoiceService = inject(PurchaseInvoiceService);
   private _PurchaseInvoiceSubscription = new Subscription();
-  isUserAdmin:boolean=true;
+  isUserAdmin:boolean=false;
   //#endregion
   //#region  filters
 supplierfilters: SupplierFilteration = {
@@ -106,6 +106,12 @@ supplierSearch: string = '';
 
 ngOnInit(): void
 {
+  this.isUserAdmin= localStorage.getItem('roles')?.includes('Admin')!;
+
+  console.log(localStorage.getItem('roles'));
+  console.log(this.isUserAdmin);
+
+
 this.GetAllSuppliers();
 this.GetAllPurchaseInvoices();
 this.InitSearchForm();

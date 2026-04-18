@@ -16,7 +16,7 @@ export class SalesInvoice {
    apiUrl = environment.apiUrl;
  constructor(private http: HttpClient) {}
 
- getAllSalesInvoices(filters: SalesInvoiceFilters | null): Observable<ApiResponse<SalesInvoicesResponse[]>> {
+ getAllSalesInvoices(filters: SalesInvoiceFilters | null): Observable<Result<ApiResponse<SalesInvoicesResponse[]>>> {
   let params = new HttpParams();
 
   if (filters != null) {
@@ -44,7 +44,7 @@ params = params.set('createAt', d.toISOString());
       params = params.set('pageSize', filters.pageSize);
   }
 
-  return this.http.get<ApiResponse<SalesInvoicesResponse[]>>(
+  return this.http.get<Result<ApiResponse<SalesInvoicesResponse[]>>>(
     `${this.apiUrl}SalesInvoices`,
     { params }
   );
@@ -96,5 +96,19 @@ return this.http.get<ApiResponse<SalesInvoiceItemsResp[]>>(`${this.apiUrl}SalesI
 GetInvoiceDetails(id:number):Observable<Result<SalesInvoiceDetails>>
 {
  return this.http.get<Result<SalesInvoiceDetails>>(`${this.apiUrl}SalesInvoices/${id}/details`);
+}
+askToReverseInvoice(id: number): Observable<Result<string>> {
+  const url = `${this.apiUrl}SalesInvoices/${id}/ask-to-reverse`;
+  return this.http.patch<Result<string>>(url, {});
+}
+RefusedReverseInvoice(id: number): Observable<Result<string>> {
+  const url = `${this.apiUrl}SalesInvoices/${id}/refused-reverse`;
+  return this.http.patch<Result<string>>(url, {});
+}
+reverseInvoice(id: number): Observable<Result<string>> {
+  return this.http.post<Result<string>>(
+    `${this.apiUrl}SalesInvoices/${id}/reverse`,
+    {}
+  );
 }
 }

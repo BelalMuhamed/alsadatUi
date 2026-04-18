@@ -52,14 +52,16 @@
     <mat-error>يرجى اختيار العميل</mat-error>
   }
 </mat-form-field>
-
-        <mat-form-field appearance="outline" class="custom-input-theme">
+@if (isEditMode) {
+          <mat-form-field appearance="outline" class="custom-input-theme" >
           <mat-label>رقم الفاتورة</mat-label>
-          <input matInput formControlName="invoiceNumber">
+          <input matInput formControlName="invoiceNumber" readonly>
           @if (invoiceForm.get('invoiceNumber')?.invalid && invoiceForm.get('invoiceNumber')?.touched) {
             <mat-error>رقم الفاتورة اجباري</mat-error>
           }
         </mat-form-field>
+}
+
       </div>
     </div>
 

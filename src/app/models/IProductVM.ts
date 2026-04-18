@@ -11,15 +11,15 @@ export interface ProductDto {
   deleteBy?: string | null;
   deleteAt?: string | null;
   categoryId: number|null;
-  categoryName: string|null;
+
   theSmallestPossibleQuantity:number|null;
-  theHighestPossibleQuantity:number|null;
+
 productCode:string;
 }
 export interface ProductFilterationDto {
   name: string | null;
   isDeleted: boolean | null;
-  categoryName: string | null;
+
   pageSize: number|null;
   page: number|null;
 }

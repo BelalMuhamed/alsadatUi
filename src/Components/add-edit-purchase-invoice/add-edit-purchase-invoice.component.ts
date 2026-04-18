@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 import { ProductDto, ProductFilterationDto } from '../../app/models/IProductVM';
 import { ProductService } from '../../app/Services/product.service';
 import { PurchaseInvoiceService } from '../../app/Services/purchase-invoice.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-edit-purchase-invoice',
@@ -96,6 +96,8 @@ filteredStores: StoreDto[] = [];
   private supplierService = inject(SupplierService);
   private supplierSubscription = new Subscription();
   private _StoreService = inject(StoreService);
+  private _router = inject(Router);
+
   private _StoreSubscription = new Subscription();
   private _PurchaseService = inject(PurchaseInvoiceService);
 
@@ -103,7 +105,7 @@ filteredStores: StoreDto[] = [];
    private ProductService = inject(ProductService);
 
   filtersForAllProoducts:ProductFilterationDto={
-        categoryName:null,
+
         isDeleted:false,
         name:null,
         page:null,
@@ -207,7 +209,7 @@ GetAllStores() {
     {
        this.invoiceForm = this.fb.group({
 
-      invoiceNumber: [null, Validators.required],  //done
+      invoiceNumber: [null],  //done
       supplierId: [null, Validators.required], //done
       supplierName: [null],
       totalGrowthAmount: [0, [Validators.min(0)]],
@@ -572,11 +574,17 @@ submit() {
             text: res.data || 'تمت إضافة الفاتورة بنجاح',
           });
 
-          this.invoiceForm.reset();
-          this.items.clear();
-          this.addItem();
+                  this._router.navigate(['/purchase-invoice/all']);
+
         }
-      }
+      },
+        error: (err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: err?.error?.message || 'حدث خطأ أثناء الاتصال بالخادم',
+          });
+        }
     });
 
   }
