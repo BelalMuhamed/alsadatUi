@@ -299,6 +299,30 @@ a.router-link-active {
   font-size: 1rem;
 }
 
+/* Ensure Material and FontAwesome icons use the correct icon fonts (fix missing/garbled icons) */
+.mat-icon,
+.material-icons {
+  font-family: 'Material Icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-feature-settings: 'liga' 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* FontAwesome fallback sizing for <i> icons */
+.page-footer .contact-info i,
+.fa,
+.fas,
+.far,
+.fal,
+.fab {
+  font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', sans-serif !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .page-footer .contact-info {

@@ -10,7 +10,7 @@ import { PurchaseInvoiceDtos } from '../../app/models/IPurchaseInvoiceVMs';
 import { MatError, MatFormField, MatFormFieldModule, MatLabel } from "@angular/material/form-field";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatSelectModule } from '@angular/material/select';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 import { MatInputModule } from '@angular/material/input';
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -19,6 +19,7 @@ import { ProductDto, ProductFilterationDto } from '../../app/models/IProductVM';
 import { ProductService } from '../../app/Services/product.service';
 import { PurchaseInvoiceService } from '../../app/Services/purchase-invoice.service';
 import { ActivatedRoute } from '@angular/router';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @Component({
   selector: 'app-add-edit-purchase-invoice',

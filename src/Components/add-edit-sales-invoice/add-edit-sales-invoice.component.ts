@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { MatFormField, MatInputModule, MatLabel } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatError, MatSelectModule } from '@angular/material/select';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { log } from 'console';
 import { SalesInvoiceItemsResp, SalesInvoicesResponse } from '../../app/models/IsalesInvoice';
 import { SalesInvoice } from '../../app/Services/sales-invoice';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @Component({
   selector: 'app-add-edit-sales-invoice',
