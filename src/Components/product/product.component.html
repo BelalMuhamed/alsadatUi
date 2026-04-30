@@ -6,15 +6,56 @@
     <p  class="text-center" style="color: var(--gold);">Loading...</p>
 }
 @else  {
-    <div class="w-100 me-auto  d-flex justify-content-end">
+  <div class="w-100 d-flex justify-content-start">
+  <div class="w-50 d-flex justify-content-arround align-items-start  gap-3 my-3 ">
+    <div class="w-50 d-flex justify-content-between align-items-start flex-column gap-3 my-3 ">
+    <div class="  d-flex justify-content-end ">
        <button class="add-coupon-btn  " (click)="openAddEditPopup()">
     <mat-icon>add</mat-icon>
      إضافة منتج جديد
   </button>
   </div>
+   <div class="d-flex justify-content-end">
+       <button class="add-coupon-btn  " (click)="downloadExcelTemplate()">
+    <mat-icon>download</mat-icon>
+    تحميل نموذج Excel
 
+  </button>
+  </div>
+  </div>
+<div class="excel-upload-container">
 
- <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+  <!-- زرار رفع Excel -->
+  <button class="add-coupon-btn upload-btn" (click)="fileInput.click()">
+    <mat-icon>upload</mat-icon>
+    رفع ملف Excel
+  </button>
+
+  <!-- input مخفي -->
+  <input
+    #fileInput
+    type="file"
+    accept=".xlsx,.xls"
+    (change)="onFileSelected($event)"
+    hidden
+  />
+
+</div>
+<!-- عرض اسم الملف -->
+<div *ngIf="selectedFileName" class="selected-file">
+  <mat-icon>description</mat-icon>
+  {{selectedFileName}}
+</div>
+<!-- Spinner يظهر عند الرفع -->
+<div *ngIf="isUploading" class="spinner-overlay">
+  <mat-progress-spinner
+    mode="indeterminate"
+    color="primary">
+  </mat-progress-spinner>
+</div>
+</div>
+
+ <div class=" w-50 d-flex justify-content-center align-items-center gap-3 my-3">
 
   <!-- زرار إضافة كوبون -->
 
@@ -27,12 +68,7 @@
   </mat-form-field>
 
 
-  <mat-form-field  appearance="outline" class="ms-2 custom-input-theme">
-    <mat-label>اختر الفئة</mat-label>
-    <mat-select formControlName="categoryName">
-      <mat-option *ngFor="let cat of categories" [value]="cat.name">{{ cat.name }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+
 
   <mat-slide-toggle formControlName="isDeleted" >عرض المنتجات المحذوفة</mat-slide-toggle>
 </div >
@@ -60,7 +96,7 @@
 
 </div>
 
-
+</div>
   <div class="table-container mat-elevation-z8">
  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
 

@@ -1,25 +1,50 @@
+<div class="auth-container">
 
-    <!--ring div starts here-->
-<div class="ring" >
-    <i style="--clr:#00ff0a;"></i>
-    <i style="--clr:#ff0057;"></i>
-    <i style="--clr:#fffd44;"></i>
-    <div class="login">
-      <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
-      <h2>Login</h2>
-      <div class="inputBx">
-        <input  formControlName="email" placeholder="Username">
-      </div>
-      <div class="inputBx">
-        <input type="password" formControlName="password" placeholder="Enter password" >
-      </div>
-      <div class="inputBx">
-        <input type="submit" [disabled]="isLoading" value="{{ isLoading ? 'Logging in...' : 'Login' }}">
-      </div>
-      <div class="links">
-        <a href="#">Forget Password</a>
-        <a href="#">Signup</a>
-      </div>
-      </form>
+  <div class="auth-card">
+
+    <div class="logo-box">
+      <img src="assets/imgs/logo.png" alt="logo">
+      
+      <p>Welcome back 👋</p>
     </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="form">
+
+      <div class="input-group">
+        <input formControlName="email" placeholder="Username / Phone">
+      </div>
+
+      @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+        <div class="error">Username or phone is required</div>
+      }
+
+      <div class="input-group">
+        <input type="password" formControlName="password" placeholder="Password">
+      </div>
+
+      @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
+        <div class="error">
+          @if (loginForm.get('password')?.errors?.['required']) {
+            Password is required
+          }
+          @if (loginForm.get('password')?.errors?.['minlength']) {
+            Password must be at least 6 characters
+          }
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'Signing in...' : 'Login' }}
+      </button>
+
+      <div class="links">
+        <a>Forgot Password?</a>
+        <a>Signup</a>
+      </div>
+
+    </form>
+
   </div>
+</div>

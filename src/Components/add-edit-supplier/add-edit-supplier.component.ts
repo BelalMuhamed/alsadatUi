@@ -76,14 +76,14 @@ onProductSearch(index: number, event: Event) {
     private CityService = inject(CityServiceService);
     private CitySubscription = new Subscription();
   filtersForDeleted:ProductFilterationDto={
-      categoryName:null,
+
       isDeleted:true,
       name:null,
       page:null,
       pageSize:null
     }
     filtersForAllProoducts:ProductFilterationDto={
-      categoryName:null,
+      
       isDeleted:null,
       name:null,
       page:null,

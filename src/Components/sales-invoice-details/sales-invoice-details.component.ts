@@ -46,6 +46,8 @@ this._SalesInvoiceSubscription?.unsubscribe();
     {
 this._SalesInvoiceSubscription.add(this._SalesInvoiceService.GetInvoiceDetails(this.invoiceId).subscribe({
 next: (res) => {
+  console.log(res.data);
+
   if (res.data) {
     this.invoice = res.data;
     console.log(res);

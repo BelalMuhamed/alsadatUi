@@ -7,6 +7,9 @@ import Swal from 'sweetalert2';
 import { MatCard, MatCardTitle, MatCardSubtitle } from "@angular/material/card";
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { SwalService } from '../../app/Services/swal.service';
 
 @Component({
   selector: 'app-purchase-invoice-details',
@@ -16,8 +19,17 @@ import { MatTableModule } from '@angular/material/table';
   styleUrl: './purchase-invoice-details.component.css'
 })
 export class PurchaseInvoiceDetailsComponent {
-  displayedColumns: string[] = ['product', 'quantity', 'price', 'discount','total'];
- private _PurchaseInvoiceService = inject(PurchaseInvoiceService);
+  isPrintMode: boolean = false;
+displayedColumns: string[] = ['product', 'quantity', 'price', 'discount','total'];
+
+get columnsToDisplay(): string[] {
+  if (this.isPrintMode) {
+    return ['product', 'quantity']; // 👈 فقط
+  }
+  return this.displayedColumns;
+} private _PurchaseInvoiceService = inject(PurchaseInvoiceService);
+ private swalService = inject(SwalService);
+
   private _PurchaseInvoiceSubscription = new Subscription();
   constructor(  private route: ActivatedRoute) {}
 invoiceId: number | null = null;
@@ -82,4 +94,33 @@ console.log(err);
     }
 
   }
+downloadFile(blob: Blob, fileName: string = 'invoice.pdf') {
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+}
+private downloadPdf(type: 'full' | 'simple', fileName: string, errorMsg: string) {
+  this._PurchaseInvoiceService.downloadInvoicePdf(this.invoiceId!, type)
+    .subscribe({
+      next: (blob) => {
+        this.downloadFile(blob, fileName);
+        this.swalService.success('تم تحميل الفاتورة بنجاح');
+      },
+      error: () => {
+        this.swalService.error(errorMsg);
+      }
+    });
+}
+generateFullPDF() {
+  this.downloadPdf('full', `invoice-${this.invoiceId}.pdf`, 'فشل تحميل الفاتورة الكاملة');
+}
+
+generateSimplePDF() {
+  this.downloadPdf('simple', `invoice-${this.invoiceId}-simple.pdf`, 'فشل تحميل الفاتورة المبسطة');
+}
 }

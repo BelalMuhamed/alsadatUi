@@ -1,3 +1,4 @@
+import { SwalService } from './../../app/Services/swal.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../app/Services/auth-service';
@@ -16,12 +17,12 @@ export class AuthLayout implements OnInit {
   loginForm: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
-
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  roles: string[] = [];
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,private swal: SwalService ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required]],
-      password: ['', Validators.required]
-    });
+  email: ['', [Validators.required]], // username أو phone
+  password: ['', [Validators.required, Validators.minLength(6)]]
+});
   }
 
   ngOnInit(): void {
@@ -31,31 +32,78 @@ export class AuthLayout implements OnInit {
     }
   }
 
+
   login() {
-    if (this.loginForm.invalid) return;
-
-    this.isLoading = true;
-    this.errorMessage = null;
-
-    const dto: loginDto = {
-      email: this.loginForm.value.email,
-      password: this.loginForm.value.password
-    };
-
-    this.authService.login(dto).subscribe({
-      next: res => {
-        localStorage.setItem('refreshToken', res.data?.refreshToken ?? "");
-        localStorage.setItem('accessToken', res.data?.accessToken ?? "");
-        localStorage.setItem('userName', res.data?.userName ?? "");
-        localStorage.setItem('userEmail', res.data?.userMail ?? "");
-        this.router.navigate(['/SalesInvoices']);
-        this.isLoading = false;
-      },
-      error: err => {
-        // handled error (no console output)
-        this.errorMessage = 'Invalid email or password';
-        this.isLoading = false;
-      }
-    });
+     if (this.loginForm.invalid) {
+    this.loginForm.markAllAsTouched();
+    return;
   }
+
+  if (this.loginForm.invalid) return;
+
+  this.isLoading = true;
+
+  const dto: loginDto = {
+    email: this.loginForm.value.email,
+    password: this.loginForm.value.password
+  };
+
+  this.authService.login(dto).subscribe({
+    next: (res) => {
+      console.log(res);
+
+      this.isLoading = false;
+
+      // 🔥 Handle Result<T>
+      if (!res.isSuccess) {
+        this.swal.error(res.message || 'Invalid email or password');
+        return;
+      }
+      this.roles=res.data?.roles || [];
+      // ✅ Save data
+      localStorage.setItem('refreshToken', res.data?.refreshToken ?? "");
+      localStorage.setItem('accessToken', res.data?.accessToken ?? "");
+      localStorage.setItem('userName', res.data?.userName ?? "");
+      localStorage.setItem('userEmail', res.data?.userMail ?? "");
+      localStorage.setItem('roles', JSON.stringify(res.data?.roles || []));
+      if(this.roles.includes('Admin'))
+        this.router.navigate(['/SalesInvoices']);
+      else if(this.roles.includes('HR'))
+        this.router.navigate(['/hr/employees']);
+      else if(this.roles.includes('Accountant'))
+        this.router.navigate(['/SalesInvoices']);
+      else if(this.roles.includes('StockManager'))
+        this.router.navigate(['/stocks']);
+      else
+        this.router.navigate(['/login']);
+
+    },
+
+   error: (err) => {
+  this.isLoading = false;
+
+  let message = '';
+
+  switch (err.status) {
+    case 0:
+      message = '🚫 لا يوجد اتصال بالسيرفر';
+      break;
+
+    case 401:
+      message = '❌ بيانات الدخول غير صحيحة';
+      break;
+
+    case 500:
+      message = '💥 خطأ في السيرفر';
+      break;
+
+    default:
+      message = err.error?.message || 'حدث خطأ غير متوقع';
+      break;
+  }
+
+  this.swal.error(message);
+}
+  });
+}
 }

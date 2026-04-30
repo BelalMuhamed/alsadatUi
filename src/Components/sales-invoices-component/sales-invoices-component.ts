@@ -29,13 +29,15 @@ import { PurchaseInvoiceService } from '../../app/Services/purchase-invoice.serv
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PurchaseInvoiceDtos } from '../../app/models/IPurchaseInvoiceVMs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { SwalService } from '../../app/Services/swal.service';
 
 @Component({
   selector: 'app-sales-invoices-component',
    providers: [
     { provide: MatPaginatorIntl, useValue: getArabicPaginatorIntl() }
   ],
-  imports: [CommonModule, MatTableModule,
+  imports: [CommonModule, MatTableModule,MatTooltipModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatInputModule,
@@ -59,8 +61,10 @@ export class SalesInvoicesComponent {
  private _DisAndMerchantService = inject(DisAndMerchantService);
   private _DisAndMerchantSubscription = new Subscription();
     private _SalesInvoiceService = inject(SalesInvoice);
+    private swal = inject(SwalService);
+
   private _SalesInvoiceSubscription = new Subscription();
-    isUserAdmin:boolean=true;
+    isUserAdmin:boolean=false;
     //#endregion
     //#region  filters
 filters:DistributorsAndMerchantsFilters={
@@ -151,37 +155,144 @@ filters:DistributorsAndMerchantsFilters={
                   })
       }}));
   }
-  GetAllSalesInvoices():void
-  {
-    this._SalesInvoiceSubscription.add(this._SalesInvoiceService.getAllSalesInvoices(this.salesInvoiceFilters).subscribe({
-      next:(res)=>
-      {
+  // GetAllSalesInvoices():void
+  // {
+  //   this._SalesInvoiceSubscription.add(this._SalesInvoiceService.getAllSalesInvoices(this.salesInvoiceFilters).subscribe({
+  //     next:(res)=>
+  //     {
+  //       console.log(res);
 
-         this.isLoaded = true
-            this.dataSource.data = res.data
-            console.log(res.data);
+  //        this.isLoaded = true
+  //           this.dataSource.data = res.data?.data
+  //           console.log(res.data);
 
-            this.totalCount = res.totalCount
-      }
-        ,
-        error:(err)=>
-        {
-         this.isLoaded = true
-           Swal.fire({
-                      icon: "error",
-                      title: "حدث خطأ أثناء تحميل فواتير المشتريات  ",
-                      text: `${err?.error?.message}`,
-                      confirmButtonText: "موافق",
-                      confirmButtonColor: "#d33",
-                    })
+  //           this.totalCount = res.totalCount
+  //     }
+  //       ,
+  //       error:(err)=>
+  //       {
+  //        this.isLoaded = true
+  //          Swal.fire({
+  //                     icon: "error",
+  //                     title: "حدث خطأ أثناء تحميل فواتير المشتريات  ",
+  //                     text: `${err?.error?.message}`,
+  //                     confirmButtonText: "موافق",
+  //                     confirmButtonColor: "#d33",
+  //                   })
+  //       }
+  //   }));
+  // }
+  GetAllSalesInvoices(): void {
+  this.isLoaded = false;
+
+  this._SalesInvoiceSubscription.add(
+    this._SalesInvoiceService
+      .getAllSalesInvoices(this.salesInvoiceFilters)
+      .subscribe({
+        next: (res) => {
+
+          this.isLoaded = true;
+
+          // 🔥 handle Result<T>
+          if (!res.isSuccess) {
+            this.swal.error(res.message || 'حدث خطأ');
+            return;
+          }
+
+          // ✅ data extraction صح
+          this.dataSource.data = res.data?.data ?? [];
+          this.totalCount = res.data?.totalCount ?? 0;
+
+        },
+
+        error: (err) => {
+          this.isLoaded = true;
+
+          this.swal.error(
+            err?.error?.message || 'حدث خطأ أثناء تحميل البيانات'
+          );
         }
-    }));
-  }
+      })
+  );
+}
+  approveReverse(id: number) {
+  this._SalesInvoiceService.reverseInvoice(id).subscribe({
+    next: (res) => {
+        Swal.fire({
+              icon: "success",
+              title: "تم الطلب بنجاح",
+              text: res.data,
+              confirmButtonText: "موافق",
+              confirmButtonColor: "#3085d6",
+            });
+            this.GetAllSalesInvoices();
+            this.GetAllCustomers();
+    },
+    error: (err) => {
+         Swal.fire({
+                  icon: "error",
+                  title: "حدث خطأ",
+                  text: `${err.error?.message}`,
+                  confirmButtonText: "موافق",
+                  confirmButtonColor: "#d33",
+                })
+    }
+  });
+}
+
+refuseReverse(id: number) {
+  this._SalesInvoiceService.RefusedReverseInvoice(id).subscribe({
+    next: (res) => {
+        Swal.fire({
+              icon: "success",
+              title: "تم الرفض بنجاح",
+              text: res.data,
+              confirmButtonText: "موافق",
+              confirmButtonColor: "#3085d6",
+            });
+            this.GetAllSalesInvoices();
+            this.GetAllCustomers();
+    },
+    error: (err) => {
+         Swal.fire({
+                  icon: "error",
+                  title: "حدث خطأ",
+                  text: `${err.error?.message}`,
+                  confirmButtonText: "موافق",
+                  confirmButtonColor: "#d33",
+                })
+    }
+  });
+}
   onPageChange(event: PageEvent): void {
       this.salesInvoiceFilters.page = event.pageIndex + 1
       this.salesInvoiceFilters.pageSize = event.pageSize
       this.GetAllSalesInvoices()
   }
+  askToReverse(id: number) {
+  this._SalesInvoiceService.askToReverseInvoice(id).subscribe({
+    next: (res) => {
+       Swal.fire({
+              icon: "success",
+              title: "تم الطلب بنجاح",
+              text: res.data,
+              confirmButtonText: "موافق",
+              confirmButtonColor: "#3085d6",
+            });
+            this.GetAllSalesInvoices();
+            this.GetAllCustomers();
+    },
+    error: (err) => {
+          Swal.fire({
+                  icon: "error",
+                  title: "حدث خطأ",
+                  text: `${err.error?.message}`,
+                  confirmButtonText: "موافق",
+                  confirmButtonColor: "#d33",
+                })
+    }
+  });
+}
   AskToDeleteSalesInvoice(element:SalesInvoicesResponse):void
   {
     const req:InvoiceChangeStatusReq={
@@ -208,7 +319,7 @@ filters:DistributorsAndMerchantsFilters={
         Swal.fire({
                   icon: "error",
                   title: "حدث خطأ",
-                  text: `${err.message}`,
+                  text: `${err.error?.message}`,
                   confirmButtonText: "موافق",
                   confirmButtonColor: "#d33",
                 })

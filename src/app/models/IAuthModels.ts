@@ -4,6 +4,7 @@ export interface AuthResponse {
   accessTokenExpiresAt: string;
   userName:string;
   userMail:string;
+  roles:string[];
 }
 export interface loginDto
 {

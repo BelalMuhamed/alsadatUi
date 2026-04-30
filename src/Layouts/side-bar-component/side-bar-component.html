@@ -9,34 +9,31 @@
 
     <ul class="mt-3">
 
-      <li>
-        <a routerLink="dashboard" routerLinkActive="active">الصفحة الرئيسية</a>
-      </li>
-   <li>
-        <a routerLink="DistributorsAndMerchants" routerLinkActive="active">الموزعين والتجار  </a>
-      </li>
-       <li>
-        <a routerLink="supplier/all" routerLinkActive="active">الموردين</a>
-      </li>
-      <li>
+       <li *ngIf="hasRole(['Accountant', 'Admin','StockManager'])">
         <a routerLink="SalesInvoices" routerLinkActive="active">فواتير البيع</a>
       </li>
-
-  <li>
-        <a routerLink="Categories" routerLinkActive="active">فئات المنتجات </a>
-      </li>
-      <li>
-        <a routerLink="Products" routerLinkActive="active">المنتجات  </a>
-      </li>
-  <li>
-        <a routerLink="tree" routerLinkActive="active"> شجرة الحسابات  </a>
-      </li>
-      <li>
-        <a routerLink="journal-entries" routerLinkActive="active"> سجل الدفاتر  </a>
-      </li>
-<li>
+      <li *ngIf="hasRole(['Accountant', 'Admin','StockManager'])">
         <a routerLink="purchase-invoice/all" routerLinkActive="active"> فواتير الشراء   </a>
       </li>
+   <li *ngIf="hasRole(['Accountant', 'Admin'])">
+        <a routerLink="DistributorsAndMerchants" routerLinkActive="active">  العملاء   </a>
+      </li>
+       <li *ngIf="hasRole(['Accountant', 'Admin'])">
+        <a routerLink="supplier/all" routerLinkActive="active">الموردين</a>
+      </li>
+
+
+
+      <li *ngIf="hasRole(['StockManager', 'Admin','Accountant'])">
+        <a routerLink="Products" routerLinkActive="active">المنتجات  </a>
+      </li>
+  <li *ngIf="hasRole(['Accountant', 'Admin'])">
+        <a routerLink="tree" routerLinkActive="active">  الحسابات  </a>
+      </li>
+      <li *ngIf="hasRole(['Accountant', 'Admin'])">
+        <a routerLink="journal-entries" routerLinkActive="active"> سجل الدفاتر  </a>
+      </li>
+
 <li>
   <div class="dropdown-header" (click)="settingsOpened = !settingsOpened">
     <span>الإعدادات</span>
@@ -45,15 +42,15 @@
     </mat-icon>
   </div>
     <ul *ngIf="settingsOpened" >
-  <li> <a routerLink="Copouns" routerLinkActive="active">الكوبونات</a></li>
-    <li><a routerLink="general-setting/bill-discounts" routerLinkActive="active">خصومات الفواتير</a></li>
-    <li><a routerLink="general-setting/Governrates" routerLinkActive="active">المحافظات</a></li>
-    <li><a routerLink='general-setting/cities' routerLinkActive="active">المدن</a></li>
+  <li *ngIf="hasRole(['Accountant', 'Admin'])"> <a routerLink="Copouns" routerLinkActive="active">الكوبونات</a></li>
+    <li *ngIf="hasRole(['Accountant', 'Admin'])"><a routerLink="general-setting/bill-discounts" routerLinkActive="active">خصومات الفواتير</a></li>
+    <li *ngIf="hasRole(['Accountant', 'Admin','HR'])"><a routerLink="general-setting/Governrates" routerLinkActive="active">المحافظات</a></li>
+    <li *ngIf="hasRole(['Accountant', 'Admin','HR'])"><a routerLink='general-setting/cities' routerLinkActive="active">المدن</a></li>
   </ul>
 
 </li>
-<li>
-  <div class="dropdown-header" (click)="StocksOpened = !StocksOpened">
+<li *ngIf="hasRole([ 'Admin','StockManager'])">
+  <div class="dropdown-header" (click)="StocksOpened = !StocksOpened" >
      <span>المخازن</span>
 
     <mat-icon>
@@ -71,7 +68,7 @@
 
 
 
-<li>
+<li *ngIf="hasRole([ 'Admin','HR'])">
   <div class="dropdown-header" (click)="hrOpened = !hrOpened">
     <span>HR</span>
     <mat-icon>
@@ -95,17 +92,17 @@
         <li><a routerLink='hr/copon-collection-rates' routerLinkActive="active">نسب المندوب من الكوبونات</a></li>
         <li><a routerLink='hr/payroll' routerLinkActive="active">إدارة الرواتب</a></li>
         <!-- <li><a routerLink='hr/salaries' routerLinkActive="active">المرتبات</a></li> -->
-        <li><a routerLink='hr/departments' routerLinkActive="active">الأقسام</a></li>       
+        <li><a routerLink='hr/departments' routerLinkActive="active">الأقسام</a></li>
         <li><a routerLink='hr/employee-loans' routerLinkActive="active">قروض الموظفين</a></li>
         <li><a routerLink='hr/employee-loan-summary' routerLinkActive="active">تفاصيل قروض الموظف</a></li>
-       <li> 
+       <li>
           <div class="dropdown-header" (click)="leaveOpen = !leaveOpen">
           <span>الاجازات</span>
           <mat-icon>
             {{ leaveOpen ? 'expand_less' : 'expand_more' }}
           </mat-icon>
           </div>
-          <ul *ngIf="leaveOpen" >  
+          <ul *ngIf="leaveOpen" >
             <li><a routerLink='hr/public-holidays' routerLinkActive="active">الإجازات الثانوية</a></li>
             <li><a routerLink="hr/leave-types" routerLinkActive="active">أنواع الإجازات</a></li>
             <li><a routerLink="hr/all-leave-requests" routerLinkActive="active">طلبات الإجازات</a></li>
@@ -119,7 +116,9 @@
       </ul>
 
 </li>
-
+<li>
+  <a (click)="logOut()">تسجيل الخروج</a>
+</li>
 
 
     </ul>

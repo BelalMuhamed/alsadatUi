@@ -1,3 +1,4 @@
+import { log } from 'console';
 import { CommonModule } from '@angular/common';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -5,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Component,Input, Output, EventEmitter, ViewChild, Renderer2  } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { AuthService } from '../../app/Services/auth-service';
 
 @Component({
   selector: 'app-side-bar-component',
@@ -14,13 +16,16 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   styleUrl: './side-bar-component.css'
 })
 export class SideBarComponent {
-  
+
   isOpen = true;
   settingsOpened = false;
   StocksOpened=false;
   hrOpened = false;
   leaveOpen = false;
-
+hasRole(allowedRoles: string[]): boolean {
+  const userRoles = this._authService.getRoles();
+  return userRoles.some(role => allowedRoles.includes(role));
+}
 toggleSettings() {
   this.settingsOpened = !this.settingsOpened;
 }
@@ -30,7 +35,7 @@ toggleStocks() {
 
   currentTheme: 'light-mode' | 'dark-mode' = 'dark-mode';
 
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, private _authService:AuthService) {}
 
   toggle() {
     this.isOpen = !this.isOpen;
@@ -63,6 +68,10 @@ toggleStocks() {
     this.renderer.removeClass(body, 'dark-mode');
     this.renderer.addClass(body, this.currentTheme);
   }
+}
+logOut()
+{
+  this._authService.logout();
 }
 
 }

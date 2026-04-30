@@ -58,7 +58,7 @@ invoiceId: number | null = null;
       isDeleted:null
     }
      filtersForAllProoducts:ProductFilterationDto={
-            categoryName:null,
+
             isDeleted:false,
             name:null,
             page:null,
@@ -71,7 +71,7 @@ this.initForm();
     this.customersSearch();
     this.GetProducts();
 
-  
+
   this.route.paramMap.subscribe(params => {
     const id = params.get('id');
     if (id) {
@@ -223,7 +223,7 @@ GetProducts() {
 
    initForm(): void {
   this.invoiceForm = this.fb.group({
-    invoiceNumber: [null, Validators.required],
+    invoiceNumber: [null],
     distributorId: [null, Validators.required],  // تم
     totalCopouns: [0],// تم
     firstDiscount: [null, [Validators.min(0), Validators.max(100)]],
@@ -575,6 +575,7 @@ private mapFormToDTO(): SalesInvoicesResponse {
     totalNetAmount: formValue.totalNetAmount,
     taxPrecentage: formValue.taxPrecentage,
     taxValue: formValue.taxValue,
+    reverseJournalEntry:  formValue.reverseJournalEntry ,
     items: items
   };
 }

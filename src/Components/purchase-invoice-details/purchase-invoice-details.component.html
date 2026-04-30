@@ -1,4 +1,4 @@
-<div class="invoice-details-container" *ngIf="invoice">
+<div id="invoiceContent" class="invoice-details-container" *ngIf="invoice">
 
   <!-- Header Card -->
   <mat-card class="invoice-card">
@@ -18,24 +18,16 @@
     <span>{{ invoice.createdAt | date:'medium' }}</span>
   </div>
 
+
   <div class="meta-row">
-    <span class="label">الحالة:</span>
-
-    <span class="status-badge"
-      [ngClass]="{
-        'badge-settled': invoice.settledStatus === 1,
-        'badge-pending': invoice.settledStatus !== 1
-      }">
-      {{ invoice.settledStatus === 0 ? 'تم التسكين' : 'لم يتم التسكين ' }}
-    </span>
-
+    <span class="label"> مخزن التسكين:</span>
+    <span>{{ invoice.settledStoreName }}</span>
   </div>
-
 </div>
   </mat-card>
 
   <!-- Summary Card -->
-  <mat-card class="invoice-card summary-card">
+ <mat-card class="invoice-card summary-card" *ngIf="!isPrintMode">
 
     <div class="summary-grid">
 
@@ -114,13 +106,16 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+       <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+<tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
 
       </table>
 
     </div>
 
   </mat-card>
-
+<div class="actions">
+  <button (click)="generateFullPDF()">تحميل PDF كامل</button>
+  <button (click)="generateSimplePDF()">تحميل PDF مبسط</button>
+</div>
 </div>

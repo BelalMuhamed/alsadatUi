@@ -47,14 +47,22 @@
             <mat-error>يرجى اختيار المخزن</mat-error>
           }
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="custom-input-theme">
-          <mat-label>رقم الفاتورة</mat-label>
-          <input matInput formControlName="invoiceNumber">
-          @if (invoiceForm.get('invoiceNumber')?.invalid && invoiceForm.get('invoiceNumber')?.touched) {
-            <mat-error>رقم الفاتورة اجباري</mat-error>
-          }
+        @if (isEdit) {
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>رقم الفاتورة</mat-label>
+            <input matInput formControlName="invoiceNumber" readonly>
+          </mat-form-field>
+        }
+        @if (isEdit) {
+          <mat-form-field appearance="outline" class="custom-input-theme">
+            <mat-label>رقم الفاتورة</mat-label>
+            <input matInput formControlName="invoiceNumber">
+            @if (invoiceForm.get('invoiceNumber')?.invalid && invoiceForm.get('invoiceNumber')?.touched) {
+              <mat-error>رقم الفاتورة اجباري</mat-error>
+            }
         </mat-form-field>
+
+          }
       </div>
     </div>
 

@@ -15,6 +15,7 @@ export class PurchaseInvoiceService {
 
     constructor(private http: HttpClient ) {}
 
+
   addPurchaseInvoice(dto: PurchaseInvoiceDtos): Observable<Result<string>> {
     return this.http.post<any>(this.apiUrl, dto);
   }
@@ -64,6 +65,11 @@ export class PurchaseInvoiceService {
   // ================= Delete =================
 deletePurchaseInvoice(id: number): Observable<Result<string>> {
   return this.http.delete<Result<string>>(`${this.apiUrl}${id}`);
+}
+downloadInvoicePdf(id: number, type: 'full' | 'simple'): Observable<Blob> {
+  return this.http.get(`${this.apiUrl}${id}/pdf/${type}`, {
+    responseType: 'blob'
+  });
 }
 
 }
